@@ -1,0 +1,426 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		54E6D8AE1B6D7DE800E603EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */; };
+		54E6D8B01B6D7DE800E603EE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AF1B6D7DE800E603EE /* ViewController.swift */; };
+		54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B11B6D7DE800E603EE /* Main.storyboard */; };
+		54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B41B6D7DE800E603EE /* Images.xcassets */; };
+		54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B61B6D7DE800E603EE /* LaunchScreen.xib */; };
+		54E6D8C41B6D7DE800E603EE /* jukeboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		54E6D8BE1B6D7DE800E603EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 54E6D8A01B6D7DE800E603EE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 54E6D8A71B6D7DE800E603EE;
+			remoteInfo = jukebox;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		54E6D8A81B6D7DE800E603EE /* jukebox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jukebox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		54E6D8AC1B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		54E6D8AF1B6D7DE800E603EE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		54E6D8B21B6D7DE800E603EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		54E6D8B41B6D7DE800E603EE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		54E6D8B71B6D7DE800E603EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		54E6D8BD1B6D7DE800E603EE /* jukeboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jukeboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		54E6D8C21B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jukeboxTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		54E6D8A51B6D7DE800E603EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54E6D8BA1B6D7DE800E603EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		54E6D89F1B6D7DE800E603EE = {
+			isa = PBXGroup;
+			children = (
+				54E6D8AA1B6D7DE800E603EE /* jukebox */,
+				54E6D8C01B6D7DE800E603EE /* jukeboxTests */,
+				54E6D8A91B6D7DE800E603EE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		54E6D8A91B6D7DE800E603EE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				54E6D8A81B6D7DE800E603EE /* jukebox.app */,
+				54E6D8BD1B6D7DE800E603EE /* jukeboxTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		54E6D8AA1B6D7DE800E603EE /* jukebox */ = {
+			isa = PBXGroup;
+			children = (
+				54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */,
+				54E6D8AF1B6D7DE800E603EE /* ViewController.swift */,
+				54E6D8B11B6D7DE800E603EE /* Main.storyboard */,
+				54E6D8B41B6D7DE800E603EE /* Images.xcassets */,
+				54E6D8B61B6D7DE800E603EE /* LaunchScreen.xib */,
+				54E6D8AB1B6D7DE800E603EE /* Supporting Files */,
+			);
+			path = jukebox;
+			sourceTree = "<group>";
+		};
+		54E6D8AB1B6D7DE800E603EE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				54E6D8AC1B6D7DE800E603EE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		54E6D8C01B6D7DE800E603EE /* jukeboxTests */ = {
+			isa = PBXGroup;
+			children = (
+				54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */,
+				54E6D8C11B6D7DE800E603EE /* Supporting Files */,
+			);
+			path = jukeboxTests;
+			sourceTree = "<group>";
+		};
+		54E6D8C11B6D7DE800E603EE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				54E6D8C21B6D7DE800E603EE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		54E6D8A71B6D7DE800E603EE /* jukebox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 54E6D8C71B6D7DE800E603EE /* Build configuration list for PBXNativeTarget "jukebox" */;
+			buildPhases = (
+				54E6D8A41B6D7DE800E603EE /* Sources */,
+				54E6D8A51B6D7DE800E603EE /* Frameworks */,
+				54E6D8A61B6D7DE800E603EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = jukebox;
+			productName = jukebox;
+			productReference = 54E6D8A81B6D7DE800E603EE /* jukebox.app */;
+			productType = "com.apple.product-type.application";
+		};
+		54E6D8BC1B6D7DE800E603EE /* jukeboxTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 54E6D8CA1B6D7DE800E603EE /* Build configuration list for PBXNativeTarget "jukeboxTests" */;
+			buildPhases = (
+				54E6D8B91B6D7DE800E603EE /* Sources */,
+				54E6D8BA1B6D7DE800E603EE /* Frameworks */,
+				54E6D8BB1B6D7DE800E603EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				54E6D8BF1B6D7DE800E603EE /* PBXTargetDependency */,
+			);
+			name = jukeboxTests;
+			productName = jukeboxTests;
+			productReference = 54E6D8BD1B6D7DE800E603EE /* jukeboxTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		54E6D8A01B6D7DE800E603EE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = "Ashutosh Desai";
+				TargetAttributes = {
+					54E6D8A71B6D7DE800E603EE = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					54E6D8BC1B6D7DE800E603EE = {
+						CreatedOnToolsVersion = 6.4;
+						TestTargetID = 54E6D8A71B6D7DE800E603EE;
+					};
+				};
+			};
+			buildConfigurationList = 54E6D8A31B6D7DE800E603EE /* Build configuration list for PBXProject "jukebox" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 54E6D89F1B6D7DE800E603EE;
+			productRefGroup = 54E6D8A91B6D7DE800E603EE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				54E6D8A71B6D7DE800E603EE /* jukebox */,
+				54E6D8BC1B6D7DE800E603EE /* jukeboxTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		54E6D8A61B6D7DE800E603EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */,
+				54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */,
+				54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54E6D8BB1B6D7DE800E603EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		54E6D8A41B6D7DE800E603EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54E6D8B01B6D7DE800E603EE /* ViewController.swift in Sources */,
+				54E6D8AE1B6D7DE800E603EE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54E6D8B91B6D7DE800E603EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54E6D8C41B6D7DE800E603EE /* jukeboxTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		54E6D8BF1B6D7DE800E603EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 54E6D8A71B6D7DE800E603EE /* jukebox */;
+			targetProxy = 54E6D8BE1B6D7DE800E603EE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		54E6D8B11B6D7DE800E603EE /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				54E6D8B21B6D7DE800E603EE /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		54E6D8B61B6D7DE800E603EE /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				54E6D8B71B6D7DE800E603EE /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		54E6D8C51B6D7DE800E603EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		54E6D8C61B6D7DE800E603EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		54E6D8C81B6D7DE800E603EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = jukebox/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		54E6D8C91B6D7DE800E603EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = jukebox/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		54E6D8CB1B6D7DE800E603EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = jukeboxTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
+			};
+			name = Debug;
+		};
+		54E6D8CC1B6D7DE800E603EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = jukeboxTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		54E6D8A31B6D7DE800E603EE /* Build configuration list for PBXProject "jukebox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54E6D8C51B6D7DE800E603EE /* Debug */,
+				54E6D8C61B6D7DE800E603EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		54E6D8C71B6D7DE800E603EE /* Build configuration list for PBXNativeTarget "jukebox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54E6D8C81B6D7DE800E603EE /* Debug */,
+				54E6D8C91B6D7DE800E603EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		54E6D8CA1B6D7DE800E603EE /* Build configuration list for PBXNativeTarget "jukeboxTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54E6D8CB1B6D7DE800E603EE /* Debug */,
+				54E6D8CC1B6D7DE800E603EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 54E6D8A01B6D7DE800E603EE /* Project object */;
+}
