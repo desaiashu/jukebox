@@ -1,0 +1,4 @@
+github "SwiftBond/Bond" ~> 3.7
+github "realm/realm-cocoa"
+github "Alamofire/Alamofire" >= 1.3
+github "0xced/XCDYouTubeKit" ~> 2.2.0
