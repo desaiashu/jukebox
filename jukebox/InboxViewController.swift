@@ -75,10 +75,10 @@ class InboxViewController: UIViewController {
     func downloadData() {
         
         if let user = g.user {
-            Alamofire.request(.POST, k.server_url+"inbox", parameters: ["phone_number": user.phone_number, "code":user.code, "last_updated":user.last_updated])
+            Alamofire.request(.GET, k.server_url+"inbox", parameters: ["phone_number": user.phone_number, "code":user.code, "last_updated":user.last_updated], encoding: .JSON)
                 .responseJSON { request, response, json, error in
                     println(json)
-                    if let result = json as? [String:[[String:String]]] {
+                    if let result = json as? [String:[[String:AnyObject]]] {
                         if let inbox = result["inbox"] {
                             self.saveData(inbox)
                             g.realm.write() {
@@ -100,7 +100,7 @@ class InboxViewController: UIViewController {
                 
                 let params: [String:AnyObject] = ["phone_number": user.phone_number, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients]
                 
-                Alamofire.request(.POST, k.server_url+"inbox", parameters: params)
+                Alamofire.request(.POST, k.server_url+"inbox", parameters: params, encoding: .JSON)
                     .responseJSON { request, response, json, error in
                         println(json)
                         if let result = json as? [String:Bool] {
@@ -119,19 +119,19 @@ class InboxViewController: UIViewController {
         }
     }
     
-    func saveData(inbox: [[String:String]]) {
+    func saveData(inbox: [[String:AnyObject]]) {
         
         for song in inbox {
-            if song["date"]! == song["updated"]! { //newly created
+            if song["date"]! as! Int == song["updated"]! as! Int { //newly created
                 let inboxSong = InboxSong()
                 
-                inboxSong.title = song["title"]!
-                inboxSong.artist = song["artist"]!
-                inboxSong.yt_id = song["yt_id"]!
-                inboxSong.sender = song["sender"]!
-                inboxSong.recipient = song["recipient"]!
-                inboxSong.date = song["date"]!
-                inboxSong.updated = song["updated"]!
+                inboxSong.title = song["title"]! as! String
+                inboxSong.artist = song["artist"]! as! String
+                inboxSong.yt_id = song["yt_id"]! as! String
+                inboxSong.sender = song["sender"]! as! String
+                inboxSong.recipient = song["recipient"]! as! String
+                inboxSong.date = song["date"]! as! Int
+                inboxSong.updated = song["updated"]! as! Int
                 
                 g.realm.write() { //slow to open write operation every time?
                     g.realm.add(inboxSong)

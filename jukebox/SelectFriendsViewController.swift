@@ -48,7 +48,7 @@ class SelectFriendsViewController: UIViewController {
         if let song = song {
             
             song.recipients = ",".join(selectedFriends)
-            let now = String(Int(NSDate().timeIntervalSince1970))
+            let now = Int(NSDate().timeIntervalSince1970)
             song.date = now
             g.realm.write() {
                 g.realm.add(self.song!)

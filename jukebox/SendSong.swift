@@ -14,5 +14,5 @@ class SendSong : Object {
     dynamic var artist: String = ""
     dynamic var yt_id: String = ""
     dynamic var recipients: String = ""
-    dynamic var date: String = ""
+    dynamic var date: Int = 0
 }
