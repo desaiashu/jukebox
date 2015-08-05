@@ -88,24 +88,27 @@ class Permissions {
                             lastName = last
                         }
                         
-                        let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
-                        
-                        var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
-                        var strippedNumber = "".join(arr)
-                        
-                        if strippedNumber.rangeOfString("+") == nil {
-                            if let startIndex = strippedNumber.rangeOfString(localDialingCode)?.startIndex {
-                                if startIndex == strippedNumber.startIndex {
-                                    strippedNumber = "+".stringByAppendingString(strippedNumber)
+                        //Remove 411 / all number names?
+                        if firstName+lastName != "" {
+                            let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
+                            
+                            var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
+                            var strippedNumber = "".join(arr)
+                            
+                            if strippedNumber.rangeOfString("+") == nil {
+                                if let startIndex = strippedNumber.rangeOfString(localDialingCode)?.startIndex {
+                                    if startIndex == strippedNumber.startIndex {
+                                        strippedNumber = "+".stringByAppendingString(strippedNumber)
+                                    } else {
+                                        strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
+                                    }
                                 } else {
                                     strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
                                 }
-                            } else {
-                                strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
                             }
+                            
+                            contacts[strippedNumber as String] = ["firstName":firstName, "lastName":lastName]
                         }
-                        
-                        contacts[strippedNumber as String] = ["firstName":firstName, "lastName":lastName]
                     }
                 }
                 
@@ -137,6 +140,8 @@ class Permissions {
                     }
                 }
             }
+            
+            println("friends saved")
             
         })
         

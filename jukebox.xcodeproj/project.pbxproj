@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5413DE911B6DA1430040EF3A /* XCDYouTubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */; };
-		5413DE921B6DA1430040EF3A /* Bond.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8D1B6DA1430040EF3A /* Bond.framework */; };
 		5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8E1B6DA1430040EF3A /* Alamofire.framework */; };
 		5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8F1B6DA1430040EF3A /* Realm.framework */; };
 		5413DE951B6DA1430040EF3A /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE901B6DA1430040EF3A /* RealmSwift.framework */; };
@@ -24,7 +23,7 @@
 		544DB5861B6DBBFF0090ABFB /* SelectSongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5851B6DBBFF0090ABFB /* SelectSongTableViewCell.swift */; };
 		544DB5881B6DBC0F0090ABFB /* SelectFriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5871B6DBC0F0090ABFB /* SelectFriendsTableViewCell.swift */; };
 		544DB58B1B6E75E60090ABFB /* InboxSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58A1B6E75E60090ABFB /* InboxSong.swift */; };
-		544DB58D1B6E76120090ABFB /* SearchSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58C1B6E76120090ABFB /* SearchSong.swift */; };
+		544DB58D1B6E76120090ABFB /* SendSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58C1B6E76120090ABFB /* SendSong.swift */; };
 		544DB58F1B6E76200090ABFB /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58E1B6E76200090ABFB /* Friend.swift */; };
 		544DB5941B6E768F0090ABFB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5931B6E768F0090ABFB /* User.swift */; };
 		54A8CD6F1B6EB6E3009E979A /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */; };
@@ -50,7 +49,6 @@
 
 /* Begin PBXFileReference section */
 		5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCDYouTubeKit.framework; path = Carthage/Build/iOS/XCDYouTubeKit.framework; sourceTree = "<group>"; };
-		5413DE8D1B6DA1430040EF3A /* Bond.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bond.framework; path = Carthage/Build/iOS/Bond.framework; sourceTree = "<group>"; };
 		5413DE8E1B6DA1430040EF3A /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		5413DE8F1B6DA1430040EF3A /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		5413DE901B6DA1430040EF3A /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
@@ -66,7 +64,7 @@
 		544DB5851B6DBBFF0090ABFB /* SelectSongTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSongTableViewCell.swift; sourceTree = "<group>"; };
 		544DB5871B6DBC0F0090ABFB /* SelectFriendsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectFriendsTableViewCell.swift; sourceTree = "<group>"; };
 		544DB58A1B6E75E60090ABFB /* InboxSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxSong.swift; sourceTree = "<group>"; };
-		544DB58C1B6E76120090ABFB /* SearchSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSong.swift; sourceTree = "<group>"; };
+		544DB58C1B6E76120090ABFB /* SendSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSong.swift; sourceTree = "<group>"; };
 		544DB58E1B6E76200090ABFB /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		544DB5931B6E768F0090ABFB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer.swift; sourceTree = "<group>"; };
@@ -91,7 +89,6 @@
 			files = (
 				5413DE911B6DA1430040EF3A /* XCDYouTubeKit.framework in Frameworks */,
 				544DB5751B6DA7A80090ABFB /* Crashlytics.framework in Frameworks */,
-				5413DE921B6DA1430040EF3A /* Bond.framework in Frameworks */,
 				5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */,
 				5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */,
 				5413DEA01B6DA2300040EF3A /* TwitterCore.framework in Frameworks */,
@@ -117,7 +114,6 @@
 				5413DE991B6DA2300040EF3A /* Fabric.framework */,
 				5413DE9C1B6DA2300040EF3A /* TwitterCore.framework */,
 				5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */,
-				5413DE8D1B6DA1430040EF3A /* Bond.framework */,
 				5413DE8E1B6DA1430040EF3A /* Alamofire.framework */,
 				5413DE8F1B6DA1430040EF3A /* Realm.framework */,
 				5413DE901B6DA1430040EF3A /* RealmSwift.framework */,
@@ -172,7 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				544DB58A1B6E75E60090ABFB /* InboxSong.swift */,
-				544DB58C1B6E76120090ABFB /* SearchSong.swift */,
+				544DB58C1B6E76120090ABFB /* SendSong.swift */,
 				544DB58E1B6E76200090ABFB /* Friend.swift */,
 			);
 			name = Models;
@@ -362,7 +358,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Bond.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/XCDYouTubeKit.framework",
 			);
 			outputPaths = (
@@ -395,7 +390,7 @@
 				5413DEA21B6DA3B90040EF3A /* PhoneNumberViewController.swift in Sources */,
 				544DB5791B6DB9A30090ABFB /* EnableServicesViewController.swift in Sources */,
 				544DB5861B6DBBFF0090ABFB /* SelectSongTableViewCell.swift in Sources */,
-				544DB58D1B6E76120090ABFB /* SearchSong.swift in Sources */,
+				544DB58D1B6E76120090ABFB /* SendSong.swift in Sources */,
 				54E6D8B01B6D7DE800E603EE /* InboxViewController.swift in Sources */,
 				544DB5941B6E768F0090ABFB /* User.swift in Sources */,
 				544DB58B1B6E75E60090ABFB /* InboxSong.swift in Sources */,

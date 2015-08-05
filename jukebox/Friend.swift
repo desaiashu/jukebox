@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Ashutosh Desai. All rights reserved.
 //
 
+import Foundation
 import RealmSwift
 
 class Friend : Object {

@@ -29,7 +29,7 @@ class InboxViewController: UIViewController {
         }
     }
     
-    var searchResults: [SearchSong] = [] {
+    var searchResults: [SendSong] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -37,49 +37,39 @@ class InboxViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        // Do I want to download data here??
 
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.sendSongs()
         self.downloadData()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        self.clearSearch()
     }
     
-    @IBAction func cancelPressed(sender: UIButton) {
+    func clearSearch (){
         searchTextField.text = ""
         searchTextField.resignFirstResponder()
         
         searchResults = []
-        
-        g.player.stop()
-        
         inSearch = false
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
-        if let segueIdentifier = identifier {
-            if segueIdentifier == "searchSegue" && searchTextField.text == "" {
-                return false
-            }
-        }
-        return true
+    @IBAction func cancelPressed(sender: UIButton) {
+        clearSearch()
+        g.player.stop()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let segueIdentifier = segue.identifier {
-            if segueIdentifier == "searchSegue" {
-                if let selectSongViewController = segue.destinationViewController as? SelectSongViewController {
-                    selectSongViewController.initialQuery = searchTextField.text
-                }
+        if segue.identifier == "sendSegue" {
+            if let selectFriendsViewController = segue.destinationViewController as? SelectFriendsViewController {
+                selectFriendsViewController.song = searchResults[sender!.tag]
             }
         }
+        
     }
 
     func downloadData() {
@@ -99,6 +89,34 @@ class InboxViewController: UIViewController {
             }
         }
 
+    }
+    
+    func sendSongs() {
+        
+        if let user = g.user {
+            let unsentSongs = g.realm.objects(SendSong)
+            
+            for song in unsentSongs {
+                
+                let params: [String:AnyObject] = ["phone_number": user.phone_number, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients]
+                
+                Alamofire.request(.POST, k.server_url+"inbox", parameters: params)
+                    .responseJSON { request, response, json, error in
+                        println(json)
+                        if let result = json as? [String:Bool] {
+                            if let success = result["result"] {
+                                if success {
+                                    g.realm.write() {
+                                        g.realm.delete(song)
+                                    }
+                                }
+                            }
+                        }
+                }
+            }
+            
+            
+        }
     }
     
     func saveData(inbox: [[String:String]]) {
@@ -148,12 +166,12 @@ class InboxViewController: UIViewController {
     func parseResults(items: [[String:[String:String]]], query: String) {
         
         //TODO: Make this smarter, eliminate duplicates + crap results, cross relevance + view count?
-        var tempResults: [SearchSong] = []
+        var tempResults: [SendSong] = []
         for item in items {
             let songString = item["snippet"]!["title"]!
             
             if let titleAndArtist = getTitleAndArtist(songString) {
-                var song = SearchSong()
+                var song = SendSong()
                 song.title = titleAndArtist["title"]!
                 song.artist = titleAndArtist["artist"]!
                 song.yt_id = item["id"]!["videoId"]!
@@ -228,6 +246,7 @@ extension InboxViewController: UITableViewDataSource {
         if inSearch {
             let cell = tableView.dequeueReusableCellWithIdentifier("SelectSongCell", forIndexPath: indexPath) as! SelectSongTableViewCell
             cell.song = searchResults[indexPath.row]
+            cell.sendButton.tag = indexPath.row
             return cell
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier("InboxSongCell", forIndexPath: indexPath) as! InboxSongTableViewCell

@@ -19,7 +19,7 @@ class SelectSongViewController: UIViewController {
     
     @IBOutlet weak var searchTextField: UITextField!
     
-    var searchResults: [SearchSong] = [] {
+    var searchResults: [SendSong] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -54,12 +54,12 @@ class SelectSongViewController: UIViewController {
     }
     
     func parseResults(items: [[String:[String:String]]]) {
-        var tempResults: [SearchSong] = []
+        var tempResults: [SendSong] = []
         for item in items {
             let songString = item["snippet"]!["title"]!
             
             if let titleAndArtist = getTitleAndArtist(songString) {
-                var song = SearchSong()
+                var song = SendSong()
                 song.title = titleAndArtist["title"]!
                 song.artist = titleAndArtist["artist"]!
                 song.yt_id = item["id"]!["videoId"]!

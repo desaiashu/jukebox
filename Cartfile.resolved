@@ -1,4 +1,3 @@
 github "Alamofire/Alamofire" "1.3.0"
-github "SwiftBond/Bond" "v3.9.0"
 github "0xced/XCDYouTubeKit" "2.2.0"
 github "realm/realm-cocoa" "v0.94.0"

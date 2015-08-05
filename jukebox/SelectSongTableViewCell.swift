@@ -15,7 +15,7 @@ class SelectSongTableViewCell: UITableViewCell {
     @IBOutlet weak var previewButton: UIButton!
     @IBOutlet weak var sendButton: UIButton!
     
-    var song: SearchSong? {
+    var song: SendSong? {
         didSet {
             if let song = song {
                 self.titleLabel.text = song.title
