@@ -10,9 +10,9 @@ import XCDYouTubeKit
 
 class SongPlayer {
     
-    var videoPlayerController: XCDYouTubeVideoPlayerViewController?
+    static var videoPlayerController: XCDYouTubeVideoPlayerViewController?
     
-    func play(videoIdentifier: String) {
+    class func play(videoIdentifier: String) {
         
         if let playerController = videoPlayerController, let player = playerController.moviePlayer{
             player.stop()
@@ -25,7 +25,7 @@ class SongPlayer {
         //Need to do background playback
     }
     
-    func stop() {
+    class func stop() {
         if let playerController = videoPlayerController, let player = playerController.moviePlayer{
             player.stop()
         }

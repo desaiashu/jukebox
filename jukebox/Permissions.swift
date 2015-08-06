@@ -9,19 +9,20 @@
 import Foundation
 import AddressBook
 import RealmSwift
+import UIKit
 
 class Permissions {
     
     dynamic var authorizationStatus = ABAddressBookGetAuthorizationStatus()
     
-    var addressBook: ABAddressBookRef?
+    static var addressBook: ABAddressBookRef?
     
-    func createAddressBook(){
+    class func createAddressBook(){
         var error: Unmanaged<CFError>?
         addressBook = ABAddressBookCreateWithOptions(nil, &error).takeRetainedValue()
     }
     
-    func authorizeAddressBook (){
+    class func authorizeAddressBook (){
         
         //TODO: failure
         
@@ -58,74 +59,70 @@ class Permissions {
         }
     }
     
-    func saveAddressBook (){
+    class func saveAddressBook (){
         
-        let userPhoneNumber = g.user?.phone_number
+        let userPhoneNumber = User.user.phoneNumber
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-        
-            let realm = Realm()
+            
+            let backgroundRealm = Realm()
             
             let localDialingCode = self.getLocalDialingCode()
-            
-            var contacts = [String:[String:String]]()
-            
             let allPeople = ABAddressBookCopyArrayOfAllPeople(self.addressBook).takeRetainedValue() as NSArray
+            var contacts = [String:[String:String]]()
             
             for person: ABRecordRef in allPeople {
                 
-                if let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue() as? ABMultiValueRef {
+                let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue() as ABMultiValueRef
+                
+                if ABMultiValueGetCount(phoneNumbers) > 0 {
                     
-                    if ABMultiValueGetCount(phoneNumbers) > 0 {
+                    var firstName = ""
+                    var lastName = ""
+                    
+                    if let first = ABRecordCopyValue(person, kABPersonFirstNameProperty)?.takeRetainedValue() as? String {
+                        firstName = first
+                    }
+                    if let last = ABRecordCopyValue(person, kABPersonLastNameProperty)?.takeRetainedValue() as? String {
+                        lastName = last
+                    }
+                    
+                    //Remove 411 / all number names?
+                    if firstName+lastName != "" {
+                        let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
                         
-                        var firstName = ""
-                        var lastName = ""
+                        var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
+                        var strippedNumber = "".join(arr)
                         
-                        if let first = ABRecordCopyValue(person, kABPersonFirstNameProperty)?.takeRetainedValue() as? String {
-                            firstName = first
-                        }
-                        if let last = ABRecordCopyValue(person, kABPersonLastNameProperty)?.takeRetainedValue() as? String {
-                            lastName = last
-                        }
-                        
-                        //Remove 411 / all number names?
-                        if firstName+lastName != "" {
-                            let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
-                            
-                            var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
-                            var strippedNumber = "".join(arr)
-                            
-                            if strippedNumber.rangeOfString("+") == nil {
-                                if let startIndex = strippedNumber.rangeOfString(localDialingCode)?.startIndex {
-                                    if startIndex == strippedNumber.startIndex {
-                                        strippedNumber = "+".stringByAppendingString(strippedNumber)
-                                    } else {
-                                        strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
-                                    }
+                        if strippedNumber.rangeOfString("+") == nil {
+                            if let startIndex = strippedNumber.rangeOfString(localDialingCode)?.startIndex {
+                                if startIndex == strippedNumber.startIndex {
+                                    strippedNumber = "+".stringByAppendingString(strippedNumber)
                                 } else {
                                     strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
                                 }
+                            } else {
+                                strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
                             }
-                            
-                            contacts[strippedNumber as String] = ["firstName":firstName, "lastName":lastName]
                         }
+                        
+                        contacts[strippedNumber as String] = ["firstName":firstName, "lastName":lastName]
                     }
                 }
-                
             }
             
             for (k, v) in contacts {
                 if k == userPhoneNumber {
                     dispatch_async(dispatch_get_main_queue()) {
-                        g.realm.write() {
-                            g.user?.first_name = v["firstName"]!
-                            g.user?.last_name = v["lastName"]!
+                        realm.write() {
+                            User.user.firstName = v["firstName"]!
+                            User.user.lastName = v["lastName"]!
                         }
                     }
                 } else {
                     
-                    if let friend = realm.objects(Friend).filter("phoneNumber='"+k+"'").first {
-                        realm.write() {
+                    if let friend = backgroundRealm.objects(Friend).filter("phoneNumber='"+k+"'").first {
+                        backgroundRealm.write() {
                             friend.firstName = v["firstName"]!
                             friend.lastName = v["lastName"]!
                         }
@@ -134,8 +131,8 @@ class Permissions {
                         newFriend.phoneNumber = k
                         newFriend.firstName = v["firstName"]!
                         newFriend.lastName = v["lastName"]!
-                        realm.write() {
-                            realm.add(newFriend)
+                        backgroundRealm.write() {
+                            backgroundRealm.add(newFriend)
                         }
                     }
                 }
@@ -144,10 +141,9 @@ class Permissions {
             println("friends saved")
             
         })
-        
     }
-    
-    func getLocalDialingCode () -> String {
+
+    static func getLocalDialingCode () -> String {
         var myDict: NSDictionary?
         if let path = NSBundle.mainBundle().pathForResource("DialingCodes", ofType: "plist") {
             myDict = NSDictionary(contentsOfFile: path)
@@ -164,8 +160,11 @@ class Permissions {
         return ""
     }
     
-    func enablePush (){
-        
+    static func enablePush (){
+        var type = UIUserNotificationType.Badge | UIUserNotificationType.Alert | UIUserNotificationType.Sound;
+        var setting = UIUserNotificationSettings(forTypes: type, categories: nil);
+        UIApplication.sharedApplication().registerUserNotificationSettings(setting);
+        UIApplication.sharedApplication().registerForRemoteNotifications();
     }
     
 }

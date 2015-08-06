@@ -25,6 +25,6 @@ class SelectSongTableViewCell: UITableViewCell {
     }
     
     @IBAction func previewPressed(sender: UIButton) {
-        g.player.play(song!.yt_id)
+        SongPlayer.play(song!.yt_id)
     }
 }

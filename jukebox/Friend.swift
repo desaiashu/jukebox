@@ -14,7 +14,11 @@ class Friend : Object {
     dynamic var lastName: String = ""
     dynamic var phoneNumber: String = ""
     
+    override class func primaryKey() -> String {
+        return "phoneNumber"
+    }
+    
     override static func indexedProperties() -> [String] {
-        return ["firstName", "lastName", "phoneNumber"]
+        return ["firstName", "lastName"]
     }
 }

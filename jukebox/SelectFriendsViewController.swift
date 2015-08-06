@@ -17,7 +17,7 @@ class SelectFriendsViewController: UIViewController {
     
     var song: SendSong?
     
-    var friends = g.realm.objects(Friend).sorted("firstName", ascending: true)
+    var friends = realm.objects(Friend).sorted("firstName", ascending: true)
     
     var selectedFriends: [String] = []
     
@@ -28,7 +28,7 @@ class SelectFriendsViewController: UIViewController {
         }
     }
     
-    var searchResults = g.realm.objects(Friend).filter("firstName BEGINSWITH '.!?'") {
+    var searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'") {
         didSet {
             tableView.reloadData()
         }
@@ -38,7 +38,7 @@ class SelectFriendsViewController: UIViewController {
         searchTextField.text = ""
         searchTextField.resignFirstResponder()
         
-        searchResults = g.realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
+        searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
         
         inSearch = false
     }
@@ -50,8 +50,8 @@ class SelectFriendsViewController: UIViewController {
             song.recipients = ",".join(selectedFriends)
             let now = Int(NSDate().timeIntervalSince1970)
             song.date = now
-            g.realm.write() {
-                g.realm.add(self.song!)
+            realm.write() {
+                realm.add(self.song!)
             }
             
             var recipients = split(song.recipients) {$0 == ","}
@@ -61,13 +61,13 @@ class SelectFriendsViewController: UIViewController {
                 inboxSong.title = song.title
                 inboxSong.artist = song.artist
                 inboxSong.yt_id = song.yt_id
-                inboxSong.sender = g.user!.phone_number
+                inboxSong.sender = User.user.phoneNumber
                 inboxSong.recipient = recipient
                 inboxSong.date = song.date
                 inboxSong.updated = song.date
                 
-                g.realm.write() {
-                    g.realm.add(inboxSong)
+                realm.write() {
+                    realm.add(inboxSong)
                 }
             }
         }
@@ -90,9 +90,10 @@ extension SelectFriendsViewController: UITextFieldDelegate {
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if newString != "" {
-            searchResults = g.realm.objects(Friend).filter("firstName BEGINSWITH[c] '"+newString+"' OR lastName BEGINSWITH[c] '"+newString+"'").sorted("firstName", ascending: true)
+            let predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ OR lastName BEGINSWITH[c] %@", newString, newString)
+            searchResults = realm.objects(Friend).filter(predicate).sorted("firstName", ascending: true)
         } else {
-            searchResults = g.realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
+            searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
         }
         
         return true

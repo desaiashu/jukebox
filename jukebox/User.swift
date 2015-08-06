@@ -10,9 +10,12 @@ import Foundation
 import RealmSwift
 
 class User : Object {
-    dynamic var phone_number: String = ""
+    dynamic var phoneNumber: String = ""
     dynamic var code: String = ""
-    dynamic var last_updated: Int = 0
-    dynamic var first_name: String = ""
-    dynamic var last_name: String = ""
+    dynamic var lastUpdated: Int = 0
+    dynamic var firstName: String = ""
+    dynamic var lastName: String = ""
+    dynamic var pushToken: String = ""
+    
+    static var user = User()
 }

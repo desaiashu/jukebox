@@ -11,20 +11,7 @@ import Fabric
 import Crashlytics
 import RealmSwift
 
-struct k {
-    static let server_url = "http://192.168.1.7:5000/"
-    static let youtube_url = "https://www.googleapis.com/youtube/v3/search?key=AIzaSyBK4c6lUvrKyH3rt3dbsSS-jUVPDjRGyT0&part=snippet&type=video&videoCategoryId=10&order=relevance&maxResults=50&fields=items(id(videoId)%2Csnippet(title))&q="
-}
-
-struct g {
-    static var phone_number = "+16504305130"
-    static var code = "foobar"
-    static var last_updated = 0
-    static let realm = Realm()
-    static var user: User?
-    static var player = SongPlayer()
-    static var permissions = Permissions()
-}
+public let realm = Realm()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -36,8 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         Fabric.with([Crashlytics()])
         
-        if let user = g.realm.objects(User).first {
-            g.user = user
+        if let user = realm.objects(User).first {
+            User.user = user
             println("yay")
             
             //Edge cases
@@ -48,19 +35,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //If user but not address book permissions
             //If user but not user name
         } else {
-            g.user = User()
-            g.user!.phone_number = g.phone_number
-            g.user!.code = g.code
-            g.user!.last_updated = 0
+
+            User.user.phoneNumber = "+16504305130"
+            User.user.code = "foobar"
+            User.user.lastUpdated = 0
             
-            g.realm.write() {
-                g.realm.add(g.user!)
+            realm.write() {
+                realm.add(User.user)
             }
         }
         
-        g.permissions.authorizeAddressBook()
+        Permissions.authorizeAddressBook()
         
         return true
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        //does this get called every time?
+        realm.write() {
+            User.user.pushToken = deviceToken.description
+                .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
+                .stringByReplacingOccurrencesOfString(" ", withString: "" )
+        }
+        
+    }
+    
+    //Called if unable to register for APNS.
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        
+        println(error)
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {

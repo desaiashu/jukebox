@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 
 class InboxSong : Object {
+    dynamic var id: String = ""
     dynamic var sender: String = ""
     dynamic var recipient: String = ""
     dynamic var title: String = ""
@@ -19,6 +20,10 @@ class InboxSong : Object {
     dynamic var updated: Int = 0
     dynamic var listened: Bool = false
     dynamic var loved: Bool = false
+    
+    override class func primaryKey() -> String? {
+        return "id"
+    }
     
     override static func indexedProperties() -> [String] {
         return ["date"]
