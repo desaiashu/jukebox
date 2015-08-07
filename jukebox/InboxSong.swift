@@ -18,8 +18,8 @@ class InboxSong : Object {
     dynamic var yt_id: String = ""
     dynamic var date: Int = 0
     dynamic var updated: Int = 0
-    dynamic var listened: Bool = false
-    dynamic var loved: Bool = false
+    dynamic var listen: Bool = false
+    dynamic var love: Bool = false
     
     override class func primaryKey() -> String? {
         return "id"
@@ -27,5 +27,21 @@ class InboxSong : Object {
     
     override static func indexedProperties() -> [String] {
         return ["date"]
+    }
+    
+    func play() {
+        //Keep track of which cell is being played
+        //Loading indicator
+        //Toggle into "stop" button
+        //Build out player class
+        
+        SongPlayer.play(self.yt_id)
+        
+        if !self.listen {
+            realm!.write() {
+                self.listen = true
+            }
+            Server.listen(self)
+        }
     }
 }

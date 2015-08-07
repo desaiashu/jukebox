@@ -18,53 +18,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         Fabric.with([Crashlytics()])
         
+        //Needs to be moved into "didBecomeActive"
+        //Also need to include "update" functions in "didBecomeActive" + "didRecieveNotification"
+        Server.checkVersion()
+        
         if let user = realm.objects(User).first {
             User.user = user
-            println("yay")
             
-            //Edge cases
-            //No address book permissions
-            //No name
-            //No Code
-            
-            //If user but not address book permissions
-            //If user but not user name
-        } else {
-
-            User.user.phoneNumber = "+16504305130"
-            User.user.code = "foobar"
-            User.user.lastUpdated = 0
-            
-            realm.write() {
-                realm.add(User.user)
+            if user.addressBookLoaded {
+                Permissions.checkName()
+                Permissions.loadAddressBook()
+            } else {
+                self.presentPermissions()
             }
+        } else {
+            self.presentAuthentication()
         }
-        
-        Permissions.authorizeAddressBook()
         
         return true
     }
     
+    func presentAuthentication() {
+        let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("WelcomeViewController") as! UIViewController
+        let navigationController = UINavigationController(rootViewController: welcomeViewController)
+        navigationController.navigationBarHidden = true
+        window?.rootViewController = navigationController
+    }
+    
+    func presentCore() {
+        let coreNavigationController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("CoreNavigationController") as! UINavigationController
+        window?.rootViewController = coreNavigationController
+    }
+    
+    func presentPermissions() {
+        let permissionsViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PermissionsViewController") as! UIViewController
+        let navigationController = UINavigationController(rootViewController: permissionsViewController)
+        navigationController.navigationBarHidden = true
+        window?.rootViewController = navigationController
+    }
+    
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        //does this get called every time?
-        realm.write() {
-            User.user.pushToken = deviceToken.description
-                .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
-                .stringByReplacingOccurrencesOfString(" ", withString: "" )
-        }
-        
+        Permissions.pushEnabled(deviceToken)
     }
     
     //Called if unable to register for APNS.
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        
-        println(error)
-        
+        Permissions.pushDisabled()
     }
 
     func applicationWillResignActive(application: UIApplication) {

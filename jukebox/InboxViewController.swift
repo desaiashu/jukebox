@@ -20,18 +20,18 @@ class InboxViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var videoView: UIView!
     
-    var songs = realm.objects(InboxSong).sorted("date", ascending: false)
+    var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
     
     var inSearch = false {
         didSet {
-            cancelButton.hidden = !inSearch
-            tableView.reloadData()
+            self.cancelButton.hidden = !inSearch
+            self.tableView.reloadData()
         }
     }
     
     var searchResults: [SendSong] = [] {
         didSet {
-            tableView.reloadData()
+            self.tableView.reloadData()
         }
     }
     
@@ -47,41 +47,37 @@ class InboxViewController: UIViewController {
         Server.sendSongs()
         Server.downloadInbox(tableView.reloadData)
         
-        clearSearch()
+        self.clearSearch()
     }
     
     func clearSearch (){
-        searchTextField.text = ""
-        searchTextField.resignFirstResponder()
+        self.searchTextField.text = ""
+        self.searchTextField.resignFirstResponder()
         
-        searchResults = []
-        inSearch = false
+        self.searchResults = []
+        self.inSearch = false
     }
     
     @IBAction func cancelPressed(sender: UIButton) {
-        clearSearch()
+        self.clearSearch()
         SongPlayer.stop()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "sendSegue" {
+            self.searchTextField.resignFirstResponder()
             if let selectFriendsViewController = segue.destinationViewController as? SelectFriendsViewController {
                 selectFriendsViewController.song = searchResults[sender!.tag]
             }
+            SongPlayer.stop()
         }
         
     }
-    
-//    func updateSearchResults(searchQuery: String) {
-//        if searchTextField.text == searchQuery {
-//            searchResults = tempResults
-//        }
-//    }
 }
 
 extension InboxViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        inSearch = true
+        self.inSearch = true
         return true
     }
     
@@ -101,7 +97,7 @@ extension InboxViewController: UITextFieldDelegate {
                 })
             
         } else {
-            searchResults = []
+            self.searchResults = []
         }
         return true
     }
@@ -130,17 +126,17 @@ extension InboxViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         if inSearch {
-            return 80.0
+            return SelectSongTableViewCell.rowHeight
         } else {
-            return 115.0
+            return InboxSongTableViewCell.rowHeight
         }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if inSearch {
-            return Int(searchResults.count)
+            return Int(self.searchResults.count)
         } else {
-            return Int(songs.count)
+            return Int(self.songs.count)
         }
     }
     

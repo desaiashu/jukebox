@@ -16,6 +16,7 @@ class User : Object {
     dynamic var firstName: String = ""
     dynamic var lastName: String = ""
     dynamic var pushToken: String = ""
+    dynamic var addressBookLoaded: Bool = false
     
     static var user = User()
 }

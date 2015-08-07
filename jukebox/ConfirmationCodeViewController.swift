@@ -14,16 +14,42 @@ class ConfirmationCodeViewController: UIViewController {
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var goButton: UIButton!
     @IBOutlet weak var resendButton: UIButton!
+    @IBOutlet weak var statusLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        self.goButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+        self.resendButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
+        if identifier == "enteredCodeSegue" {
+            return false
+        }
+        return true
     }
     
+    @IBAction func go() {
+        self.statusLabel.text = "Loading..."
+        self.statusLabel.hidden = false
+        User.user.code = self.confirmationCodeTextField.text
+        Server.authenticateUser(self.authenticateCallback)
+    }
     
+    func authenticateCallback(success: Bool) {
+        if success {
+            realm.write(){
+                realm.add(User.user)
+            }
+            self.performSegueWithIdentifier("enteredCodeSegue", sender: self)
+        } else {
+            //This method should also take in an error code (ie if you're not connected to the server)
+            self.statusLabel.text = "Incorrect code or error connecting to server, try again or go back"
+            self.goButton.enabled = true
+            self.resendButton.enabled = true
+            User.user.code = ""
+        }
+    }
 }

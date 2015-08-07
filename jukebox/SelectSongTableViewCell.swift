@@ -10,6 +10,8 @@ import UIKit
 
 class SelectSongTableViewCell: UITableViewCell {
     
+    static var rowHeight: CGFloat = 80.0
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var previewButton: UIButton!

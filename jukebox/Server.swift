@@ -8,6 +8,8 @@
 
 import Foundation
 import Alamofire
+import Crashlytics
+import UIKit
 
 struct k {
     static let server_url = "http://192.168.1.7:5000/"
@@ -16,15 +18,74 @@ struct k {
 
 class Server {
     
-    class func registerUser(callback: ()->Void) {
+    class func checkVersion() {
         Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
+            .responseJSON { request, response, json, error in
+                println(json)
+                if let result = json as? [String:AnyObject?] {
+                    let latestVersion = result["version"]! as! String
+                    let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleVersionKey as String) as! String
+                    if currentVersion.compare(latestVersion, options:NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedAscending {
+                        let forced = result["forced"]! as! Bool
+                        let url = result["url"]! as! String
+                        self.promptUserToUpdate(forced, url: url)
+                    }
+                }
+        }
     }
     
-    class func authenticateUser(callback: ()->Void) {
+    class func promptUserToUpdate(forced: Bool, url: String) {
+        var title: String?
+        var message: String?
+        if forced {
+            title = "Update Required"
+            message = "You must update the app to continue using, tap update to download"
+        } else {
+            title = "Update Available"
+            message = "A new update is available, tap update to download"
+        }
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        if !forced {
+            alertController.addAction(UIAlertAction(title: "Later", style: UIAlertActionStyle.Cancel, handler:nil))
+        }
+        alertController.addAction(
+            UIAlertAction(title: "Update", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
+                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+            })
+        )
+        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    class func registerUser(callback: (Bool)->Void) {
+        Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
+            .responseJSON { request, response, json, error in
+                println(json)
+                if let result = json as? [String:Bool] {
+                    let success = result["success"]!
+                    if success {
+                        Answers.logCustomEventWithName("Register", customAttributes:nil)
+                    }
+                    callback(success)
+                } else {
+                    callback(false)
+                }
+        }
+    }
+    
+    class func authenticateUser(callback: (Bool)->Void) {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: .JSON)
             .responseJSON { request, response, json, error in
                 println(json)
+                if let result = json as? [String:Bool] {
+                    let success = result["success"]!
+                    if success {
+                        Answers.logCustomEventWithName("Authenticate", customAttributes:nil)
+                    }
+                    callback(success)
+                } else {
+                    callback(false)
+                }
         }
     }
     
@@ -42,7 +103,24 @@ class Server {
                     if let inbox = result["inbox"] {
                         realm.write() {
                             for song in inbox {
-                                realm.create(InboxSong.self, value: song, update: true)
+                                var createdSong = realm.create(InboxSong.self, value: song, update: true)
+                                
+                                var incoming = true
+                                var friendNumber = song["sender"]! as! String
+                                if friendNumber == user.phoneNumber {
+                                    friendNumber = song["recipient"]! as! String
+                                    incoming = false
+                                    createdSong.listen = true
+                                }
+                                var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first
+                                
+                                var shareDate = song["date"]! as! Int
+                                if shareDate > friend?.lastShared {
+                                    friend?.lastShared = shareDate
+                                }
+                                if user.lastUpdated == 0 || incoming {
+                                    friend?.numShared++
+                                }
                             }
                             user.lastUpdated = Int(NSDate().timeIntervalSince1970)
                             callback()
@@ -50,6 +128,48 @@ class Server {
                     }
                 }
         }
+    }
+    
+    //Might want to resend these if it fails the first time
+    class func listen(song: InboxSong) {
+        let user = User.user
+        Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender_name":user.firstName], encoding: .JSON)
+        Answers.logCustomEventWithName("Listen", customAttributes: nil)
+    }
+    
+    class func love(song: InboxSong) {
+        let user = User.user
+        Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender_name":user.firstName], encoding: .JSON)
+        Answers.logCustomEventWithName("Love", customAttributes: nil)
+    }
+    
+    class func cacheSong(song: SendSong) {
+        let now = Int(NSDate().timeIntervalSince1970)
+        song.date = now
+        realm.write() {
+            realm.add(song)
+            
+            var recipients = split(song.recipients) {$0 == ","}
+            for recipient in recipients {
+                var inboxSong = InboxSong()
+                
+                inboxSong.title = song.title
+                inboxSong.artist = song.artist
+                inboxSong.yt_id = song.yt_id
+                inboxSong.sender = User.user.phoneNumber
+                inboxSong.recipient = recipient
+                inboxSong.date = song.date
+                inboxSong.updated = song.date
+                inboxSong.id = String(song.date)+recipient
+                
+                realm.add(inboxSong)
+                
+                var friend = realm.objects(Friend).filter("phoneNumber == %@", recipient).first
+                friend?.lastShared = song.date
+                friend?.numShared++
+            }
+        }
+        Answers.logCustomEventWithName("Share", customAttributes: nil)
     }
     
     class func sendSongs() {
@@ -62,12 +182,22 @@ class Server {
             Alamofire.request(.POST, k.server_url+"share", parameters: params, encoding: .JSON)
                 .responseJSON { request, response, json, error in
                     println(json)
-                    if let result = json as? [String:Bool] {
-                        if let success = result["result"] {
-                            if success {
-                                realm.write() {
-                                    realm.delete(song)
+                    if let result = json as? [String:[[String:AnyObject]]] {
+                        if let songs = result["songs"] {
+                            realm.write() {
+                                for downloadedSong in songs {
+                                    //Save new copy w/ id from server
+                                    var createdSong = realm.create(InboxSong.self, value: downloadedSong, update: true)
+                                    createdSong.listen = true
+                                    
+                                    //Delete old copy w/ old id
+                                    let old_id = String(song.date)+(downloadedSong["recipient"]! as! String)
+                                    if let inboxSong = realm.objects(InboxSong).filter("id == %@", old_id).first {
+                                        realm.delete(inboxSong)
+                                    }
                                 }
+                                //Delete SendSong
+                                realm.delete(song)
                             }
                         }
                     }
@@ -117,9 +247,9 @@ class Server {
                 newString = newString.stringByReplacingOccurrencesOfString(string, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch)
             }
             
-            let startIndexOfDash = songString.rangeOfString(" - ")?.startIndex
-            let endIndexOfDash = songString.rangeOfString(" - ")?.endIndex
-            let artist = songString.substringToIndex(startIndexOfDash!).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+            let startIndexOfDash = newString.rangeOfString(" - ")?.startIndex
+            let endIndexOfDash = newString.rangeOfString(" - ")?.endIndex
+            let artist = newString.substringToIndex(startIndexOfDash!).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
             let title = newString.substringFromIndex(endIndexOfDash!).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
             
             return ["artist":artist, "title":title];
