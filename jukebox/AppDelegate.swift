@@ -81,6 +81,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.handlePush(userInfo)
         //Display notification (eg "listen") while app in foreground?
         println("push in app")
+        if let aps = userInfo["aps"] as? [String:AnyObject] {
+            if let badge = aps["badge"] as? Int {
+                UIApplication.sharedApplication().applicationIconBadgeNumber = badge
+            }
+        }
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -89,7 +94,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func handlePush(userInfo: [NSObject: AnyObject]) {
-        if let pushData = userInfo as? [String:AnyObject] {
+        if var pushData = userInfo as? [String:AnyObject] {
+            pushData["aps"] = nil
             Server.cachePushData(pushData)
             let navigationController = window?.rootViewController as! UINavigationController
             if let inboxViewController = navigationController.topViewController as? InboxViewController {
