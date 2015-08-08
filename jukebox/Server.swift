@@ -25,7 +25,7 @@ class Server {
                 
                 if let result = json as? [String:AnyObject] {
                     let latestVersion = result["version"]! as! String
-                    let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleVersionKey as String) as! String
+                    let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
                     if currentVersion.compare(latestVersion, options:NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedAscending {
                         let forced = result["forced"]! as! Bool
                         let url = result["url"]! as! String
