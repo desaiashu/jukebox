@@ -40,7 +40,7 @@ class InboxSongTableViewCell: UITableViewCell {
                         self.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.1)
                     }
                 }
-                //Might want to put this in song download
+                //Might want to cache this in song download
                 if let friendName = realm.objects(Friend).filter("phoneNumber == %@", friendNumber!).first?.firstName {
                     self.senderLabel.text = friendName
                 } else {
