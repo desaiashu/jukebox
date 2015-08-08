@@ -303,7 +303,7 @@
                                     <constraint firstAttribute="height" constant="60" id="2zn-wC-Sj0"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                                <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D99-3v-ejG">
                                 <rect key="frame" x="493" y="260" width="91" height="60"/>
@@ -327,12 +327,24 @@
                                 <color key="textColor" red="0.72549019607843135" green="0.42352941176470588" blue="0.69803921568627447" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vnK-Ly-5fQ">
+                                <rect key="frame" x="30" y="272.5" width="16" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="16" id="8N5-lE-ebR"/>
+                                    <constraint firstAttribute="height" constant="33" id="hBw-Oz-yXI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
+                                <color key="textColor" red="0.56498187150000001" green="0.56498187150000001" blue="0.56498187150000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="D99-3v-ejG" firstAttribute="leading" secondItem="cCr-ig-rYs" secondAttribute="trailing" id="1Jh-eb-xb2"/>
                             <constraint firstAttribute="centerY" secondItem="D99-3v-ejG" secondAttribute="centerY" constant="10" id="D0l-IP-6mQ"/>
                             <constraint firstItem="D99-3v-ejG" firstAttribute="trailing" secondItem="koT-Zh-Ev2" secondAttribute="trailingMargin" id="Sr4-E8-TZB"/>
+                            <constraint firstItem="vnK-Ly-5fQ" firstAttribute="centerY" secondItem="cCr-ig-rYs" secondAttribute="centerY" constant="-1" id="gvO-bY-XPf"/>
+                            <constraint firstItem="cCr-ig-rYs" firstAttribute="leading" secondItem="vnK-Ly-5fQ" secondAttribute="trailing" constant="3" id="hwM-1s-rDg"/>
                             <constraint firstItem="t2d-42-qUf" firstAttribute="leading" secondItem="cCr-ig-rYs" secondAttribute="leading" constant="2" id="pDl-kI-XV2"/>
                             <constraint firstAttribute="centerY" secondItem="cCr-ig-rYs" secondAttribute="centerY" constant="10" id="v9V-3A-ivM"/>
                             <constraint firstItem="cCr-ig-rYs" firstAttribute="leading" secondItem="koT-Zh-Ev2" secondAttribute="leadingMargin" constant="33" id="vOQ-bP-Sdy"/>
@@ -457,7 +469,7 @@ Ashu</mutableString>
                                     <constraint firstAttribute="height" constant="60" id="zyK-wc-FSE"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                 <connections>
                                     <outlet property="delegate" destination="fY5-Bo-c01" id="Yob-hT-2DM"/>
                                 </connections>

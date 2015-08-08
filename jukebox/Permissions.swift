@@ -93,9 +93,7 @@ class Permissions {
                         lastName = last
                     }
                     
-                    //Remove 411 / all number names?
-                    if firstName+lastName != "" &&
-                        firstName+lastName.stringByTrimmingCharactersInSet(NSCharacterSet.decimalDigitCharacterSet()) != "" {
+                    if firstName+lastName != "" {
                         let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
                         
                         var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]

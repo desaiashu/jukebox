@@ -20,7 +20,10 @@ class InboxViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var videoView: UIView!
     
-    var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
+    var songs = realm.objects(InboxSong).sorted("date", ascending: false)
+    //Could bump "new" songs to top - unsure how to deal with tapping play
+    //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
+    
     
     var inSearch = false {
         didSet {
@@ -56,7 +59,6 @@ class InboxViewController: UIViewController {
     
     @IBAction func cancelPressed(sender: UIButton) {
         self.clearSearch()
-        SongPlayer.stop()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -65,7 +67,6 @@ class InboxViewController: UIViewController {
             if let selectFriendsViewController = segue.destinationViewController as? SelectFriendsViewController {
                 selectFriendsViewController.song = searchResults[sender!.tag]
             }
-            SongPlayer.stop()
         }
         
     }

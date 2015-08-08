@@ -29,11 +29,10 @@ class InboxSongTableViewCell: UITableViewCell {
                 if song.sender == User.user.phoneNumber {
                     friendNumber = song.recipient
                     self.directionLabel.text = "to"
-                    
+                    self.backgroundColor = UIColor.whiteColor()
                 } else {
                     friendNumber = song.sender
                     self.directionLabel.text = "from"
-                    
                     if song.listen {
                         self.backgroundColor = UIColor.whiteColor()
                     } else {
