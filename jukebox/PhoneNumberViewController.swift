@@ -34,8 +34,9 @@ class PhoneNumberViewController: UIViewController {
         self.phoneNumberTextField.resignFirstResponder()
         var phoneNumber = phoneNumberTextField.text
         if phoneNumber != "" {
-            for string in ["*","+","#"," "] {
-                phoneNumber = phoneNumber.stringByReplacingOccurrencesOfString(string, withString: "")
+            phoneNumber = String(phoneNumber.toInt()!) //Remove leading 0's
+            if count(phoneNumber) == 10 { //Automatically including 1 for US numbers
+                phoneNumber = "1".stringByAppendingString(phoneNumber)
             }
             User.user.phoneNumber = "+".stringByAppendingString(phoneNumber)
             self.goButton.enabled = false
