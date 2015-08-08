@@ -19,10 +19,11 @@ struct k {
 class Server {
     
     class func checkVersion() {
-        Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
+        Alamofire.request(.GET, k.server_url+"version")
             .responseJSON { request, response, json, error in
                 println(json)
-                if let result = json as? [String:AnyObject?] {
+                
+                if let result = json as? [String:AnyObject] {
                     let latestVersion = result["version"]! as! String
                     let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleVersionKey as String) as! String
                     if currentVersion.compare(latestVersion, options:NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedAscending {
@@ -57,7 +58,7 @@ class Server {
     }
     
     class func registerUser(callback: (Bool)->Void) {
-        Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
+        Alamofire.request(.POST, k.server_url+"join", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
             .responseJSON { request, response, json, error in
                 println(json)
                 if let result = json as? [String:Bool] {
@@ -99,8 +100,8 @@ class Server {
         Alamofire.request(.POST, k.server_url+"inbox", parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: .JSON)
             .responseJSON { request, response, json, error in
                 println(json)
-                if let result = json as? [String:[[String:AnyObject]]] {
-                    if let inbox = result["inbox"] {
+                if let result = json as? [String:AnyObject] {
+                    if let inbox = result["inbox"] as? [[String:AnyObject]] {
                         realm.write() {
                             for song in inbox {
                                 var createdSong = realm.create(InboxSong.self, value: song, update: true)
@@ -112,17 +113,18 @@ class Server {
                                     incoming = false
                                     createdSong.listen = true
                                 }
-                                var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first
                                 
-                                var shareDate = song["date"]! as! Int
-                                if shareDate > friend?.lastShared {
-                                    friend?.lastShared = shareDate
-                                }
-                                if user.lastUpdated == 0 || incoming {
-                                    friend?.numShared++
+                                if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                                    var shareDate = song["date"]! as! Int
+                                    if shareDate > friend.lastShared {
+                                        friend.lastShared = shareDate
+                                    }
+                                    if user.lastUpdated == 0 || incoming {
+                                        friend.numShared++
+                                    }
                                 }
                             }
-                            user.lastUpdated = Int(NSDate().timeIntervalSince1970)
+                            user.lastUpdated = result["updated"]! as! Int
                             callback()
                         }
                     }
@@ -133,17 +135,57 @@ class Server {
     //Might want to resend these if it fails the first time
     class func listen(song: InboxSong) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender_name":user.firstName], encoding: .JSON)
+        Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: .JSON)
+            .responseJSON { request, response, json, error in
+                println(json)
+                if let result = json as? [String:Bool] {
+                    if result["success"]! {
+                        realm.write() {
+                            song.listen = true
+                        }
+                    }
+                }
+        }
         Answers.logCustomEventWithName("Listen", customAttributes: nil)
     }
     
     class func love(song: InboxSong) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender_name":user.firstName], encoding: .JSON)
+        Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: .JSON)
+            .responseJSON { request, response, json, error in
+                println(json)
+                if let result = json as? [String:Bool] {
+                    if result["success"]! {
+                        realm.write() {
+                            song.love = true
+                        }
+                    }
+                }
+        }
         Answers.logCustomEventWithName("Love", customAttributes: nil)
     }
     
-    class func cacheSong(song: SendSong) {
+    class func cachePushData(pushData: [String:AnyObject]) {
+        if var sharedSong = pushData["share"] as? [String:AnyObject] {
+            realm.write() {
+                realm.create(InboxSong.self, value: sharedSong, update: true)
+            }
+        } else if let listenId = pushData["listen"] as? String {
+            if let song = realm.objects(InboxSong).filter("id = %@", listenId).first {
+                realm.write() {
+                    song.listen = true
+                }
+            }
+        } else if let loveId = pushData["love"] as? String {
+            if let song = realm.objects(InboxSong).filter("id = %@", loveId).first {
+                realm.write() {
+                    song.love = true
+                }
+            }
+        }
+    }
+    
+    class func cacheAndSendSong(song: SendSong) {
         let now = Int(NSDate().timeIntervalSince1970)
         song.date = now
         realm.write() {
@@ -169,6 +211,7 @@ class Server {
                 friend?.numShared++
             }
         }
+        self.sendSongs()
         Answers.logCustomEventWithName("Share", customAttributes: nil)
     }
     

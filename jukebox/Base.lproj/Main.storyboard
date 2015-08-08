@@ -171,7 +171,7 @@
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
-                                                        <segue destination="ewv-Xk-wuN" kind="show" identifier="sendSegue" id="5oy-Pz-oOg"/>
+                                                        <segue destination="ewv-Xk-wuN" kind="show" identifier="SendSongSegue" id="5oy-Pz-oOg"/>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rlG-aq-OuO">
@@ -318,7 +318,7 @@
                                 </state>
                                 <connections>
                                     <action selector="go" destination="61E-bg-8JY" eventType="touchUpInside" id="OMu-fL-7Se"/>
-                                    <segue destination="fY5-Bo-c01" kind="show" identifier="enteredNumberSegue" id="7Hp-cg-ej4"/>
+                                    <segue destination="fY5-Bo-c01" kind="show" identifier="RegisteredSegue" id="7Hp-cg-ej4"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Include country code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t2d-42-qUf">
@@ -363,20 +363,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EtD-LB-qTl">
-                                <rect key="frame" x="16" y="133" width="568" height="387"/>
+                                <rect key="frame" x="16" y="151" width="568" height="369"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <string key="text">I designed Jukebox to be a simple way to send a song you love to people you love.
+                                <mutableString key="text">I designed Jukebox to be a simple way to send a song you love to people you love.
 
 Jukebox finds your song on youtube and sends an SMS with the link to the contacts you choose. If your friend has the app, it will go to their inbox instead.
 
-This is a pre-launch beta of the app so it's a bit rough around the edges. I'm working on the final design, polish and features like allowing users to ♥︎ songs. 
+This is a pre-launch beta of the app so it's a bit rough around the edges. I'm working on the final design, polish and features - like allowing users to ♥︎ songs. 
 
-I'd really appreciate if you would send me feedback and any bugs you find.
+I'd really appreciate if you would send me feedback and any bugs you uncover.
 
 I've left some of my favorite songs in your inbox to start. I hope you enjoy!
 
 Cheers,
-Ashu</string>
+Ashu</mutableString>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -386,7 +386,7 @@ Ashu</string>
                                     <constraint firstAttribute="height" constant="72" id="XZk-0M-2Qd"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="27"/>
-                                <state key="normal" title="Let's Jam!">
+                                <state key="normal" title="Let's Juke!">
                                     <color key="titleColor" red="0.72549019609999998" green="0.42352941179999998" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -395,7 +395,7 @@ Ashu</string>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Jukebox :)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="42i-sL-5Ee">
-                                <rect key="frame" x="134.5" y="55" width="332.5" height="51"/>
+                                <rect key="frame" x="134.5" y="75" width="332.5" height="51"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="BO5-dz-FND"/>
                                 </constraints>
@@ -410,11 +410,11 @@ Ashu</string>
                             <constraint firstItem="WgE-ql-3hl" firstAttribute="top" secondItem="EtD-LB-qTl" secondAttribute="bottom" constant="8" id="6fn-Se-NAr"/>
                             <constraint firstItem="EtD-LB-qTl" firstAttribute="leading" secondItem="YtR-ee-dLw" secondAttribute="leadingMargin" id="CEJ-4s-mkK"/>
                             <constraint firstAttribute="centerX" secondItem="EtD-LB-qTl" secondAttribute="centerX" id="JpO-6S-MuX"/>
-                            <constraint firstItem="42i-sL-5Ee" firstAttribute="top" secondItem="NAg-9k-HeJ" secondAttribute="bottom" constant="35" id="NPI-2S-IKj"/>
+                            <constraint firstItem="42i-sL-5Ee" firstAttribute="top" secondItem="NAg-9k-HeJ" secondAttribute="bottom" constant="55" id="NPI-2S-IKj"/>
                             <constraint firstAttribute="centerX" secondItem="WgE-ql-3hl" secondAttribute="centerX" id="NTl-Ji-3nz"/>
                             <constraint firstItem="WgE-ql-3hl" firstAttribute="leading" secondItem="YtR-ee-dLw" secondAttribute="leadingMargin" constant="-16" id="ReE-R6-Ob0"/>
                             <constraint firstItem="wMd-QE-Xi2" firstAttribute="top" secondItem="WgE-ql-3hl" secondAttribute="bottom" id="dMZ-BJ-vvM"/>
-                            <constraint firstItem="EtD-LB-qTl" firstAttribute="top" secondItem="42i-sL-5Ee" secondAttribute="bottom" constant="27" id="uxW-gN-c5u"/>
+                            <constraint firstItem="EtD-LB-qTl" firstAttribute="top" secondItem="42i-sL-5Ee" secondAttribute="bottom" constant="25" id="uxW-gN-c5u"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Mkh-Vi-XKC"/>
@@ -448,16 +448,19 @@ Ashu</string>
                                 </state>
                                 <connections>
                                     <action selector="go" destination="fY5-Bo-c01" eventType="touchUpInside" id="BYe-mP-dYx"/>
-                                    <segue destination="BXX-7v-Fuc" kind="show" identifier="confirmedCodeSegue" id="Oag-K8-ptR"/>
+                                    <segue destination="BXX-7v-Fuc" kind="show" identifier="AuthenticatedSegue" id="Oag-K8-ptR"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter confirmation code" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YjJ-fq-FkV">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter auth code" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YjJ-fq-FkV">
                                 <rect key="frame" x="49" y="260" width="460" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="zyK-wc-FSE"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                <connections>
+                                    <outlet property="delegate" destination="fY5-Bo-c01" id="Yob-hT-2DM"/>
+                                </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bg6-Xd-5SK">
                                 <rect key="frame" x="0.0" y="528" width="600" height="72"/>
@@ -471,7 +474,7 @@ Ashu</string>
                                 </state>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wh2-DO-fgN">
-                                <rect key="frame" x="0.0" y="6" width="80" height="48"/>
+                                <rect key="frame" x="0.0" y="16" width="80" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="Ftm-xp-lbr"/>
                                     <constraint firstAttribute="height" constant="48" id="pJN-3X-UPR"/>
@@ -504,7 +507,7 @@ Ashu</string>
                             <constraint firstItem="YjJ-fq-FkV" firstAttribute="leading" secondItem="MVt-aH-M2x" secondAttribute="leading" constant="2" id="X1I-kI-RSx"/>
                             <constraint firstAttribute="centerX" secondItem="bg6-Xd-5SK" secondAttribute="centerX" id="aL4-oT-Maa"/>
                             <constraint firstItem="MVt-aH-M2x" firstAttribute="leading" secondItem="YjJ-fq-FkV" secondAttribute="leading" constant="2" id="bGL-xX-EKa"/>
-                            <constraint firstItem="wh2-DO-fgN" firstAttribute="top" secondItem="uUI-WP-Ubn" secondAttribute="bottom" constant="-14" id="cgy-UK-WAJ"/>
+                            <constraint firstItem="wh2-DO-fgN" firstAttribute="top" secondItem="uUI-WP-Ubn" secondAttribute="bottom" constant="-4" id="cgy-UK-WAJ"/>
                             <constraint firstItem="YjJ-fq-FkV" firstAttribute="leading" secondItem="MVt-aH-M2x" secondAttribute="leading" constant="2" id="kCb-Hp-8Gf"/>
                             <constraint firstItem="YjJ-fq-FkV" firstAttribute="leading" secondItem="MVt-aH-M2x" secondAttribute="leading" constant="2" id="lca-sj-NdM"/>
                             <constraint firstItem="YjJ-fq-FkV" firstAttribute="leading" secondItem="MVt-aH-M2x" secondAttribute="leading" constant="-2" id="q1Q-nk-Wok"/>
@@ -560,6 +563,9 @@ Ashu</string>
                                     <color key="titleColor" red="0.72549019609999998" green="0.42352941179999998" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="accessContacts" destination="BXX-7v-Fuc" eventType="touchUpInside" id="zrz-pG-zvV"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k6A-WR-YiN">
                                 <rect key="frame" x="150" y="332" width="300" height="70"/>
@@ -572,6 +578,9 @@ Ashu</string>
                                     <color key="titleColor" red="0.72549019609999998" green="0.42352941179999998" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="enablePush" destination="BXX-7v-Fuc" eventType="touchUpInside" id="qq7-ZF-JVU"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

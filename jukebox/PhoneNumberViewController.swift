@@ -24,13 +24,14 @@ class PhoneNumberViewController: UIViewController {
     }
     
     override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
-        if identifier == "enteredNumberSegue" {
+        if identifier == "RegisteredSegue" {
             return false
         }
         return true
     }
     
     @IBAction func go(){
+        self.phoneNumberTextField.resignFirstResponder()
         var phoneNumber = phoneNumberTextField.text
         if phoneNumber != "" {
             for string in ["*","+","#"," "] {
@@ -45,7 +46,7 @@ class PhoneNumberViewController: UIViewController {
     
     func registerCallback(success: Bool) {
         if success {
-            self.performSegueWithIdentifier("enteredNumberSegue", sender: self)
+            self.performSegueWithIdentifier("RegisteredSegue", sender: self)
         } else {
             //This method should also take in an error code (ie if you're not connected to the server)
             self.statusLabel.text = "Error connecting to server, try again"
@@ -56,6 +57,8 @@ class PhoneNumberViewController: UIViewController {
     }
     
     @IBAction func prepareForUnwind(segue:UIStoryboardSegue) {
-        
+        self.statusLabel.text = "Include country code"
+        self.goButton.enabled = true
+        User.user.phoneNumber = ""
     }
 }

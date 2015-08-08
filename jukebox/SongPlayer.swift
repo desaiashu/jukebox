@@ -7,10 +7,15 @@
 //
 
 import XCDYouTubeKit
+import AVFoundation
 
 class SongPlayer {
     
     static var videoPlayerController: XCDYouTubeVideoPlayerViewController?
+    
+    class func enableBackgroundAudio () {
+        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error:nil)
+    }
     
     class func play(videoIdentifier: String) {
         

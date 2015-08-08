@@ -25,13 +25,14 @@ class ConfirmationCodeViewController: UIViewController {
     }
     
     override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
-        if identifier == "enteredCodeSegue" {
+        if identifier == "AuthenticatedSegue" {
             return false
         }
         return true
     }
     
     @IBAction func go() {
+        self.confirmationCodeTextField.resignFirstResponder()
         self.statusLabel.text = "Loading..."
         self.statusLabel.hidden = false
         User.user.code = self.confirmationCodeTextField.text
@@ -43,7 +44,7 @@ class ConfirmationCodeViewController: UIViewController {
             realm.write(){
                 realm.add(User.user)
             }
-            self.performSegueWithIdentifier("enteredCodeSegue", sender: self)
+            self.performSegueWithIdentifier("AuthenticatedSegue", sender: self)
         } else {
             //This method should also take in an error code (ie if you're not connected to the server)
             self.statusLabel.text = "Incorrect code or error connecting to server, try again or go back"
@@ -51,5 +52,12 @@ class ConfirmationCodeViewController: UIViewController {
             self.resendButton.enabled = true
             User.user.code = ""
         }
+    }
+}
+
+extension ConfirmationCodeViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

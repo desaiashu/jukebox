@@ -35,22 +35,18 @@ class InboxViewController: UIViewController {
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do I want to download data here??
-
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        Server.sendSongs()
-        Server.downloadInbox(tableView.reloadData)
-        
         self.clearSearch()
     }
     
-    func clearSearch (){
+    func downloadData() {
+        Server.downloadInbox({
+            self.tableView.reloadData()
+        })
+    }
+    
+    func clearSearch() {
         self.searchTextField.text = ""
         self.searchTextField.resignFirstResponder()
         
@@ -64,7 +60,7 @@ class InboxViewController: UIViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "sendSegue" {
+        if segue.identifier == "SendSongSegue" {
             self.searchTextField.resignFirstResponder()
             if let selectFriendsViewController = segue.destinationViewController as? SelectFriendsViewController {
                 selectFriendsViewController.song = searchResults[sender!.tag]

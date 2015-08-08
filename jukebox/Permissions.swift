@@ -32,6 +32,7 @@ class Permissions {
     class func authorizeAddressBook (callback: (Bool)->Void){
         switch ABAddressBookGetAuthorizationStatus(){
         case .Authorized, .NotDetermined:
+            self.addressBookCallback = callback
             self.loadAddressBook()
         case .Denied, .Restricted:
             self.promptUserToChangeAddressBookSettings(true)

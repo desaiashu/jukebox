@@ -38,9 +38,6 @@ class InboxSong : Object {
         SongPlayer.play(self.yt_id)
         
         if !self.listen {
-            realm!.write() {
-                self.listen = true
-            }
             Server.listen(self)
         }
     }

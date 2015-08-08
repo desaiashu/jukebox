@@ -19,16 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
         Fabric.with([Crashlytics()])
-        
-        //Needs to be moved into "didBecomeActive"
-        //Also need to include "update" functions in "didBecomeActive" + "didRecieveNotification"
-        Server.checkVersion()
+        SongPlayer.enableBackgroundAudio()
         
         if let user = realm.objects(User).first {
             User.user = user
-            
             if user.addressBookLoaded {
                 Permissions.checkName()
                 Permissions.loadAddressBook()
@@ -41,6 +36,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+
+    func applicationDidBecomeActive(application: UIApplication) {
+        Server.sendSongs() //In case sending previously failed, might move this to willResignActive?
+        Server.checkVersion()
+        
+        let navigationController = window?.rootViewController as! UINavigationController
+        if let inboxViewController = navigationController.topViewController as? InboxViewController {
+            inboxViewController.downloadData()
+        }
+    }
     
     func presentAuthentication() {
         let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("WelcomeViewController") as! UIViewController
@@ -52,6 +57,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentCore() {
         let coreNavigationController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("CoreNavigationController") as! UINavigationController
         window?.rootViewController = coreNavigationController
+        if let inboxViewController = coreNavigationController.topViewController as? InboxViewController {
+            inboxViewController.downloadData()
+        }
     }
     
     func presentPermissions() {
@@ -60,38 +68,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationController.navigationBarHidden = true
         window?.rootViewController = navigationController
     }
-    
+
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         Permissions.pushEnabled(deviceToken)
     }
     
-    //Called if unable to register for APNS.
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         Permissions.pushDisabled()
     }
-
-    func applicationWillResignActive(application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
+        self.handlePush(userInfo)
+        //Display notification (eg "listen") while app in foreground?
+        println("push in app")
     }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        self.handlePush(userInfo)
+        println("push out of app - fetching")
     }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    func handlePush(userInfo: [NSObject: AnyObject]) {
+        if let pushData = userInfo as? [String:AnyObject] {
+            Server.cachePushData(pushData)
+            let navigationController = window?.rootViewController as! UINavigationController
+            if let inboxViewController = navigationController.topViewController as? InboxViewController {
+                inboxViewController.tableView.reloadData()
+                println("reloaded table")
+            }
+        }
     }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
-
 }
 

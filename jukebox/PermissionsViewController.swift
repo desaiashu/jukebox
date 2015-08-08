@@ -20,6 +20,10 @@ class PermissionsViewController: UIViewController {
         self.accessContactsButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
         self.enablePushButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
         
+        self.checkPermissions()
+    }
+    
+    func checkPermissions() {
         if User.user.addressBookLoaded {
             accessContactsButton.enabled = false
         }
