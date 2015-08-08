@@ -77,20 +77,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Permissions.pushDisabled()
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
-        self.handlePush(userInfo)
-        //Display notification (eg "listen") while app in foreground?
-        println("push in app")
-        if let aps = userInfo["aps"] as? [String:AnyObject] {
-            if let badge = aps["badge"] as? Int {
-                UIApplication.sharedApplication().applicationIconBadgeNumber = badge
-            }
-        }
-    }
-    
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         self.handlePush(userInfo)
-        println("push out of app - fetching")
+        if let badge = userInfo["aps"]?["badge"] as? Int {
+            application.applicationIconBadgeNumber = badge
+        }
     }
     
     func handlePush(userInfo: [NSObject: AnyObject]) {
@@ -100,7 +91,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let navigationController = window?.rootViewController as! UINavigationController
             if let inboxViewController = navigationController.topViewController as? InboxViewController {
                 inboxViewController.tableView.reloadData()
-                println("reloaded table")
             }
         }
     }
