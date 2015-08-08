@@ -12,7 +12,7 @@ import Crashlytics
 import UIKit
 
 struct k {
-    static let server_url = "http://192.168.1.7:5000/"
+    static let server_url = "https://www.jkbx.es/"
     static let youtube_url = "https://www.googleapis.com/youtube/v3/search?key=AIzaSyBK4c6lUvrKyH3rt3dbsSS-jUVPDjRGyT0&part=snippet&type=video&videoCategoryId=10&order=relevance&maxResults=50&fields=items(id(videoId)%2Csnippet(title))&q="
 }
 
