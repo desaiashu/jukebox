@@ -175,15 +175,15 @@ extension SelectFriendsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if inSearch {
-            return Int(self.searchResults.count)
+            return self.searchResults.count
         } else {
             switch (section) {
             case 0:
-                return min(Int(self.bestFriends.count), 3)
+                return min(self.bestFriends.count, 3)
             case 1:
-                return min(Int(self.recentFriends!.count), 3)
+                return min(self.recentFriends!.count, 3)
             default:
-                return Int(self.allFriends.count)
+                return self.allFriends.count
             }
         }
     }

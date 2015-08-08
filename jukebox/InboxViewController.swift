@@ -131,9 +131,9 @@ extension InboxViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if inSearch {
-            return Int(self.searchResults.count)
+            return self.searchResults.count
         } else {
-            return Int(self.songs.count)
+            return self.songs.count
         }
     }
     

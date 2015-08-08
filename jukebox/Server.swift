@@ -237,6 +237,7 @@ class Server {
                                     let old_id = String(song.date)+(downloadedSong["recipient"]! as! String)
                                     if let inboxSong = realm.objects(InboxSong).filter("id == %@", old_id).first {
                                         realm.delete(inboxSong)
+                                        //Reload table view
                                         let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
                                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                                             inboxViewController.tableView.reloadData()
