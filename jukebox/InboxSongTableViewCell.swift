@@ -25,6 +25,11 @@ class InboxSongTableViewCell: UITableViewCell {
                 self.artistLabel.text = song.artist
                 self.senderLabel.text = song.sender
                 
+                self.playButton.enabled = true
+                //Might want to do this once in intializer
+                self.playButton.setTitle("...", forState: UIControlState.Disabled)
+                self.playButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+                
                 var friendNumber: String?
                 if song.sender == User.user.phoneNumber {
                     friendNumber = song.recipient
@@ -50,7 +55,14 @@ class InboxSongTableViewCell: UITableViewCell {
     }
     
     @IBAction func playPressed(sender: UIButton) {
+        self.playButton.enabled = false
         self.song?.play()
         self.backgroundColor = UIColor.whiteColor()
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            if let playButton = self.playButton {
+                playButton.enabled = true
+            }
+        }
     }
 }

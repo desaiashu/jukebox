@@ -179,7 +179,7 @@ class Permissions {
                             case "First Name":
                                 User.user.firstName = textField.text
                             case "Last Name":
-                                User.user.firstName = textField.text
+                                User.user.lastName = textField.text
                             default:
                                 if textField.text == "" {
                                     //Need better handling of this! maybe just re-request?
