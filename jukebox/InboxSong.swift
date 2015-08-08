@@ -37,7 +37,7 @@ class InboxSong : Object {
         
         SongPlayer.play(self.yt_id)
         
-        if !self.listen {
+        if !self.listen && self.sender != User.user.phoneNumber {
             Server.listen(self)
         }
     }
