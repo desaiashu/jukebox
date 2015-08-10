@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search for song" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xrd-gx-KZb">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search to send" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xrd-gx-KZb">
                                 <rect key="frame" x="16" y="20" width="516" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="rFp-5m-uXc"/>
@@ -54,7 +54,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Firestone" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dLt-hL-YYT">
-                                                    <rect key="frame" x="58" y="29.5" width="74.5" height="43"/>
+                                                    <rect key="frame" x="58" y="29" width="74.5" height="43"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="999" constant="10" id="aKG-CV-fiE"/>
                                                         <constraint firstAttribute="height" constant="43" id="qba-oy-Swy"/>
@@ -69,7 +69,7 @@
                                                     </variation>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Kygo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8gA-wj-Jio">
-                                                    <rect key="frame" x="59" y="8.5" width="32" height="43"/>
+                                                    <rect key="frame" x="59" y="8" width="32" height="43"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="43" id="yIV-yg-Vqr"/>
                                                     </constraints>
@@ -77,8 +77,8 @@
                                                     <color key="textColor" red="0.56498187154696133" green="0.56498187154696133" blue="0.56498187154696133" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="from" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tNu-ux-n4Z">
-                                                    <rect key="frame" x="558" y="8.5" width="29" height="43"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="from" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tNu-ux-n4Z">
+                                                    <rect key="frame" x="558" y="8" width="29" height="43"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="43" id="pqc-u9-5GO"/>
                                                     </constraints>
@@ -102,7 +102,7 @@
                                                     </connections>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Ashu" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZjZ-J9-YAJ">
-                                                    <rect key="frame" x="548.5" y="29.5" width="40.5" height="43"/>
+                                                    <rect key="frame" x="548" y="29" width="40.5" height="43"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="pB0-hH-PQN"/>
                                                         <constraint firstAttribute="height" constant="43" id="yTw-AB-qt0"/>
@@ -130,6 +130,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="tNu-ux-n4Z" secondAttribute="trailing" constant="21" id="hS0-wE-5VN"/>
                                                 <constraint firstAttribute="centerY" secondItem="6Cd-by-Lhk" secondAttribute="centerY" id="ltM-XE-yAg"/>
                                                 <constraint firstItem="8gA-wj-Jio" firstAttribute="leading" secondItem="6Cd-by-Lhk" secondAttribute="trailing" constant="2" id="naE-mE-S7Q"/>
+                                                <constraint firstItem="ZjZ-J9-YAJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8gA-wj-Jio" secondAttribute="trailing" constant="5" id="q3n-WR-txx"/>
                                                 <constraint firstItem="dLt-hL-YYT" firstAttribute="leading" secondItem="6Cd-by-Lhk" secondAttribute="trailing" constant="2" id="seh-IA-BQZ"/>
                                                 <constraint firstItem="6Cd-by-Lhk" firstAttribute="leading" secondItem="Cpk-eM-0Lu" secondAttribute="leadingMargin" constant="-8" id="vmO-xd-fFC"/>
                                                 <constraint firstItem="ZjZ-J9-YAJ" firstAttribute="top" secondItem="tNu-ux-n4Z" secondAttribute="bottom" constant="-22" id="wor-Yf-44c"/>
@@ -317,7 +318,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="go:" destination="61E-bg-8JY" eventType="touchUpInside" id="R61-gv-GYZ"/>
+                                    <action selector="goPressed:" destination="61E-bg-8JY" eventType="touchUpInside" id="Oc5-Pt-CI5"/>
                                     <segue destination="fY5-Bo-c01" kind="show" identifier="RegisteredSegue" id="7Hp-cg-ej4"/>
                                 </connections>
                             </button>
@@ -459,7 +460,7 @@ Ashu</string>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="go:" destination="fY5-Bo-c01" eventType="touchUpInside" id="xvh-Az-AZM"/>
+                                    <action selector="goPressed:" destination="fY5-Bo-c01" eventType="touchUpInside" id="umK-Ve-rl8"/>
                                     <segue destination="BXX-7v-Fuc" kind="show" identifier="AuthenticatedSegue" id="Oag-K8-ptR"/>
                                 </connections>
                             </button>

@@ -30,11 +30,13 @@ class PhoneNumberViewController: UIViewController {
         return true
     }
     
-    @IBAction func go(sender: UIButton){
+    @IBAction func goPressed(sender: UIButton){
         self.phoneNumberTextField.resignFirstResponder()
         var phoneNumber = phoneNumberTextField.text
         if phoneNumber != "" {
-            phoneNumber = String(phoneNumber.toInt()!) //Remove leading 0's
+            if let phoneInt = phoneNumber.toInt() {
+                phoneNumber = String(phoneInt) //Remove leading 0's, need to enable this for longer numbers
+            }
             if count(phoneNumber) == 10 { //Automatically including 1 for US numbers
                 phoneNumber = "1".stringByAppendingString(phoneNumber)
             }
