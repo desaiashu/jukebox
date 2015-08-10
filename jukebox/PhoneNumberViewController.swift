@@ -30,7 +30,7 @@ class PhoneNumberViewController: UIViewController {
         return true
     }
     
-    @IBAction func go(){
+    @IBAction func go(sender: UIButton){
         self.phoneNumberTextField.resignFirstResponder()
         var phoneNumber = phoneNumberTextField.text
         if phoneNumber != "" {

@@ -317,7 +317,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="go" destination="61E-bg-8JY" eventType="touchUpInside" id="OMu-fL-7Se"/>
+                                    <action selector="go:" destination="61E-bg-8JY" eventType="touchUpInside" id="R61-gv-GYZ"/>
                                     <segue destination="fY5-Bo-c01" kind="show" identifier="RegisteredSegue" id="7Hp-cg-ej4"/>
                                 </connections>
                             </button>
@@ -377,7 +377,7 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EtD-LB-qTl">
                                 <rect key="frame" x="16" y="151" width="568" height="369"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <mutableString key="text">I designed Jukebox to be a simple way to send a song you love to people you love.
+                                <string key="text">I designed Jukebox to be a simple way to send a song you love to people you love.
 
 Jukebox finds your song on youtube and sends an SMS with the link to the contacts you choose. If your friend has the app, it will go to their inbox instead.
 
@@ -388,7 +388,7 @@ I'd really appreciate if you would send me feedback and any bugs you uncover.
 I've left some of my favorite songs in your inbox to start. I hope you enjoy!
 
 Cheers,
-Ashu</mutableString>
+Ashu</string>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -459,7 +459,7 @@ Ashu</mutableString>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="go" destination="fY5-Bo-c01" eventType="touchUpInside" id="BYe-mP-dYx"/>
+                                    <action selector="go:" destination="fY5-Bo-c01" eventType="touchUpInside" id="xvh-Az-AZM"/>
                                     <segue destination="BXX-7v-Fuc" kind="show" identifier="AuthenticatedSegue" id="Oag-K8-ptR"/>
                                 </connections>
                             </button>
@@ -576,7 +576,7 @@ Ashu</mutableString>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="accessContacts" destination="BXX-7v-Fuc" eventType="touchUpInside" id="zrz-pG-zvV"/>
+                                    <action selector="accessContacts:" destination="BXX-7v-Fuc" eventType="touchUpInside" id="Mhm-kg-cuv"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k6A-WR-YiN">
@@ -591,7 +591,7 @@ Ashu</mutableString>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="enablePush" destination="BXX-7v-Fuc" eventType="touchUpInside" id="qq7-ZF-JVU"/>
+                                    <action selector="enablePush:" destination="BXX-7v-Fuc" eventType="touchUpInside" id="d8u-SB-gRK"/>
                                 </connections>
                             </button>
                         </subviews>
