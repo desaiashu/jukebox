@@ -31,7 +31,7 @@ class ConfirmationCodeViewController: UIViewController {
         return true
     }
     
-    @IBAction func go(sender: UIButton) {
+    @IBAction func goPressed(sender: UIButton) {
         self.confirmationCodeTextField.resignFirstResponder()
         self.statusLabel.text = "Loading..."
         self.statusLabel.hidden = false
