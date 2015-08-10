@@ -137,4 +137,49 @@ extension InboxViewController: UITableViewDataSource {
         }
     }
     
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if inSearch {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        
+        if inSearch {
+            return nil
+        } else if let cell = tableView.cellForRowAtIndexPath(indexPath) as? InboxSongTableViewCell {
+            
+            var song = cell.song!
+            var rowActions = [UITableViewRowAction]()
+            
+            if (!song.heart() && self.sender != User.user.phoneNumber) {
+                var loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "More", handler:
+                    { action, indexPath in
+                        println("love•ACTION");
+                        
+                        cell.song!.heart()
+                        
+                        
+                });
+                rowActions.append(loveRowAction)
+                //moreRowAction.backgroundColor = UIColor(red: 0.298, green: 0.851, blue: 0.3922, alpha: 1.0);
+            }
+            
+            var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete", handler:
+                { action, indexpath in
+                    realm.write() {
+                        cell.song!.mute = !cell.song!.mute
+                        //Mute/unmute all matching songs
+                    }
+                    
+            });
+            rowActions.append(muteRowAction)
+            
+            return rowActions;
+        }
+        return nil
+    }
+    
 }

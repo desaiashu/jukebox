@@ -20,6 +20,7 @@ class InboxSong : Object {
     dynamic var updated: Int = 0
     dynamic var listen: Bool = false
     dynamic var love: Bool = false
+    dynamic var mute: Bool = false
     
     override class func primaryKey() -> String? {
         return "id"
@@ -27,6 +28,12 @@ class InboxSong : Object {
     
     override static func indexedProperties() -> [String] {
         return ["date"]
+    }
+    
+    func heart() {
+        if !self.love {
+            Server.love(self)
+        }
     }
     
     func play() {
