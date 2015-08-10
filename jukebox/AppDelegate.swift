@@ -24,10 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let user = realm.objects(User).first {
             User.user = user
-            if user.addressBookLoaded {
-                Permissions.checkName()
-                Permissions.loadAddressBook()
-            } else {
+            if !user.addressBookLoaded {
                 self.presentPermissions()
             }
         } else {
@@ -38,8 +35,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
-        Server.sendSongs() //In case sending previously failed, might move this to willResignActive?
         Server.checkVersion()
+        
+        if let user = realm.objects(User).first {
+            Server.sendSongs() //In case sending previously failed, might move this to willResignActive?
+            if user.addressBookLoaded {
+                Permissions.loadAddressBook()
+            }
+        }
         
         let navigationController = window?.rootViewController as! UINavigationController
         if let inboxViewController = navigationController.topViewController as? InboxViewController {
@@ -82,6 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let badge = userInfo["aps"]?["badge"] as? Int {
             application.applicationIconBadgeNumber = badge
         }
+        completionHandler(UIBackgroundFetchResult.NewData)
     }
     
     func handlePush(userInfo: [NSObject: AnyObject]) {

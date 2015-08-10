@@ -32,6 +32,9 @@ class InboxSong : Object {
     
     func heart() {
         if !self.love {
+            self.realm!.write() {
+                self.love = true
+            }
             Server.love(self)
         }
     }
@@ -45,6 +48,9 @@ class InboxSong : Object {
         SongPlayer.play(self.yt_id)
         
         if !self.listen && self.sender != User.user.phoneNumber {
+            self.realm!.write() {
+                self.listen = true
+            }
             Server.listen(self)
         }
     }

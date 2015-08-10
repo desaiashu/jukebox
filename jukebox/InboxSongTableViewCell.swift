@@ -33,11 +33,19 @@ class InboxSongTableViewCell: UITableViewCell {
                 var friendNumber: String?
                 if song.sender == User.user.phoneNumber {
                     friendNumber = song.recipient
-                    self.directionLabel.text = "to"
+                    if song.love {
+                        self.directionLabel.text = "loved by"
+                    } else {
+                        self.directionLabel.text = "to"
+                    }
                     self.backgroundColor = UIColor.whiteColor()
                 } else {
                     friendNumber = song.sender
-                    self.directionLabel.text = "from"
+                    if song.love {
+                        self.directionLabel.text = "you love"
+                    } else {
+                        self.directionLabel.text = "from"
+                    }
                     if song.listen {
                         self.backgroundColor = UIColor.whiteColor()
                     } else {
@@ -55,10 +63,10 @@ class InboxSongTableViewCell: UITableViewCell {
     }
     
     @IBAction func playPressed(sender: UIButton) {
-        self.playButton.enabled = false
         self.song?.play()
         self.backgroundColor = UIColor.whiteColor()
         
+        self.playButton.enabled = false
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
             if let playButton = self.playButton {
                 playButton.enabled = true

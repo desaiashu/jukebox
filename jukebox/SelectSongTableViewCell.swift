@@ -14,7 +14,7 @@ class SelectSongTableViewCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
-    @IBOutlet weak var previewButton: UIButton!
+    @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var sendButton: UIButton!
     
     var song: SendSong? {
@@ -22,11 +22,23 @@ class SelectSongTableViewCell: UITableViewCell {
             if let song = song {
                 self.titleLabel.text = song.title
                 self.artistLabel.text = song.artist
+                
+                self.playButton.enabled = true
+                //Might want to do this once in intializer
+                self.playButton.setTitle("...", forState: UIControlState.Disabled)
+                self.playButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
             }
         }
     }
     
-    @IBAction func previewPressed(sender: UIButton) {
+    @IBAction func playPressed(sender: UIButton) {
         SongPlayer.play(song!.yt_id)
+        
+        self.playButton.enabled = false
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            if let playButton = self.playButton {
+                playButton.enabled = true
+            }
+        }
     }
 }

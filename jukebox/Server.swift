@@ -21,8 +21,6 @@ class Server {
     class func checkVersion() {
         Alamofire.request(.GET, k.server_url+"version")
             .responseJSON { request, response, json, error in
-                println(json)
-                
                 if let result = json as? [String:AnyObject] {
                     let latestVersion = result["version"]! as! String
                     let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
@@ -60,7 +58,6 @@ class Server {
     class func registerUser(callback: (Bool)->Void) {
         Alamofire.request(.POST, k.server_url+"join", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
             .responseJSON { request, response, json, error in
-                println(json)
                 if let result = json as? [String:Bool] {
                     let success = result["success"]!
                     if success {
@@ -77,7 +74,6 @@ class Server {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: .JSON)
             .responseJSON { request, response, json, error in
-                println(json)
                 if let result = json as? [String:Bool] {
                     let success = result["success"]!
                     if success {
@@ -99,7 +95,6 @@ class Server {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"inbox", parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: .JSON)
             .responseJSON { request, response, json, error in
-                println(json)
                 if let result = json as? [String:AnyObject] {
                     if let inbox = result["inbox"] as? [[String:AnyObject]] {
                         realm.write() {
@@ -137,15 +132,18 @@ class Server {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: .JSON)
             .responseJSON { request, response, json, error in
-                println(json)
                 if let result = json as? [String:Bool] {
-                    if result["success"]! {
+                    if !result["success"]! {
                         realm.write() {
-                            song.listen = true
+                            song.listen = false
                         }
                     }
+                } else {
+                    realm.write() {
+                        song.listen = false
+                    }
                 }
-        }
+            }
         Answers.logCustomEventWithName("Listen", customAttributes: nil)
     }
     
@@ -153,15 +151,18 @@ class Server {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: .JSON)
             .responseJSON { request, response, json, error in
-                println(json)
                 if let result = json as? [String:Bool] {
-                    if result["success"]! {
+                    if !result["success"]! {
                         realm.write() {
-                            song.love = true
+                            song.love = false
                         }
                     }
+                } else {
+                    realm.write() {
+                        song.love = false
+                    }
                 }
-        }
+            }
         Answers.logCustomEventWithName("Love", customAttributes: nil)
     }
     
@@ -224,7 +225,6 @@ class Server {
             let params: [String:AnyObject] = ["phone_number": user.phoneNumber, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients, "sender_name":user.firstName]
             Alamofire.request(.POST, k.server_url+"share", parameters: params, encoding: .JSON)
                 .responseJSON { request, response, json, error in
-                    println(json)
                     if let result = json as? [String:[[String:AnyObject]]] {
                         if let songs = result["songs"] {
                             realm.write() {

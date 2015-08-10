@@ -236,8 +236,8 @@ class Permissions {
     }
     
     static func pushDisabled(){
-        self.promptUserToChangePushNotificationSettings()
         if let pushCallback = self.pushCallback {
+            self.promptUserToChangePushNotificationSettings() //Only do this when you're first enabling push
             pushCallback()
             self.pushCallback = nil
         }

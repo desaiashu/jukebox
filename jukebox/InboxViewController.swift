@@ -68,7 +68,6 @@ class InboxViewController: UIViewController {
                 selectFriendsViewController.song = searchResults[sender!.tag]
             }
         }
-        
     }
 }
 
@@ -145,8 +144,10 @@ extension InboxViewController: UITableViewDataSource {
         }
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    }
+    
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        
         if inSearch {
             return nil
         } else if let cell = tableView.cellForRowAtIndexPath(indexPath) as? InboxSongTableViewCell {
@@ -154,27 +155,54 @@ extension InboxViewController: UITableViewDataSource {
             var song = cell.song!
             var rowActions = [UITableViewRowAction]()
             
-            if (!song.heart() && self.sender != User.user.phoneNumber) {
-                var loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "More", handler:
+            
+            
+            var sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Send", handler:
+                { action, indexpath in
+                    if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)
+                        .instantiateViewControllerWithIdentifier("SelectFriendsViewController") as? SelectFriendsViewController {
+                            var songToSend = SendSong()
+                            songToSend.title = song.title
+                            songToSend.artist = song.artist
+                            songToSend.yt_id = song.yt_id
+                            selectFriendsViewController.song = songToSend
+                            self.navigationController?.showViewController(selectFriendsViewController, sender: self)
+                    }
+                    //maybe add better animation using setediting
+                    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+            });
+            
+            sendRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.4)
+            rowActions.append(sendRowAction)
+            
+            if !song.love && song.sender != User.user.phoneNumber {
+                var loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Love", handler:
                     { action, indexPath in
-                        println("love•ACTION");
-                        
-                        cell.song!.heart()
-                        
-                        
+                        song.heart()
+                        //maybe add better animation using setediting
+                        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
                 });
+                loveRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.55)
                 rowActions.append(loveRowAction)
-                //moreRowAction.backgroundColor = UIColor(red: 0.298, green: 0.851, blue: 0.3922, alpha: 1.0);
             }
             
-            var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete", handler:
+            var muteTitle = "Mute"
+            if cell.song!.mute {
+                muteTitle = "Unmute"
+            }
+            var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
                 { action, indexpath in
+                    let mute = !song.mute
                     realm.write() {
-                        cell.song!.mute = !cell.song!.mute
-                        //Mute/unmute all matching songs
+                        for sameSong in realm.objects(InboxSong).filter("yt_id = %@", cell.song!.yt_id)
+                        {
+                            sameSong.mute = mute
+                        }
                     }
-                    
+                    //maybe add better animation using setediting
+                    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
             });
+            muteRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.2)
             rowActions.append(muteRowAction)
             
             return rowActions;

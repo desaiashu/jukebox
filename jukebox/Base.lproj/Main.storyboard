@@ -128,9 +128,9 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="ZjZ-J9-YAJ" secondAttribute="trailing" constant="3" id="dsn-AK-eOj"/>
                                                 <constraint firstItem="ZjZ-J9-YAJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dLt-hL-YYT" secondAttribute="trailing" constant="5" id="eVD-5I-x9X"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="tNu-ux-n4Z" secondAttribute="trailing" constant="21" id="hS0-wE-5VN"/>
+                                                <constraint firstItem="tNu-ux-n4Z" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8gA-wj-Jio" secondAttribute="trailing" constant="5" id="kaz-j3-fov"/>
                                                 <constraint firstAttribute="centerY" secondItem="6Cd-by-Lhk" secondAttribute="centerY" id="ltM-XE-yAg"/>
                                                 <constraint firstItem="8gA-wj-Jio" firstAttribute="leading" secondItem="6Cd-by-Lhk" secondAttribute="trailing" constant="2" id="naE-mE-S7Q"/>
-                                                <constraint firstItem="ZjZ-J9-YAJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8gA-wj-Jio" secondAttribute="trailing" constant="5" id="q3n-WR-txx"/>
                                                 <constraint firstItem="dLt-hL-YYT" firstAttribute="leading" secondItem="6Cd-by-Lhk" secondAttribute="trailing" constant="2" id="seh-IA-BQZ"/>
                                                 <constraint firstItem="6Cd-by-Lhk" firstAttribute="leading" secondItem="Cpk-eM-0Lu" secondAttribute="leadingMargin" constant="-8" id="vmO-xd-fFC"/>
                                                 <constraint firstItem="ZjZ-J9-YAJ" firstAttribute="top" secondItem="tNu-ux-n4Z" secondAttribute="bottom" constant="-22" id="wor-Yf-44c"/>
@@ -187,7 +187,7 @@
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="previewPressed:" destination="Lh7-Lm-NPA" eventType="touchUpInside" id="MWP-yj-Cqe"/>
+                                                        <action selector="playPressed:" destination="Lh7-Lm-NPA" eventType="touchUpInside" id="We1-WS-iNq"/>
                                                     </connections>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Firestone" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zHM-6C-xA9">
@@ -234,7 +234,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="artistLabel" destination="Wan-VT-Ey8" id="c88-oA-TZD"/>
-                                            <outlet property="previewButton" destination="rlG-aq-OuO" id="WOW-ZE-Ez5"/>
+                                            <outlet property="playButton" destination="rlG-aq-OuO" id="Wvv-pO-hrC"/>
                                             <outlet property="sendButton" destination="X5a-p3-PzL" id="SkQ-ha-fkk"/>
                                             <outlet property="titleLabel" destination="zHM-6C-xA9" id="41z-e4-7Pd"/>
                                         </connections>
@@ -616,7 +616,7 @@ Ashu</string>
         <!--Select Friends View Controller-->
         <scene sceneID="q85-73-uwm">
             <objects>
-                <viewController id="ewv-Xk-wuN" customClass="SelectFriendsViewController" customModule="jukebox" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SelectFriendsViewController" id="ewv-Xk-wuN" customClass="SelectFriendsViewController" customModule="jukebox" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="K0A-Sf-bPn"/>
                         <viewControllerLayoutGuide type="bottom" id="E1x-ew-qBT"/>
