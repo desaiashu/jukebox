@@ -168,8 +168,7 @@ extension InboxViewController: UITableViewDataSource {
                             selectFriendsViewController.song = songToSend
                             self.navigationController?.showViewController(selectFriendsViewController, sender: self)
                     }
-                    //maybe add better animation using setediting
-                    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+                    self.tableView.editing = false
             });
             
             sendRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.4)
@@ -179,8 +178,8 @@ extension InboxViewController: UITableViewDataSource {
                 var loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Love", handler:
                     { action, indexPath in
                         song.heart()
-                        //maybe add better animation using setediting
-                        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+                        self.tableView.editing = false
+                        cell.directionLabel.text = "you love"
                 });
                 loveRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.55)
                 rowActions.append(loveRowAction)
@@ -199,8 +198,7 @@ extension InboxViewController: UITableViewDataSource {
                             sameSong.mute = mute
                         }
                     }
-                    //maybe add better animation using setediting
-                    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+                    self.tableView.editing = false
             });
             muteRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.2)
             rowActions.append(muteRowAction)
