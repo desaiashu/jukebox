@@ -37,7 +37,7 @@ class PhoneNumberViewController: UIViewController {
             if let phoneInt = phoneNumber.toInt() {
                 phoneNumber = String(phoneInt) //Remove leading 0's, need to enable this for longer numbers
             }
-            if count(phoneNumber) == 10 { //Automatically including 1 for US numbers
+            if count(phoneNumber) == 10 && Permissions.localDialingCode == "1" { //Automatically including 1 for US numbers
                 phoneNumber = "1".stringByAppendingString(phoneNumber)
             }
             User.user.phoneNumber = "+".stringByAppendingString(phoneNumber)

@@ -14,7 +14,8 @@ class SongPlayer {
     static var videoPlayerController: XCDYouTubeVideoPlayerViewController?
     
     class func enableBackgroundAudio () {
-        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error:nil)
+        var success1 = AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error:nil)
+        var success2 = AVAudioSession.sharedInstance().setActive(true, error: nil)
     }
     
     class func play(videoIdentifier: String) {
@@ -25,9 +26,8 @@ class SongPlayer {
         
         videoPlayerController = XCDYouTubeVideoPlayerViewController(videoIdentifier: videoIdentifier)
         videoPlayerController!.preferredVideoQualities = [XCDYouTubeVideoQuality.Small240.rawValue]
+        videoPlayerController?.moviePlayer.backgroundPlaybackEnabled = true
         videoPlayerController!.moviePlayer.play()
-        
-        //Need to do background playback
     }
     
     class func stop() {

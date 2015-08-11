@@ -15,6 +15,7 @@ class Permissions {
     
     static var addressBookCallback: ((Bool)->Void)?
     static var pushCallback: (()->Void)?
+    static let localDialingCode = Permissions.getLocalDialingCode()
     
     class func promptUserToChangeAddressBookSettings(forced: Bool) {
         let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -73,7 +74,6 @@ class Permissions {
             
             let backgroundRealm = Realm()
             
-            let localDialingCode = self.getLocalDialingCode()
             let allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue() as NSArray
             var contacts = [String:[String:String]]()
             
@@ -95,23 +95,8 @@ class Permissions {
                     
                     if firstName+lastName != "" {
                         let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
-                        
-                        var arr:[String] = phoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
-                        var strippedNumber = "".join(arr)
-                        
-                        if strippedNumber.rangeOfString("+") == nil {
-                            if let startIndex = strippedNumber.rangeOfString(localDialingCode)?.startIndex {
-                                if startIndex == strippedNumber.startIndex {
-                                    strippedNumber = "+".stringByAppendingString(strippedNumber)
-                                } else {
-                                    strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
-                                }
-                            } else {
-                                strippedNumber = "+".stringByAppendingString(localDialingCode).stringByAppendingString(strippedNumber)
-                            }
-                        }
-                        
-                        contacts[strippedNumber as String] = ["firstName":firstName, "lastName":lastName]
+                        var formattedNumber = self.formatPhoneNumber(phoneNumber)
+                        contacts[formattedNumber] = ["firstName":firstName, "lastName":lastName]
                     }
                 }
             }
@@ -146,6 +131,43 @@ class Permissions {
                 }
             }
         })
+    }
+    
+    class func formatPhoneNumber(number: String) -> String {
+        
+        var arr:[String] = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
+        var phoneNumber = "".join(arr)
+
+        if phoneNumber.rangeOfString("+") == nil {
+            if let phoneInt = phoneNumber.toInt() {
+                phoneNumber = String(phoneInt) //Remove leading 0's
+            }
+            
+            if let startIndex = phoneNumber.rangeOfString(self.localDialingCode)?.startIndex {
+                if startIndex == phoneNumber.startIndex {
+                    phoneNumber = "+".stringByAppendingString(phoneNumber)
+                } else {
+                    phoneNumber = "+".stringByAppendingString(self.localDialingCode).stringByAppendingString(phoneNumber)
+                }
+            } else {
+                phoneNumber = "+".stringByAppendingString(self.localDialingCode).stringByAppendingString(phoneNumber)
+            }
+        }
+        return phoneNumber
+    }
+    
+    class func getLocalDialingCode () -> String {
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("DialingCodes", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = myDict {
+            if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String {
+                let callingCode = dict[countryCode.lowercaseString]! as! String
+                return callingCode
+            }
+        }
+        return ""
     }
     
     static func checkName() {
@@ -198,20 +220,6 @@ class Permissions {
             })
         )
         UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
-    }
-
-    static func getLocalDialingCode () -> String {
-        var myDict: NSDictionary?
-        if let path = NSBundle.mainBundle().pathForResource("DialingCodes", ofType: "plist") {
-            myDict = NSDictionary(contentsOfFile: path)
-        }
-        if let dict = myDict {
-            if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String {
-                let callingCode = dict[countryCode.lowercaseString]! as! String
-                return callingCode
-            }
-        }
-        return ""
     }
     
     static func enablePush (callback: ()->Void){

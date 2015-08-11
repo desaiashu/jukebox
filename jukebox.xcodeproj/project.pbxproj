@@ -25,6 +25,7 @@
 		544DB58D1B6E76120090ABFB /* SendSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58C1B6E76120090ABFB /* SendSong.swift */; };
 		544DB58F1B6E76200090ABFB /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB58E1B6E76200090ABFB /* Friend.swift */; };
 		544DB5941B6E768F0090ABFB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5931B6E768F0090ABFB /* User.swift */; };
+		5483D4EF1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m in Sources */ = {isa = PBXBuildFile; fileRef = 5483D4EE1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m */; };
 		548807511B7310C100D68573 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807501B7310C100D68573 /* Server.swift */; };
 		548807531B74740200D68573 /* SelectFriendTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807521B74740200D68573 /* SelectFriendTableViewHeader.swift */; };
 		54A8CD6F1B6EB6E3009E979A /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */; };
@@ -67,6 +68,9 @@
 		544DB58C1B6E76120090ABFB /* SendSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSong.swift; sourceTree = "<group>"; };
 		544DB58E1B6E76200090ABFB /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		544DB5931B6E768F0090ABFB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		5483D4EC1B78807C00D08E1F /* jukebox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jukebox-Bridging-Header.h"; sourceTree = "<group>"; };
+		5483D4ED1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MPMoviePlayerController+BackgroundPlayback.h"; sourceTree = "<group>"; };
+		5483D4EE1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MPMoviePlayerController+BackgroundPlayback.m"; sourceTree = "<group>"; };
 		548807501B7310C100D68573 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		548807521B74740200D68573 /* SelectFriendTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectFriendTableViewHeader.swift; sourceTree = "<group>"; };
 		54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer.swift; sourceTree = "<group>"; };
@@ -190,6 +194,8 @@
 			children = (
 				548807501B7310C100D68573 /* Server.swift */,
 				54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */,
+				5483D4ED1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.h */,
+				5483D4EE1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -216,6 +222,7 @@
 		54E6D8AA1B6D7DE800E603EE /* jukebox */ = {
 			isa = PBXGroup;
 			children = (
+				5483D4EC1B78807C00D08E1F /* jukebox-Bridging-Header.h */,
 				54E6D8B11B6D7DE800E603EE /* Main.storyboard */,
 				54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */,
 				544DB5801B6DBB0A0090ABFB /* Scenes */,
@@ -392,6 +399,7 @@
 				544DB57D1B6DB9CC0090ABFB /* SelectFriendsViewController.swift in Sources */,
 				5413DEA21B6DA3B90040EF3A /* PhoneNumberViewController.swift in Sources */,
 				544DB5791B6DB9A30090ABFB /* PermissionsViewController.swift in Sources */,
+				5483D4EF1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m in Sources */,
 				544DB5861B6DBBFF0090ABFB /* SelectSongTableViewCell.swift in Sources */,
 				544DB58D1B6E76120090ABFB /* SendSong.swift in Sources */,
 				54E6D8B01B6D7DE800E603EE /* InboxViewController.swift in Sources */,
@@ -534,6 +542,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -546,6 +555,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -553,6 +564,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: makegameswithus inc.";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -565,6 +577,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
 			};
 			name = Release;
 		};
