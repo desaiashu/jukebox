@@ -36,7 +36,7 @@ class ConfirmationCodeViewController: UIViewController {
         self.statusLabel.text = "Loading..."
         self.statusLabel.hidden = false
         User.user.code = self.confirmationCodeTextField.text
-        Server.authenticateUser(self.authenticateCallback)
+        Server.server.authenticateUser(self.authenticateCallback)
     }
     
     func authenticateCallback(success: Bool) {
@@ -47,7 +47,7 @@ class ConfirmationCodeViewController: UIViewController {
             self.performSegueWithIdentifier("AuthenticatedSegue", sender: self)
         } else {
             //This method should also take in an error code (ie if you're not connected to the server)
-            self.statusLabel.text = "Incorrect code or error connecting to server, try again or go back"
+            self.statusLabel.text = "Incorrect code or error connecting to server"
             self.goButton.enabled = true
             self.resendButton.enabled = true
             User.user.code = ""

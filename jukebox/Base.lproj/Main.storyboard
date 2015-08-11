@@ -256,7 +256,7 @@
                                     <constraint firstAttribute="width" constant="114" id="YFc-zB-Mxq"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                                <state key="normal" title="Pause">
+                                <state key="normal" title="Play">
                                     <color key="titleColor" red="0.72549019609999998" green="0.42352941179999998" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -329,9 +329,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="aWX-MC-vlg"/>
                     <connections>
+                        <outlet property="artistLabel" destination="FVX-tj-3Fh" id="LZ1-25-XmS"/>
                         <outlet property="cancelButton" destination="4zb-VY-zHU" id="vEx-79-Y56"/>
+                        <outlet property="playerButton" destination="7mJ-7C-vf1" id="xi1-cb-Jvw"/>
                         <outlet property="searchTextField" destination="xrd-gx-KZb" id="cub-kH-jUv"/>
+                        <outlet property="skipButton" destination="NcL-Rd-ycN" id="Qlc-vl-mAG"/>
                         <outlet property="tableView" destination="ACb-KY-y1k" id="GAm-1h-N6o"/>
+                        <outlet property="titleLabel" destination="Lxu-gA-QRH" id="sTf-df-Le5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -32,7 +32,7 @@ class SelectSongTableViewCell: UITableViewCell {
     }
     
     @IBAction func playPressed(sender: UIButton) {
-        SongPlayer.play(song!.yt_id)
+        self.song!.play()
         
         self.playButton.enabled = false
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {

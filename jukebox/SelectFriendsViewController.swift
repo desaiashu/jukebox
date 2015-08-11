@@ -71,7 +71,7 @@ class SelectFriendsViewController: UIViewController {
     
     @IBAction func sendPressed(sender: UIButton) {
         self.song!.recipients = ",".join(self.selectedFriends)
-        Server.cacheAndSendSong(self.song!)
+        Server.server.cacheAndSendSong(self.song!)
         self.navigationController!.popViewControllerAnimated(true)
     }
 }

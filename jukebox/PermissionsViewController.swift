@@ -36,7 +36,7 @@ class PermissionsViewController: UIViewController {
     }
     
     @IBAction func accessContacts(sender: UIButton) {
-        Permissions.authorizeAddressBook { success in
+        Permissions.permissions.authorizeAddressBook { success in
             if success {
                 self.accessContactsButton.enabled = false
                 if self.enablePushButton.enabled == false {
@@ -47,7 +47,7 @@ class PermissionsViewController: UIViewController {
     }
     
     @IBAction func enablePush(sender: UIButton) {
-        Permissions.enablePush({
+        Permissions.permissions.enablePush({
             self.enablePushButton.enabled = false
             if self.accessContactsButton.enabled == false {
                 self.next()

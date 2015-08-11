@@ -18,12 +18,15 @@ class InboxViewController: UIViewController {
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var videoView: UIView!
+    
+    @IBOutlet weak var playerButton: UIButton!
+    @IBOutlet weak var skipButton: UIButton!
+    @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     
     var songs = realm.objects(InboxSong).sorted("date", ascending: false)
     //Could bump "new" songs to top - unsure how to deal with tapping play
     //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
-    
     
     var inSearch = false {
         didSet {
@@ -38,13 +41,20 @@ class InboxViewController: UIViewController {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        SongPlayer.songPlayer.playerButton = self.playerButton
+        SongPlayer.songPlayer.artistLabel = self.artistLabel
+        SongPlayer.songPlayer.titleLabel = self.titleLabel
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.clearSearch()
     }
     
     func downloadData() {
-        Server.downloadInbox({
+        Server.server.downloadInbox({
             self.tableView.reloadData()
         })
     }
@@ -59,6 +69,14 @@ class InboxViewController: UIViewController {
     
     @IBAction func cancelPressed(sender: UIButton) {
         self.clearSearch()
+    }
+    
+    @IBAction func playerButtonPressed(sender: UIButton) {
+        SongPlayer.songPlayer.playerButtonPressed()
+    }
+    
+    @IBAction func skipButtonPressed(sender: UIButton) {
+        SongPlayer.songPlayer.skip()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -86,7 +104,7 @@ extension InboxViewController: UITextFieldDelegate {
         let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if newString != "" {
             
-            Server.searchSong(newString, callback: { tempResults in
+            Server.server.searchSong(newString, callback: { tempResults in
                     if self.searchTextField.text == newString {
                         self.searchResults = tempResults
                     }

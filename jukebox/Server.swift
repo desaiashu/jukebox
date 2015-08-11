@@ -17,8 +17,9 @@ struct k {
 }
 
 class Server {
+    static let server = Server()
     
-    class func checkVersion() {
+    func checkVersion() {
         Alamofire.request(.GET, k.server_url+"version")
             .responseJSON { request, response, json, error in
                 if let result = json as? [String:AnyObject] {
@@ -33,7 +34,7 @@ class Server {
         }
     }
     
-    class func promptUserToUpdate(forced: Bool, url: String) {
+    func promptUserToUpdate(forced: Bool, url: String) {
         var title: String?
         var message: String?
         if forced {
@@ -55,7 +56,7 @@ class Server {
         UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    class func registerUser(callback: (Bool)->Void) {
+    func registerUser(callback: (Bool)->Void) {
         Alamofire.request(.POST, k.server_url+"join", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
             .responseJSON { request, response, json, error in
                 if let result = json as? [String:Bool] {
@@ -70,7 +71,7 @@ class Server {
         }
     }
     
-    class func authenticateUser(callback: (Bool)->Void) {
+    func authenticateUser(callback: (Bool)->Void) {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: .JSON)
             .responseJSON { request, response, json, error in
@@ -86,12 +87,12 @@ class Server {
         }
     }
     
-    class func sendPushToken() {
+    func sendPushToken() {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"pushtoken", parameters: ["phone_number":user.phoneNumber, "code":user.code, "push_token":user.pushToken], encoding: .JSON)
     }
     
-    class func downloadInbox(callback: ()->Void) {
+    func downloadInbox(callback: ()->Void) {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"inbox", parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: .JSON)
             .responseJSON { request, response, json, error in
@@ -128,7 +129,7 @@ class Server {
     }
     
     //Might want to resend these if it fails the first time
-    class func listen(song: InboxSong) {
+    func listen(song: InboxSong) {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: .JSON)
             .responseJSON { request, response, json, error in
@@ -147,7 +148,7 @@ class Server {
         Answers.logCustomEventWithName("Listen", customAttributes: nil)
     }
     
-    class func love(song: InboxSong) {
+    func love(song: InboxSong) {
         let user = User.user
         Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: .JSON)
             .responseJSON { request, response, json, error in
@@ -166,7 +167,7 @@ class Server {
         Answers.logCustomEventWithName("Love", customAttributes: nil)
     }
     
-    class func cachePushData(pushData: [String:AnyObject]) {
+    func cachePushData(pushData: [String:AnyObject]) {
         if var sharedSong = pushData["share"] as? [String:AnyObject] {
             realm.write() {
                 realm.create(InboxSong.self, value: sharedSong, update: true)
@@ -186,7 +187,7 @@ class Server {
         }
     }
     
-    class func cacheAndSendSong(song: SendSong) {
+    func cacheAndSendSong(song: SendSong) {
         let now = Int(NSDate().timeIntervalSince1970)
         song.date = now
         realm.write() {
@@ -216,7 +217,7 @@ class Server {
         Answers.logCustomEventWithName("Share", customAttributes: nil)
     }
     
-    class func sendSongs() {
+    func sendSongs() {
         
         let user = User.user
         let unsentSongs = realm.objects(SendSong)
@@ -253,7 +254,7 @@ class Server {
         }
     }
     
-    class func searchSong(query: String, callback: [SendSong]->Void) {
+    func searchSong(query: String, callback: [SendSong]->Void) {
         if let escapedQuery = query.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet()) {
             Alamofire.request(.GET, k.youtube_url+escapedQuery)
                 .responseJSON { request, response, json, error in
@@ -268,7 +269,7 @@ class Server {
         }
     }
     
-    class func parseResults(items: [[String:[String:String]]]) -> [SendSong] {
+    func parseResults(items: [[String:[String:String]]]) -> [SendSong] {
         
         //TODO: Make this smarter, eliminate duplicates + crap results, cross relevance + view count?
         var tempResults: [SendSong] = []
@@ -286,7 +287,7 @@ class Server {
         return tempResults
     }
     
-    class func getTitleAndArtist(songString: String) ->[String:String]? {
+    func getTitleAndArtist(songString: String) ->[String:String]? {
         if let indexOfDash = songString.rangeOfString(" - ")?.startIndex {
             var newString = songString
             

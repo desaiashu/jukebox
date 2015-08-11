@@ -35,23 +35,18 @@ class InboxSong : Object {
             self.realm!.write() {
                 self.love = true
             }
-            Server.love(self)
+            Server.server.love(self)
         }
     }
     
-    func play() {
-        //Keep track of which cell is being played
-        //Loading indicator
-        //Toggle into "stop" button
-        //Build out player class
-        
-        SongPlayer.play(self.yt_id)
+    func play() {        
+        SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)
         
         if !self.listen && self.sender != User.user.phoneNumber {
             self.realm!.write() {
                 self.listen = true
             }
-            Server.listen(self)
+            Server.server.listen(self)
         }
     }
 }

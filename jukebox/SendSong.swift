@@ -15,4 +15,8 @@ class SendSong : Object {
     dynamic var yt_id: String = ""
     dynamic var recipients: String = ""
     dynamic var date: Int = 0
+    
+    func play() {
+        SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)
+    }
 }

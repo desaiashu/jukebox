@@ -12,12 +12,17 @@ import RealmSwift
 import UIKit
 
 class Permissions {
+    static let permissions = Permissions()
     
-    static var addressBookCallback: ((Bool)->Void)?
-    static var pushCallback: (()->Void)?
-    static let localDialingCode = Permissions.getLocalDialingCode()
+    var addressBookCallback: ((Bool)->Void)?
+    var pushCallback: (()->Void)?
+    var localDialingCode = ""
     
-    class func promptUserToChangeAddressBookSettings(forced: Bool) {
+    init() {
+        self.setLocalDialingCode()
+    }
+    
+    func promptUserToChangeAddressBookSettings(forced: Bool) {
         let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertControllerStyle.Alert)
         if !forced {
             alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Cancel, handler:nil))
@@ -30,7 +35,7 @@ class Permissions {
         UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    class func authorizeAddressBook (callback: (Bool)->Void){
+    func authorizeAddressBook (callback: (Bool)->Void){
         switch ABAddressBookGetAuthorizationStatus(){
         case .Authorized, .NotDetermined:
             self.addressBookCallback = callback
@@ -41,7 +46,7 @@ class Permissions {
         }
     }
     
-    class func loadAddressBook() {
+    func loadAddressBook() {
         var error: Unmanaged<CFError>?
         let addressBook: ABAddressBook = ABAddressBookCreateWithOptions(nil, &error).takeRetainedValue()
         ABAddressBookRequestAccessWithCompletion(addressBook,
@@ -66,7 +71,7 @@ class Permissions {
         })
     }
     
-    class func saveAddressBook (addressBook: ABAddressBookRef){
+    func saveAddressBook (addressBook: ABAddressBookRef){
         
         let userPhoneNumber = User.user.phoneNumber
         
@@ -95,7 +100,7 @@ class Permissions {
                     
                     if firstName+lastName != "" {
                         let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
-                        var formattedNumber = self.formatPhoneNumber(phoneNumber)
+                        var formattedNumber = self.formatPhoneNumber(phoneNumber as String)
                         contacts[formattedNumber] = ["firstName":firstName, "lastName":lastName]
                     }
                 }
@@ -133,9 +138,9 @@ class Permissions {
         })
     }
     
-    class func formatPhoneNumber(number: String) -> String {
+    func formatPhoneNumber(number: String) -> String {
         
-        var arr:[String] = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet) as! [String]
+        var arr = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet)
         var phoneNumber = "".join(arr)
 
         if phoneNumber.rangeOfString("+") == nil {
@@ -156,7 +161,7 @@ class Permissions {
         return phoneNumber
     }
     
-    class func getLocalDialingCode () -> String {
+    func setLocalDialingCode() {
         var myDict: NSDictionary?
         if let path = NSBundle.mainBundle().pathForResource("DialingCodes", ofType: "plist") {
             myDict = NSDictionary(contentsOfFile: path)
@@ -164,13 +169,12 @@ class Permissions {
         if let dict = myDict {
             if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String {
                 let callingCode = dict[countryCode.lowercaseString]! as! String
-                return callingCode
+                self.localDialingCode = callingCode
             }
         }
-        return ""
     }
     
-    static func checkName() {
+    func checkName() {
         if User.user.firstName+User.user.lastName == "" {
             self.requestName("Name")
         } else if User.user.firstName == "" {
@@ -180,7 +184,7 @@ class Permissions {
         }
     }
     
-    static func requestName(nameType: String) {
+    func requestName(nameType: String) {
         let alertController = UIAlertController(title: "Enter "+nameType, message: nil, preferredStyle: UIAlertControllerStyle.Alert)
         alertController.addTextFieldWithConfigurationHandler { textField in
             switch (nameType) {
@@ -222,7 +226,7 @@ class Permissions {
         UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    static func enablePush (callback: ()->Void){
+    func enablePush (callback: ()->Void){
         self.pushCallback = callback
         var type = UIUserNotificationType.Badge | UIUserNotificationType.Alert | UIUserNotificationType.Sound;
         var setting = UIUserNotificationSettings(forTypes: type, categories: nil);
@@ -230,20 +234,20 @@ class Permissions {
         UIApplication.sharedApplication().registerForRemoteNotifications();
     }
     
-    static func pushEnabled(deviceToken: NSData){
+    func pushEnabled(deviceToken: NSData){
         realm.write() {
             User.user.pushToken = deviceToken.description
                 .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
                 .stringByReplacingOccurrencesOfString(" ", withString: "" )
         }
-        Server.sendPushToken()
+        Server.server.sendPushToken()
         if let pushCallback = self.pushCallback {
             pushCallback()
             self.pushCallback = nil
         }
     }
     
-    static func pushDisabled(){
+    func pushDisabled(){
         if let pushCallback = self.pushCallback {
             self.promptUserToChangePushNotificationSettings() //Only do this when you're first enabling push
             pushCallback()
@@ -251,7 +255,7 @@ class Permissions {
         }
     }
     
-    class func promptUserToChangePushNotificationSettings() {
+    func promptUserToChangePushNotificationSettings() {
         let alertController = UIAlertController(title: "Push Notifications", message: "We recommend turning push notifications on in order to use the app. Tap go to enable push notifications in settings.", preferredStyle: UIAlertControllerStyle.Alert)
         alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Cancel, handler:nil))
         alertController.addAction(

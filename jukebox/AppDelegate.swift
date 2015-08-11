@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         Fabric.with([Crashlytics()])
-        SongPlayer.enableBackgroundAudio()
         
         if let user = realm.objects(User).first {
             User.user = user
@@ -35,12 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
-        Server.checkVersion()
+        Server.server.checkVersion()
         
         if let user = realm.objects(User).first {
-            Server.sendSongs() //In case sending previously failed, might move this to willResignActive?
+            Server.server.sendSongs() //In case sending previously failed, might move this to willResignActive?
             if user.addressBookLoaded {
-                Permissions.loadAddressBook()
+                Permissions.permissions.loadAddressBook()
             }
         }
         
@@ -71,13 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationController.navigationBarHidden = true
         window?.rootViewController = navigationController
     }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
+        SongPlayer.songPlayer.remoteControlReceivedWithEvent(event)
+    }
 
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        Permissions.pushEnabled(deviceToken)
+        Permissions.permissions.pushEnabled(deviceToken)
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        Permissions.pushDisabled()
+        Permissions.permissions.pushDisabled()
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -91,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func handlePush(userInfo: [NSObject: AnyObject]) {
         if var pushData = userInfo as? [String:AnyObject] {
             pushData["aps"] = nil
-            Server.cachePushData(pushData)
+            Server.server.cachePushData(pushData)
             let navigationController = window?.rootViewController as! UINavigationController
             if let inboxViewController = navigationController.topViewController as? InboxViewController {
                 inboxViewController.tableView.reloadData()
