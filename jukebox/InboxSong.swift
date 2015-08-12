@@ -41,12 +41,5 @@ class InboxSong : Object {
     
     func play() {        
         SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)
-        
-        if !self.listen && self.sender != User.user.phoneNumber {
-            self.realm!.write() {
-                self.listen = true
-            }
-            Server.server.listen(self)
-        }
     }
 }

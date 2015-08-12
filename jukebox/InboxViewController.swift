@@ -43,9 +43,7 @@ class InboxViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        SongPlayer.songPlayer.playerButton = self.playerButton
-        SongPlayer.songPlayer.artistLabel = self.artistLabel
-        SongPlayer.songPlayer.titleLabel = self.titleLabel
+        SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -209,11 +207,14 @@ extension InboxViewController: UITableViewDataSource {
             }
             var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
                 { action, indexpath in
-                    let mute = !song.mute
-                    realm.write() {
-                        for sameSong in realm.objects(InboxSong).filter("yt_id = %@", cell.song!.yt_id)
-                        {
-                            sameSong.mute = mute
+                    if SongPlayer.songPlayer.playlist!.count == 1 {
+                        let mute = !song.mute
+                        SongPlayer.songPlayer.toggleMute(cell.song!.yt_id, title: cell.song!.title, artist: cell.song!.artist, mute: mute)
+                        realm.write() {
+                            for sameSong in realm.objects(InboxSong).filter("yt_id = %@", cell.song!.yt_id)
+                            {
+                                sameSong.mute = mute
+                            }
                         }
                     }
                     self.tableView.editing = false

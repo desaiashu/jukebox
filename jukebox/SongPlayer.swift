@@ -10,24 +10,36 @@ import XCDYouTubeKit
 import AVFoundation
 import Foundation
 
+struct PlaylistSong: Equatable {
+    var yt_id: String
+    var title: String
+    var artist: String
+}
+func ==(lhs: PlaylistSong, rhs: PlaylistSong) -> Bool {
+    return lhs.yt_id == rhs.yt_id
+}
+
 class SongPlayer : NSObject{
     static let songPlayer = SongPlayer()
     
-    weak var titleLabel: UILabel!
-    weak var artistLabel: UILabel!
     weak var playerButton: UIButton!
-    
-    dynamic var videoPlayerController1 = XCDYouTubeVideoPlayerViewController()
-    dynamic var videoPlayerController2 = XCDYouTubeVideoPlayerViewController()
-    var firstPlayer = true
-    var playlist: [SendSong]?
-    var currentSongIndex = -1
+    weak var artistLabel: UILabel!
+    weak var titleLabel: UILabel!
     
     private var player1Context = 0
     private var player2Context = 0
+    dynamic var videoPlayerController1 = XCDYouTubeVideoPlayerViewController()
+    dynamic var videoPlayerController2 = XCDYouTubeVideoPlayerViewController()
+    var firstPlayer = true
     
-    override init() {
-        super.init()
+    var playlist: [PlaylistSong]!
+    var currentSongIndex = -1
+    
+    func setup(playerButton: UIButton, artistLabel: UILabel, titleLabel: UILabel) {
+        
+        self.playerButton = playerButton
+        self.artistLabel = artistLabel
+        self.titleLabel = titleLabel
         
         AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error:nil)
         AVAudioSession.sharedInstance().setActive(true, error: nil)
@@ -52,29 +64,76 @@ class SongPlayer : NSObject{
     }
     
     func createPlaylist() {
-        firstPlayer = true
-        playerButton.titleLabel?.text = "Play"
+        self.firstPlayer = true
+        self.playerButton.titleLabel?.text = "Play"
         
+        let newInboxSongs = realm.objects(InboxSong).filter("listen == false AND mute == false").sorted("date", ascending: false)
+        let newSongs = reduce(newInboxSongs, []) { $0 + ( !contains($0, PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist) ) ? [PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist)] : [] ) }
         
-        //if playlist length == 0
-        //      Disable all buttons
-        //if playlist length > 0
-        //      Set identifier for song 1
-        //if playlist length > 1
-        //      Set identifier for song 2?
+        let oldInboxSongs = realm.objects(InboxSong).filter("listen == true AND mute == false").sorted("date", ascending: false)
+        let oldSongs = reduce(oldInboxSongs, []) { $0 + ( !contains($0, PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist) ) ? [PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist)] : [] ) }
+        
+        self.playlist = newSongs + self.shuffle(oldSongs)
+        
+        self.videoPlayerController1.videoIdentifier = self.playlist[0].yt_id
+        self.titleLabel.text = self.playlist[0].title
+        self.artistLabel.text = self.playlist[0].artist
+        
+        if self.playlist.count > 1 {
+            self.videoPlayerController2.videoIdentifier = self.playlist[1].yt_id
+        }
     }
     
-    func prependNewSongs() {
+    func shuffle<C: MutableCollectionType where C.Index == Int>(var list: C) -> C {
+        let c = count(list)
+        if c < 2 { return list }
+        for i in 0..<(c - 1) {
+            let j = Int(arc4random_uniform(UInt32(c - i))) + i
+            swap(&list[i], &list[j])
+        }
+        return list
+    }
+    
+    func updatePlaylist() {
         //Find unlistened to songs that are not on playlist, insert them immediately after current index + set video identifier of secondary player
+        let newInboxSongs = realm.objects(InboxSong).filter("listen == false AND mute == false").sorted("date")
+        let newSongs = reduce(newInboxSongs, []) { $0 + ( !contains(self.playlist, PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist)) && !contains($0, PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist)) ? [PlaylistSong(yt_id: $1.yt_id, title: $1.title, artist: $1.artist)] : [] ) }
+        
+        let nextIndex = currentSongIndex+1
+        for song in newSongs {
+            playlist.insert(song, atIndex: nextIndex)
+        }
+        self.videoPlayerController2.videoIdentifier = self.playlist[nextIndex].yt_id
     }
     
-    func mute(yt_id: String, mute: Bool) {
+    func toggleMute(yt_id: String, title: String, artist: String, mute: Bool) {
+        if mute {
+            self.mute(yt_id, title: title, artist: artist)
+        } else {
+            self.unmute(yt_id, title: title, artist: artist)
+        }
+    }
+    
+    func mute(yt_id: String, title: String, artist: String) {
         //If mute, remove songs from playlist IF song is after current index
-        //      If playlist is empty
-        //      If song removed is the only song remaining in playist
+        //      If song removed is next index, set identifier for second player (unless no songs left)
+        if let index = find(self.playlist, PlaylistSong(yt_id: yt_id, title: title, artist: artist)) {
+            if index > currentSongIndex {
+                self.playlist.removeAtIndex(index)
+                if index == currentSongIndex+1 && index != self.playlist.count {
+                    self.videoPlayerController2.videoIdentifier = self.playlist[index].yt_id
+                }
+            }
+        }
+    }
+    
+    func unmute(yt_id: String, title: String, artist: String) {
         //If unmute, add song to end of playlist
-        //      If playlist size is 1, enable all buttons.
         //      If end of playlist is next song, set identifier for second player
+        self.playlist.append(PlaylistSong(yt_id: yt_id, title: title, artist: artist))
+        if currentSongIndex+1 == self.playlist.count-1 {
+            self.videoPlayerController2.videoIdentifier = self.playlist[currentSongIndex+1].yt_id
+        }
     }
     
     //When play on cell tapped
@@ -94,10 +153,8 @@ class SongPlayer : NSObject{
         
         primaryVideoPlayerController.videoIdentifier = yt_id
         
-        self.setNowPlaying(title, artist: artist)
+        self.setNowPlaying(yt_id, title: title, artist: artist)
         self.playerButton.titleLabel?.text = "Pause"
-        
-        currentSongIndex-- // Essentially
     }
     
     //When song naturally finishes or is skipped
@@ -119,9 +176,7 @@ class SongPlayer : NSObject{
             primaryVideoPlayerController.moviePlayer.play()
             
             let song = playlist![currentSongIndex]
-            self.setNowPlaying(song.title, artist: song.artist)
-            
-            self.prependNewSongs()
+            self.setNowPlaying(song.yt_id, title: song.title, artist: song.artist)
             
             if currentSongIndex+1 != numSongs {
                 secondaryVideoPlayerController.videoIdentifier = playlist![currentSongIndex+1].yt_id
@@ -154,7 +209,7 @@ class SongPlayer : NSObject{
         }
     }
     
-    func setNowPlaying(title: String, artist: String) {
+    func setNowPlaying(yt_id: String, title: String, artist: String) {
         self.titleLabel.text = title
         self.artistLabel.text = artist
         let image:UIImage = UIImage(named: "music512")!
@@ -165,6 +220,21 @@ class SongPlayer : NSObject{
             MPMediaItemPropertyArtwork: albumArt,
         ]
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo as [NSObject : AnyObject]
+        
+        self.triggerListen(yt_id)
+    }
+    
+    func triggerListen(yt_id: String) {
+        //Note, listen is set to true even if user listens to same song via search, or same song sent by other friend
+        realm.write() {
+            for sameSong in realm.objects(InboxSong).filter("yt_id = %@, recipient = %@", yt_id, User.user.phoneNumber)
+            {
+                if !sameSong.listen {
+                    sameSong.listen = true
+                    Server.server.listen(sameSong)
+                }
+            }
+        }
     }
     
     func playerButtonPressed() {
@@ -179,7 +249,7 @@ class SongPlayer : NSObject{
         if self.currentSongIndex == -1 { //When play is tapped on widget first
             currentSongIndex++
             let song = self.playlist![self.currentSongIndex]
-            self.setNowPlaying(song.title, artist: song.artist)
+            self.setNowPlaying(song.yt_id, title: song.title, artist: song.artist)
             if self.playlist?.count > 1 {
                 self.videoPlayerController2.moviePlayer.prepareToPlay()
             }
@@ -206,7 +276,7 @@ class SongPlayer : NSObject{
             self.videoPlayerController1.moviePlayer.stop()
         } else {
             self.videoPlayerController2.moviePlayer.stop()
-        }
+        } //TODO handle if nothing is playing
     }
     
     func stop() {
@@ -220,14 +290,12 @@ class SongPlayer : NSObject{
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.RemoteControl {
             if event.subtype == UIEventSubtype.RemoteControlPlay {
-                println("received remote play")
                 self.play()
             } else if event.subtype == UIEventSubtype.RemoteControlPause {
-                println("received remote pause")
                 self.pause()
-            } else if event.subtype == UIEventSubtype.RemoteControlTogglePlayPause {
-                println("received toggle")
-            }
+            } else if event.subtype == UIEventSubtype.RemoteControlNextTrack {
+                self.skip()
+            } //TODO, handle going previous track
         }
     }
 }

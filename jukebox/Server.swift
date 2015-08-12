@@ -243,6 +243,8 @@ class Server {
                                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                                             inboxViewController.tableView.reloadData()
                                         }
+                                        //Update playlist
+                                        SongPlayer.songPlayer.updatePlaylist()
                                     }
                                 }
                                 //Delete SendSong

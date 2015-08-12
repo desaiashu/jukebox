@@ -10,9 +10,9 @@ import Foundation
 import RealmSwift
 
 class SendSong : Object {
+    dynamic var yt_id: String = ""
     dynamic var title: String = ""
     dynamic var artist: String = ""
-    dynamic var yt_id: String = ""
     dynamic var recipients: String = ""
     dynamic var date: Int = 0
     
