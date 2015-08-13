@@ -108,7 +108,6 @@ class Server {
                                 if friendNumber == user.phoneNumber {
                                     friendNumber = song["recipient"]! as! String
                                     incoming = false
-                                    createdSong.listen = true
                                 }
                                 
                                 if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
@@ -123,7 +122,11 @@ class Server {
                             }
                             user.lastUpdated = result["updated"]! as! Int
                             callback()
+                            if inbox.count > 0 {
+                                SongPlayer.songPlayer.updatePlaylist() //Maybe only do this if there's a new song not just an updated song
+                            }
                         }
+                        callback()
                     }
                 }
         }
@@ -219,6 +222,7 @@ class Server {
             }
         }
         self.sendSongs()
+        SongPlayer.songPlayer.updatePlaylist()
         Answers.logCustomEventWithName("Share", customAttributes: nil)
     }
     
@@ -248,8 +252,6 @@ class Server {
                                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                                             inboxViewController.tableView.reloadData()
                                         }
-                                        //Update playlist
-                                        SongPlayer.songPlayer.updatePlaylist()
                                     }
                                 }
                                 //Delete SendSong
