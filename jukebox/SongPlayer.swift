@@ -57,17 +57,12 @@ class SongPlayer : NSObject{
     
     func createPlaylist(startingSong:PlaylistSong?) {
         
-        self.player.pause()
-        self.player.removeAllItems()
+        player.pause()
+        player.removeAllItems()
         self.loadeditems = 0
         self.currentSongIndex = 0
         
         if var song = startingSong {
-            if let index = find(self.playlist, song), let item = self.playlist[index].item {
-                song.item = item
-                self.loadeditems++
-                self.player.insertItem(item, afterItem: nil)
-            }
             self.playlist = [song]
         } else {
             self.playlist = []
@@ -96,8 +91,23 @@ class SongPlayer : NSObject{
     }
     
     func getStreamUrl(yt_id: String) {
+        
+        if let urlString = NSUserDefaults.standardUserDefaults().objectForKey(yt_id) as? String {
+            var expireRange = urlString.rangeOfString("expire=")
+            var range = advance(expireRange!.startIndex, 7)...advance(expireRange!.startIndex, 16)
+            var expiration = urlString[range]
+            var expirationInt = expiration.toInt()
+            var currentTime = Int(NSDate().timeIntervalSince1970)+3600 //Give some buffer
+            if expirationInt > currentTime {
+                self.createPlayerItem(NSURL(string: urlString)!)
+                return //No need to download stuffs
+            }
+        }
+        
         XCDYouTubeClient.defaultClient().getVideoWithIdentifier(yt_id, completionHandler: { video, error in
-            var streamUrl: NSURL?
+            if self.loadeditems >= self.playlist.count {
+                return //If you play a new song mid loading the stream, whichever song was loading will call the completionHandler
+            }
             if let e = error {
                 if error.domain == XCDYouTubeVideoErrorDomain {
                     if error.code == XCDYouTubeErrorCode.RestrictedPlayback.rawValue {
@@ -105,41 +115,49 @@ class SongPlayer : NSObject{
                         realm.write(){
                             realm.delete(objectsToDelete)
                         }
+                        self.playlist.removeAtIndex(self.loadeditems)
+                        println("this will happen once, but it shouldn't break anything")
                         let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                             inboxViewController.tableView.reloadData()
+                        }
+                        if self.loadeditems < self.playlist.count {
+                            self.getStreamUrl(self.playlist[self.loadeditems].yt_id)
                         }
                     }
                 }
             } else {
                 //Audio only is video.streamURLs[140] but causes delay in notification
-                if var u36 = video.streamURLs[XCDYouTubeVideoQuality.Small240.rawValue] as? NSURL{
-                    streamUrl = u36
+                if let url = video.streamURLs[XCDYouTubeVideoQuality.Small240.rawValue] as? NSURL {
+                    NSUserDefaults.standardUserDefaults().setObject(url.absoluteString!, forKey: video.identifier)
+                    if self.playlist[self.loadeditems].yt_id == video.identifier {
+                        self.createPlayerItem(url)
+                        return //Since every thing else needs to get next streamUrl
+                    } else {
+                        println("out of sync, likely playlist changed")
+                    }
                 }
-            }
-            if let url = streamUrl {
-                println(self.playlist[self.loadeditems].title)
-                
-                var playerItem = AVPlayerItem(URL: url)
-                self.playlist[self.loadeditems].item = playerItem
-                NSNotificationCenter.defaultCenter().addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: playerItem, queue: NSOperationQueue.mainQueue(), usingBlock: { notification in
-                        self.nextSong()
-                })
-                self.player.insertItem(playerItem, afterItem: nil)
-                
-                self.loadeditems++
-                if self.loadeditems-1 == self.currentSongIndex && !self.playerButton.enabled {
-                    self.playerButton.enabled = true
-                    self.triggerListen()
-                }
-            } else {
-                self.playlist.removeAtIndex(self.loadeditems)
-            }
-            
-            if self.loadeditems < self.playlist.count {
-                self.getStreamUrl(self.playlist[self.loadeditems].yt_id)
             }
         })
+    }
+    
+    func createPlayerItem(url: NSURL) {
+        var playerItem = AVPlayerItem(URL: url)
+        self.playlist[self.loadeditems].item = playerItem
+        NSNotificationCenter.defaultCenter().addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: playerItem, queue: NSOperationQueue.mainQueue(), usingBlock: { notification in
+            self.nextSong()
+        })
+        self.player.insertItem(playerItem, afterItem: nil)
+        
+        self.loadeditems++
+        if self.loadeditems-1 == self.currentSongIndex && !self.playerButton.enabled {
+            self.playerButton.enabled = true
+            self.triggerListen()
+        }
+        
+        if self.loadeditems < self.playlist.count {
+            self.getStreamUrl(self.playlist[self.loadeditems].yt_id)
+        }
     }
     
     func updatePlaylist() {
