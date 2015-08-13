@@ -102,31 +102,40 @@ class Server {
                         realm.write() {
                             for song in inbox {
                                 var createdSong = realm.create(InboxSong.self, value: song, update: true)
-                                
-                                var incoming = true
-                                var friendNumber = song["sender"]! as! String
-                                if friendNumber == user.phoneNumber {
-                                    friendNumber = song["recipient"]! as! String
-                                    incoming = false
-                                }
-                                
-                                if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
-                                    var shareDate = song["date"]! as! Int
-                                    if shareDate > friend.lastShared {
-                                        friend.lastShared = shareDate
+                                    
+                                if user.addressBookLoaded { //Update best and recent friends
+                                    var incoming = true
+                                    var friendNumber = song["sender"]! as! String
+                                    if friendNumber == user.phoneNumber {
+                                        friendNumber = song["recipient"]! as! String
+                                        incoming = false
                                     }
-                                    if user.lastUpdated == 0 || incoming {
-                                        friend.numShared++
+                                    
+                                    var shareDate = song["date"]! as! Int
+                                    if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                                        if shareDate > friend.lastShared {
+                                            friend.lastShared = shareDate
+                                        }
+                                        if user.lastUpdated == 0 || incoming {
+                                            friend.numShared++
+                                        }
+                                    } else {
+                                        var newFriend = Friend()
+                                        newFriend.phoneNumber = friendNumber
+                                        newFriend.firstName = friendNumber
+                                        newFriend.lastName = ""
+                                        newFriend.lastShared = shareDate
+                                        newFriend.numShared = 1
+                                        realm.add(newFriend)
                                     }
                                 }
                             }
                             user.lastUpdated = result["updated"]! as! Int
-                            callback()
-                            if inbox.count > 0 {
-                                SongPlayer.songPlayer.updatePlaylist() //Maybe only do this if there's a new song not just an updated song
-                            }
                         }
                         callback()
+                        if inbox.count > 0 {
+                            SongPlayer.songPlayer.updatePlaylist() //Maybe only do this if there's a new song not just an updated song
+                        }
                     }
                 }
         }

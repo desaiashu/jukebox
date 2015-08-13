@@ -115,7 +115,7 @@ class SongPlayer : NSObject{
                         realm.write(){
                             realm.delete(objectsToDelete)
                         }
-                        self.playlist.removeAtIndex(self.loadeditems)
+                        self.playlist.removeAtIndex(self.loadeditems)  //TODO
                         println("this will happen once, but it shouldn't break anything")
                         let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
@@ -149,6 +149,10 @@ class SongPlayer : NSObject{
         })
         self.player.insertItem(playerItem, afterItem: nil)
         
+        if self.loadeditems == 0 && self.titleLabel.text != self.playlist[self.loadeditems].title {
+            self.setNowPlaying() //Covers case where deleted song happened to be chosen first
+        }
+        
         self.loadeditems++
         if self.loadeditems-1 == self.currentSongIndex && !self.playerButton.enabled {
             self.playerButton.enabled = true
@@ -162,8 +166,6 @@ class SongPlayer : NSObject{
     
     func updatePlaylist() {
         if self.playlist.count != 0 { //Off chance inbox hasn't downloaded when you first login
-            //Do I simply want to create a new playlist starting with currently playing song? There's a slight hiccup
-            //Find unlistened to songs that are not on playlist, insert them at end of playlist
             let unloaded = self.playlist.count - self.loadeditems
             
             let newInboxSongs = realm.objects(InboxSong).filter("mute == false").sorted("date")

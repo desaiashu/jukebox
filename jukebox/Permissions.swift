@@ -53,11 +53,13 @@ class Permissions {
             {(granted: Bool, error: CFError!) in
                 if granted{
                     dispatch_async(dispatch_get_main_queue()) {
-                        self.saveAddressBook(addressBook)
+                        var firstLoad = false
                         if let callback = self.addressBookCallback {
+                            firstLoad = true
                             callback(true)
                             self.addressBookCallback = nil
                         }
+                        self.saveAddressBook(addressBook, firstLoad: firstLoad)
                     }
                 } else {
                     dispatch_async(dispatch_get_main_queue()) {
@@ -71,7 +73,7 @@ class Permissions {
         })
     }
     
-    func saveAddressBook (addressBook: ABAddressBookRef){
+    func saveAddressBook (addressBook: ABAddressBookRef, firstLoad: Bool){
         
         let userPhoneNumber = User.user.phoneNumber
         
@@ -133,9 +135,39 @@ class Permissions {
                 self.checkName()
                 realm.write() {
                     User.user.addressBookLoaded = true
+                    if firstLoad {
+                        self.determineBestAndRecentFriends()
+                    }
                 }
             }
         })
+    }
+    
+    func determineBestAndRecentFriends() { //Called from within realm write block
+        if User.user.lastUpdated != 0 {
+            var inboxSongs = realm.objects(InboxSong)
+            for song in inboxSongs {
+                var friendNumber = song["sender"]! as! String
+                if friendNumber == User.user.phoneNumber {
+                    friendNumber = song["recipient"]! as! String
+                }
+                var shareDate = song["date"]! as! Int
+                if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                    if shareDate > friend.lastShared {
+                        friend.lastShared = shareDate
+                    }
+                    friend.numShared++
+                } else {
+                    var newFriend = Friend()
+                    newFriend.phoneNumber = friendNumber
+                    newFriend.firstName = friendNumber
+                    newFriend.lastName = ""
+                    newFriend.lastShared = shareDate
+                    newFriend.numShared = 1
+                    realm.add(newFriend)
+                }
+            }
+        }
     }
     
     func formatPhoneNumber(number: String) -> String {
