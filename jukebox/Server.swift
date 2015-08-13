@@ -78,6 +78,7 @@ class Server {
                 if let result = json as? [String:Bool] {
                     let success = result["success"]!
                     if success {
+                        self.downloadInbox({}) //Preload inbox
                         Answers.logCustomEventWithName("Authenticate", customAttributes:nil)
                     }
                     callback(success)
@@ -184,6 +185,10 @@ class Server {
                     song.love = true
                 }
             }
+        }
+        let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
+        if let inboxViewController = navigationController.topViewController as? InboxViewController {
+            inboxViewController.tableView.reloadData()
         }
     }
     

@@ -35,8 +35,19 @@ class ConfirmationCodeViewController: UIViewController {
         self.confirmationCodeTextField.resignFirstResponder()
         self.statusLabel.text = "Loading..."
         self.statusLabel.hidden = false
+        self.goButton.enabled = false
+        self.resendButton.enabled = false
         User.user.code = self.confirmationCodeTextField.text
         Server.server.authenticateUser(self.authenticateCallback)
+    }
+    
+    @IBAction func resendPressed(sender: UIButton) {
+        self.resendButton.enabled = false
+        self.resendButton.titleLabel?.text = "Sending"
+        Server.server.registerUser({success in
+            self.resendButton.titleLabel?.text = "Resend Code"
+            self.resendButton.enabled = true
+        })
     }
     
     func authenticateCallback(success: Bool) {

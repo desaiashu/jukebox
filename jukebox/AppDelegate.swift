@@ -59,9 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentCore() {
         let coreNavigationController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("CoreNavigationController") as! UINavigationController
         window?.rootViewController = coreNavigationController
-        if let inboxViewController = coreNavigationController.topViewController as? InboxViewController {
-            inboxViewController.downloadData()
-        }
     }
     
     func presentPermissions() {
@@ -69,6 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationController = UINavigationController(rootViewController: permissionsViewController)
         navigationController.navigationBarHidden = true
         window?.rootViewController = navigationController
+        Server.server.downloadInbox({})
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent) {
@@ -95,10 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if var pushData = userInfo as? [String:AnyObject] {
             pushData["aps"] = nil
             Server.server.cachePushData(pushData)
-            let navigationController = window?.rootViewController as! UINavigationController
-            if let inboxViewController = navigationController.topViewController as? InboxViewController {
-                inboxViewController.tableView.reloadData()
-            }
         }
     }
 }

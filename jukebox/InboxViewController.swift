@@ -171,8 +171,6 @@ extension InboxViewController: UITableViewDataSource {
             var song = cell.song!
             var rowActions = [UITableViewRowAction]()
             
-            
-            
             var sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Send", handler:
                 { action, indexpath in
                     if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)

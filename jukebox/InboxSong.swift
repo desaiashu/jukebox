@@ -39,7 +39,17 @@ class InboxSong : Object {
         }
     }
     
+    func hear() {
+        if !self.listen {
+            self.realm!.write() {
+                self.listen = true
+            }
+            Server.server.listen(self)
+        }
+    }
+    
     func play() {        
         SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)
+        self.hear()
     }
 }
