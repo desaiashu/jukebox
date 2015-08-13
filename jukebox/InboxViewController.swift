@@ -24,9 +24,7 @@ class InboxViewController: UIViewController {
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     
-    var songs = realm.objects(InboxSong).sorted("date", ascending: false)
-    //Could bump "new" songs to top - unsure how to deal with tapping play
-    //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
+    var songs: Results<InboxSong>!
     
     var inSearch = false {
         didSet {
@@ -44,6 +42,10 @@ class InboxViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton)
+        
+        songs = realm.objects(InboxSong).sorted("date", ascending: false)
+        //Could bump "new" songs to top - unsure how to deal with tapping play
+        //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -205,7 +207,7 @@ extension InboxViewController: UITableViewDataSource {
             }
             var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
                 { action, indexpath in
-                    if SongPlayer.songPlayer.playlist!.count > 1 {
+                    if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute
                         SongPlayer.songPlayer.toggleMute(cell.song!.yt_id, title: cell.song!.title, artist: cell.song!.artist, mute: mute)
                         realm.write() {
