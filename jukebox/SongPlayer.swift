@@ -97,7 +97,6 @@ class SongPlayer : NSObject{
     
     func getStreamUrl(yt_id: String) {
         XCDYouTubeClient.defaultClient().getVideoWithIdentifier(yt_id, completionHandler: { video, error in
-            
             var streamUrl: NSURL?
             if let e = error {
                 if error.domain == XCDYouTubeVideoErrorDomain {
@@ -113,9 +112,8 @@ class SongPlayer : NSObject{
                     }
                 }
             } else {
-                if var u140 = video.streamURLs[140] as? NSURL{
-                    streamUrl = u140
-                } else if var u36 = video.streamURLs[XCDYouTubeVideoQuality.Small240.rawValue] as? NSURL{
+                //Audio only is video.streamURLs[140] but causes delay in notification
+                if var u36 = video.streamURLs[XCDYouTubeVideoQuality.Small240.rawValue] as? NSURL{
                     streamUrl = u36
                 }
             }
@@ -124,7 +122,9 @@ class SongPlayer : NSObject{
                 
                 var playerItem = AVPlayerItem(URL: url)
                 self.playlist[self.loadeditems].item = playerItem
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "songDidEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: playerItem)
+                NSNotificationCenter.defaultCenter().addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: playerItem, queue: NSOperationQueue.mainQueue(), usingBlock: { notification in
+                        self.nextSong()
+                })
                 self.player.insertItem(playerItem, afterItem: nil)
                 
                 self.loadeditems++
@@ -214,10 +214,6 @@ class SongPlayer : NSObject{
                 }
             }
         }
-    }
-    
-    func songDidEnd(notification: NSNotification) {
-        self.nextSong()
     }
     
     func remoteControlReceivedWithEvent(event: UIEvent) {
