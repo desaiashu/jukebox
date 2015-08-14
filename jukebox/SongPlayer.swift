@@ -83,9 +83,7 @@ class SongPlayer : NSObject{
         self.playlist = self.playlist + self.shuffle(oldSongs)
 
         if self.playlist.count > 0 {
-            if self.playlist.count > loadeditems { // If statement covers case where playlist is only 1 long
-                self.getStreamUrl(self.playlist[loadeditems].yt_id)
-            }
+            self.getStreamUrl(self.playlist[loadeditems].yt_id)
             self.setNowPlaying()
         }
     }
