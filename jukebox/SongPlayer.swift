@@ -15,12 +15,13 @@ struct PlaylistSong: Equatable {
     var title: String
     var artist: String
     var item: AVPlayerItem?
+    var duration: Int
 }
 func ==(lhs: PlaylistSong, rhs: PlaylistSong) -> Bool {
     return lhs.yt_id == rhs.yt_id
 }
 func playlistSongFromInboxSong(song: InboxSong)->PlaylistSong {
-    return PlaylistSong(yt_id: song.yt_id, title: song.title, artist: song.artist, item:nil)
+    return PlaylistSong(yt_id: song.yt_id, title: song.title, artist: song.artist, item: nil, duration: 0)
 }
 
 class SongPlayer : NSObject{
@@ -31,11 +32,13 @@ class SongPlayer : NSObject{
     weak var titleLabel: UILabel!
     weak var skipButton: UIButton!
     
+    var periodicTimeObserver: AnyObject?
     var player = AVQueuePlayer() //Actual audio player
     
     var playlist: [PlaylistSong] = []
     var loadeditems = 0
     var currentSongIndex = 0
+    var timePlayed = 0
     
     func setup(playerButton: UIButton, artistLabel: UILabel, titleLabel: UILabel, skipButton: UIButton) {
         
@@ -52,15 +55,29 @@ class SongPlayer : NSObject{
         AVAudioSession.sharedInstance().setActive(true, error: nil)
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
+        periodicTimeObserver = player.addPeriodicTimeObserverForInterval(CMTimeMake(1, 1), queue: dispatch_get_main_queue()) { cmTime in
+            self.timeObserverFired(cmTime)
+        }
+        
         self.createPlaylist(nil)
+    }
+    
+    func timeObserverFired(cmTime: CMTime) {
+        self.timePlayed++
+        if self.timePlayed == self.playlist[self.currentSongIndex].duration {
+            self.nextSong()
+        } else {
+            self.updateMediaPlayer()
+        }
     }
     
     func createPlaylist(startingSong:PlaylistSong?) {
         
-        player.pause()
-        player.removeAllItems()
+        self.player.pause()
+        self.player.removeAllItems()
         self.loadeditems = 0
         self.currentSongIndex = 0
+        self.timePlayed = 0
         
         if var song = startingSong {
             self.playlist = [song]
@@ -97,7 +114,8 @@ class SongPlayer : NSObject{
             var expirationInt = expiration.toInt()
             var currentTime = Int(NSDate().timeIntervalSince1970)+3600 //Give some buffer
             if expirationInt > currentTime {
-                self.createPlayerItem(NSURL(string: urlString)!)
+                let duration = (NSUserDefaults.standardUserDefaults().objectForKey(yt_id+".duration") as? Int ?? 0)
+                self.createPlayerItem(NSURL(string: urlString)!, duration: duration)
                 return //No need to download stuffs
             }
         }
@@ -114,7 +132,7 @@ class SongPlayer : NSObject{
                             realm.delete(objectsToDelete)
                         }
                         self.playlist.removeAtIndex(self.loadeditems)  //TODO
-                        println("this will happen once, but it shouldn't break anything")
+                        println("this might happen once, but it shouldn't break anything")
                         let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                             inboxViewController.tableView.reloadData()
@@ -125,11 +143,12 @@ class SongPlayer : NSObject{
                     }
                 }
             } else {
-                //Audio only is video.streamURLs[140] but causes delay in notification
-                if let url = video.streamURLs[XCDYouTubeVideoQuality.Small240.rawValue] as? NSURL {
+                //Audio only is video.streamURLs[140]
+                if let url = video.streamURLs[140] as? NSURL {
                     NSUserDefaults.standardUserDefaults().setObject(url.absoluteString!, forKey: video.identifier)
+                    NSUserDefaults.standardUserDefaults().setObject(Int(video.duration), forKey: video.identifier+".duration")
                     if self.playlist[self.loadeditems].yt_id == video.identifier {
-                        self.createPlayerItem(url)
+                        self.createPlayerItem(url, duration: Int(video.duration))
                         return //Since every thing else needs to get next streamUrl
                     } else {
                         println("out of sync, likely playlist changed")
@@ -139,12 +158,10 @@ class SongPlayer : NSObject{
         })
     }
     
-    func createPlayerItem(url: NSURL) {
+    func createPlayerItem(url: NSURL, duration: Int) {
         var playerItem = AVPlayerItem(URL: url)
         self.playlist[self.loadeditems].item = playerItem
-        NSNotificationCenter.defaultCenter().addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: playerItem, queue: NSOperationQueue.mainQueue(), usingBlock: { notification in
-            self.nextSong()
-        })
+        self.playlist[self.loadeditems].duration = duration
         self.player.insertItem(playerItem, afterItem: nil)
         
         if self.loadeditems == 0 && self.titleLabel.text != self.playlist[self.loadeditems].title {
@@ -180,7 +197,7 @@ class SongPlayer : NSObject{
     
     //When play on cell tapped
     func play(yt_id: String, title: String, artist: String) {
-        self.createPlaylist(PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil))
+        self.createPlaylist(PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil, duration: 0))
         self.play()
     }
     
@@ -223,9 +240,11 @@ class SongPlayer : NSObject{
         if currentSongIndex >= self.playlist.count {
             self.createPlaylist(nil)
         } else {
+            self.timePlayed = 0
             self.setNowPlaying()
             if self.loadeditems < self.currentSongIndex { //If url hasn't loaded for next song
                 self.playerButton.enabled = false
+                self.getStreamUrl(self.playlist[currentSongIndex].yt_id)
             } else {
                 if self.player.rate == 1.0 {
                     self.triggerListen()
@@ -257,7 +276,7 @@ class SongPlayer : NSObject{
     func mute(yt_id: String, title: String, artist: String) {
         //If mute, remove songs from playlist IF song is after current index
         //      If song removed is next index, set identifier for second player (unless no songs left)
-        if let index = find(self.playlist, PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil)) {
+        if let index = find(self.playlist, PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil, duration: 0)) {
             if index > self.currentSongIndex && index != loadeditems { //If it's currently loading, it will break stuff
                 let playListSong = self.playlist.removeAtIndex(index)
                 self.player.removeItem(playListSong.item)
@@ -268,7 +287,7 @@ class SongPlayer : NSObject{
     
     func unmute(yt_id: String, title: String, artist: String) {
         //If unmute, add song to end of playlist
-        self.playlist.append(PlaylistSong(yt_id: yt_id, title: title, artist: artist, item:nil))
+        self.playlist.append(PlaylistSong(yt_id: yt_id, title: title, artist: artist, item:nil, duration: 0))
         if self.loadeditems == self.playlist.count-1 {
             self.getStreamUrl(self.playlist[self.loadeditems].yt_id)
         }
@@ -278,12 +297,19 @@ class SongPlayer : NSObject{
         let playlistSong = self.playlist[currentSongIndex]
         self.titleLabel.text = playlistSong.title
         self.artistLabel.text = playlistSong.artist
+        self.updateMediaPlayer()
+    }
+    
+    func updateMediaPlayer() {
+        let playlistSong = self.playlist[currentSongIndex]
         let image:UIImage = UIImage(named: "music512")!
         let albumArt = MPMediaItemArtwork(image: image)
         var songInfo: NSMutableDictionary = [
             MPMediaItemPropertyTitle: playlistSong.title,
             MPMediaItemPropertyArtist: playlistSong.artist,
             MPMediaItemPropertyArtwork: albumArt,
+            MPMediaItemPropertyPlaybackDuration: playlistSong.duration,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: self.timePlayed
         ]
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo as [NSObject : AnyObject]
     }
