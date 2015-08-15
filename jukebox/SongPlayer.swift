@@ -98,7 +98,7 @@ class SongPlayer : NSObject{
                     ? [playlistSongFromInboxSong($1)] : [] ) }
         
         self.playlist = self.playlist + self.shuffle(oldSongs)
-
+        
         if self.playlist.count > 0 {
             self.getStreamUrl(self.playlist[loadeditems].yt_id)
             self.setNowPlaying()
@@ -226,7 +226,6 @@ class SongPlayer : NSObject{
     
     func skip() {
         if self.playerButton.enabled { //Protecting against the "loading" case
-            self.player.advanceToNextItem()
             self.nextSong()
             self.skipButton.enabled = false //Protecting against hammering on skip button
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
@@ -237,6 +236,7 @@ class SongPlayer : NSObject{
     
     func nextSong() {
         self.currentSongIndex++
+        self.player.advanceToNextItem()
         if currentSongIndex >= self.playlist.count {
             self.createPlaylist(nil)
         } else {
