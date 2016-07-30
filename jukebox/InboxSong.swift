@@ -50,6 +50,5 @@ class InboxSong : Object {
     
     func play() {        
         SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)
-        self.hear()
     }
 }

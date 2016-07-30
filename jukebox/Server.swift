@@ -249,8 +249,7 @@ class Server {
                             try! realm.write() {
                                 for downloadedSong in songs {
                                     //Save new copy w/ id from server
-                                    let createdSong = realm.create(InboxSong.self, value: downloadedSong, update: true)
-                                    createdSong.listen = true
+                                    realm.create(InboxSong.self, value: downloadedSong, update: true)
                                     
                                     //Delete old copy w/ old id
                                     let old_id = String(song.date)+(downloadedSong["recipient"]! as! String)

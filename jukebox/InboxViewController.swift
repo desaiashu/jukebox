@@ -170,14 +170,14 @@ extension InboxViewController: UITableViewDataSource {
             return nil
         } else if let cell = tableView.cellForRowAtIndexPath(indexPath) as? InboxSongTableViewCell {
             
-            var song = cell.song!
+            let song = cell.song!
             var rowActions = [UITableViewRowAction]()
             
-            var sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Send", handler:
+            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Send", handler:
                 { action, indexpath in
                     if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)
                         .instantiateViewControllerWithIdentifier("SelectFriendsViewController") as? SelectFriendsViewController {
-                            var songToSend = SendSong()
+                            let songToSend = SendSong()
                             songToSend.title = song.title
                             songToSend.artist = song.artist
                             songToSend.yt_id = song.yt_id
@@ -191,7 +191,7 @@ extension InboxViewController: UITableViewDataSource {
             rowActions.append(sendRowAction)
             
             if !song.love && song.sender != User.user.phoneNumber {
-                var loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Love", handler:
+                let loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Love", handler:
                     { action, indexPath in
                         song.heart()
                         self.tableView.editing = false
@@ -205,7 +205,7 @@ extension InboxViewController: UITableViewDataSource {
             if cell.song!.mute {
                 muteTitle = "Unmute"
             }
-            var muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
+            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
                 { action, indexpath in
                     if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute

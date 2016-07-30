@@ -102,7 +102,7 @@ class Permissions {
                     
                     if firstName+lastName != "" {
                         let phoneNumber = ABMultiValueCopyValueAtIndex(phoneNumbers, 0).takeUnretainedValue() as! NSString
-                        var formattedNumber = self.formatPhoneNumber(phoneNumber as String)
+                        let formattedNumber = self.formatPhoneNumber(phoneNumber as String)
                         contacts[formattedNumber] = ["firstName":firstName, "lastName":lastName]
                     }
                 }
@@ -122,7 +122,7 @@ class Permissions {
                             friend.firstName = v["firstName"]!
                             friend.lastName = v["lastName"]!
                         } else {
-                            var newFriend = Friend()
+                            let newFriend = Friend()
                             newFriend.phoneNumber = k
                             newFriend.firstName = v["firstName"]!
                             newFriend.lastName = v["lastName"]!

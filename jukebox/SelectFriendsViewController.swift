@@ -100,7 +100,6 @@ extension SelectFriendsViewController: UITextFieldDelegate {
     }
     
     func flip(sender: UISwitch) {
-        var phoneNumber: String?
         let cell = sender.superview!.superview as! SelectFriendsTableViewCell
         if sender.on {
             self.selectedFriends.append(cell.friend!.phoneNumber)
@@ -117,7 +116,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         //Add "numSent/recieved" to each friend when sending + downloading data, when data downloaded add "lastSent/recieved" timestamp, query for top 5 most sent + 5 most recently sent (save to server?)
         let cell = tableView.dequeueReusableCellWithIdentifier("SelectFriendsCell", forIndexPath: indexPath) as! SelectFriendsTableViewCell
         if cell.friend == nil {
-            cell.selectSwitch.addTarget(self, action: "flip:", forControlEvents: UIControlEvents.ValueChanged)
+            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), forControlEvents: UIControlEvents.ValueChanged)
         }
         if inSearch {
             cell.friend = self.searchResults[indexPath.row]
