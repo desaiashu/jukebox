@@ -1,8 +1,8 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
-#import <MediaPlayer/MediaPlayer.h>
+@import MediaPlayer;
 
 @interface MPMoviePlayerController (BackgroundPlayback)
 

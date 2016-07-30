@@ -11,10 +11,7 @@
 		5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8E1B6DA1430040EF3A /* Alamofire.framework */; };
 		5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8F1B6DA1430040EF3A /* Realm.framework */; };
 		5413DE951B6DA1430040EF3A /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE901B6DA1430040EF3A /* RealmSwift.framework */; };
-		5413DE9D1B6DA2300040EF3A /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE991B6DA2300040EF3A /* Fabric.framework */; };
-		5413DEA01B6DA2300040EF3A /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE9C1B6DA2300040EF3A /* TwitterCore.framework */; };
 		5413DEA21B6DA3B90040EF3A /* PhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5413DEA11B6DA3B80040EF3A /* PhoneNumberViewController.swift */; };
-		544DB5751B6DA7A80090ABFB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 544DB5741B6DA7A80090ABFB /* Crashlytics.framework */; };
 		544DB5771B6DB9910090ABFB /* ConfirmationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5761B6DB9910090ABFB /* ConfirmationCodeViewController.swift */; };
 		544DB5791B6DB9A30090ABFB /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5781B6DB9A30090ABFB /* PermissionsViewController.swift */; };
 		544DB57D1B6DB9CC0090ABFB /* SelectFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB57C1B6DB9CC0090ABFB /* SelectFriendsViewController.swift */; };
@@ -31,6 +28,8 @@
 		54A8CD6F1B6EB6E3009E979A /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */; };
 		54A8CD721B6F0E58009E979A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD711B6F0E58009E979A /* Permissions.swift */; };
 		54A8CD741B6F1F79009E979A /* DialingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54A8CD731B6F1F79009E979A /* DialingCodes.plist */; };
+		54C1B2D61D4C2D7A00FD38B5 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */; };
+		54C1B2D71D4C2D7A00FD38B5 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */; };
 		54E6D8AE1B6D7DE800E603EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */; };
 		54E6D8B01B6D7DE800E603EE /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AF1B6D7DE800E603EE /* InboxViewController.swift */; };
 		54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B11B6D7DE800E603EE /* Main.storyboard */; };
@@ -54,10 +53,7 @@
 		5413DE8E1B6DA1430040EF3A /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		5413DE8F1B6DA1430040EF3A /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		5413DE901B6DA1430040EF3A /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
-		5413DE991B6DA2300040EF3A /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		5413DE9C1B6DA2300040EF3A /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = "<group>"; };
 		5413DEA11B6DA3B80040EF3A /* PhoneNumberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewController.swift; sourceTree = "<group>"; };
-		544DB5741B6DA7A80090ABFB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		544DB5761B6DB9910090ABFB /* ConfirmationCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmationCodeViewController.swift; sourceTree = "<group>"; };
 		544DB5781B6DB9A30090ABFB /* PermissionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		544DB57C1B6DB9CC0090ABFB /* SelectFriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectFriendsViewController.swift; sourceTree = "<group>"; };
@@ -76,6 +72,8 @@
 		54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer.swift; sourceTree = "<group>"; };
 		54A8CD711B6F0E58009E979A /* Permissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		54A8CD731B6F1F79009E979A /* DialingCodes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DialingCodes.plist; sourceTree = "<group>"; };
+		54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		54E6D8A81B6D7DE800E603EE /* jukebox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jukebox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E6D8AC1B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,12 +92,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5413DE911B6DA1430040EF3A /* XCDYouTubeKit.framework in Frameworks */,
-				544DB5751B6DA7A80090ABFB /* Crashlytics.framework in Frameworks */,
+				54C1B2D61D4C2D7A00FD38B5 /* Fabric.framework in Frameworks */,
 				5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */,
 				5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */,
-				5413DEA01B6DA2300040EF3A /* TwitterCore.framework in Frameworks */,
+				54C1B2D71D4C2D7A00FD38B5 /* Crashlytics.framework in Frameworks */,
 				5413DE951B6DA1430040EF3A /* RealmSwift.framework in Frameworks */,
-				5413DE9D1B6DA2300040EF3A /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,9 +113,8 @@
 		5413DE961B6DA1550040EF3A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				544DB5741B6DA7A80090ABFB /* Crashlytics.framework */,
-				5413DE991B6DA2300040EF3A /* Fabric.framework */,
-				5413DE9C1B6DA2300040EF3A /* TwitterCore.framework */,
+				54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */,
+				54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */,
 				5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */,
 				5413DE8E1B6DA1430040EF3A /* Alamofire.framework */,
 				5413DE8F1B6DA1430040EF3A /* Realm.framework */,
@@ -305,6 +301,8 @@
 		54E6D8A01B6D7DE800E603EE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0720;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Ashutosh Desai";
 				TargetAttributes = {
@@ -369,6 +367,8 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/XCDYouTubeKit.framework",
+				"$(SRCROOT)/Fabric.framework",
+				"$(SRCROOT)/Crashlytics.framework",
 			);
 			outputPaths = (
 			);
@@ -545,6 +545,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -553,6 +554,7 @@
 				INFOPLIST_FILE = jukebox/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
@@ -567,6 +569,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: makegameswithus inc.";
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -575,6 +578,7 @@
 				INFOPLIST_FILE = jukebox/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";

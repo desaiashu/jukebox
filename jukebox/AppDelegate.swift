@@ -21,10 +21,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         Fabric.with([Crashlytics()])
         
-        setSchemaVersion(1, Realm.defaultPath, { migration, oldSchemaVersion in
-            if oldSchemaVersion < 1 { }
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(
+            schemaVersion: 1,
+            migrationBlock: { migration, oldSchemaVersion in
+                if oldSchemaVersion < 1 { }
         })
-        realm = Realm()
+        
+        try! realm = Realm()
         
         if let user = realm.objects(User).first {
             User.user = user
@@ -55,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func presentAuthentication() {
-        let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("WelcomeViewController") as! UIViewController
+        let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("WelcomeViewController") 
         let navigationController = UINavigationController(rootViewController: welcomeViewController)
         navigationController.navigationBarHidden = true
         window?.rootViewController = navigationController
@@ -67,14 +70,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func presentPermissions() {
-        let permissionsViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PermissionsViewController") as! UIViewController
+        let permissionsViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PermissionsViewController") 
         let navigationController = UINavigationController(rootViewController: permissionsViewController)
         navigationController.navigationBarHidden = true
         window?.rootViewController = navigationController
         Server.server.downloadInbox({})
     }
     
-    override func remoteControlReceivedWithEvent(event: UIEvent) {
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
         SongPlayer.songPlayer.remoteControlReceivedWithEvent(event)
     }
 

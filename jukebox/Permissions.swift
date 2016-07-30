@@ -79,7 +79,7 @@ class Permissions {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
             
-            let backgroundRealm = Realm()
+            let backgroundRealm = try! Realm()
             
             let allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue() as NSArray
             var contacts = [String:[String:String]]()
@@ -108,11 +108,11 @@ class Permissions {
                 }
             }
             
-            backgroundRealm.write() {
+            try! backgroundRealm.write() {
                 for (k, v) in contacts {
                     if k == userPhoneNumber {
                         dispatch_async(dispatch_get_main_queue()) {
-                            realm.write() {
+                            try! realm.write() {
                                 User.user.firstName = v["firstName"]!
                                 User.user.lastName = v["lastName"]!
                             }
@@ -133,7 +133,7 @@ class Permissions {
             }
             dispatch_async(dispatch_get_main_queue()) {
                 self.checkName()
-                realm.write() {
+                try! realm.write() {
                     User.user.addressBookLoaded = true
                     if firstLoad {
                         self.determineBestAndRecentFriends()
@@ -145,20 +145,20 @@ class Permissions {
     
     func determineBestAndRecentFriends() { //Called from within realm write block
         if User.user.lastUpdated != 0 {
-            var inboxSongs = realm.objects(InboxSong)
+            let inboxSongs = realm.objects(InboxSong)
             for song in inboxSongs {
                 var friendNumber = song["sender"]! as! String
                 if friendNumber == User.user.phoneNumber {
                     friendNumber = song["recipient"]! as! String
                 }
-                var shareDate = song["date"]! as! Int
-                if var friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                let shareDate = song["date"]! as! Int
+                if let friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
                     if shareDate > friend.lastShared {
                         friend.lastShared = shareDate
                     }
-                    friend.numShared++
+                    friend.numShared += 1
                 } else {
-                    var newFriend = Friend()
+                    let newFriend = Friend()
                     newFriend.phoneNumber = friendNumber
                     newFriend.firstName = friendNumber
                     newFriend.lastName = ""
@@ -172,11 +172,11 @@ class Permissions {
     
     func formatPhoneNumber(number: String) -> String {
         
-        var arr = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet)
-        var phoneNumber = "".join(arr)
+        let arr = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet)
+        var phoneNumber = arr.joinWithSeparator("")
 
         if phoneNumber.rangeOfString("+") == nil {
-            if let phoneInt = phoneNumber.toInt() {
+            if let phoneInt = Int(phoneNumber) {
                 phoneNumber = String(phoneInt) //Remove leading 0's
             }
             
@@ -230,20 +230,20 @@ class Permissions {
         }
         alertController.addAction(
             UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
-                if let textField = alertController.textFields?[0] as? UITextField {
+                if let textField = alertController.textFields?[0] {
                     if textField.text != "" {
-                        realm.write() {
+                        try! realm.write() {
                             switch (nameType) {
                             case "First Name":
-                                User.user.firstName = textField.text
+                                User.user.firstName = textField.text!
                             case "Last Name":
-                                User.user.lastName = textField.text
+                                User.user.lastName = textField.text!
                             default:
                                 if textField.text == "" {
                                     //Need better handling of this! maybe just re-request?
                                     User.user.firstName = User.user.phoneNumber
                                 } else {
-                                    let name = textField.text.componentsSeparatedByString(" ")
+                                    let name = textField.text!.componentsSeparatedByString(" ")
                                     User.user.firstName = name[0]
                                     if name.count > 1 {
                                         User.user.lastName = name[1]
@@ -260,14 +260,14 @@ class Permissions {
     
     func enablePush (callback: ()->Void){
         self.pushCallback = callback
-        var type = UIUserNotificationType.Badge | UIUserNotificationType.Alert | UIUserNotificationType.Sound;
-        var setting = UIUserNotificationSettings(forTypes: type, categories: nil);
+        let type: UIUserNotificationType = [UIUserNotificationType.Badge, UIUserNotificationType.Alert, UIUserNotificationType.Sound];
+        let setting = UIUserNotificationSettings(forTypes: type, categories: nil);
         UIApplication.sharedApplication().registerUserNotificationSettings(setting);
         UIApplication.sharedApplication().registerForRemoteNotifications();
     }
     
     func pushEnabled(deviceToken: NSData){
-        realm.write() {
+        try! realm.write() {
             User.user.pushToken = deviceToken.description
                 .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
                 .stringByReplacingOccurrencesOfString(" ", withString: "" )

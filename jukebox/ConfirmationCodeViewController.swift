@@ -24,7 +24,7 @@ class ConfirmationCodeViewController: UIViewController {
         self.resendButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         if identifier == "AuthenticatedSegue" {
             return false
         }
@@ -37,7 +37,7 @@ class ConfirmationCodeViewController: UIViewController {
         self.statusLabel.hidden = false
         self.goButton.enabled = false
         self.resendButton.enabled = false
-        User.user.code = self.confirmationCodeTextField.text
+        User.user.code = self.confirmationCodeTextField.text!
         Server.server.authenticateUser(self.authenticateCallback)
     }
     
@@ -52,7 +52,7 @@ class ConfirmationCodeViewController: UIViewController {
     
     func authenticateCallback(success: Bool) {
         if success {
-            realm.write(){
+            try! realm.write(){
                 realm.add(User.user)
             }
             self.performSegueWithIdentifier("AuthenticatedSegue", sender: self)

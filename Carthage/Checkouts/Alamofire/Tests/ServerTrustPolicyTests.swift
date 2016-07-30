@@ -1,24 +1,26 @@
-// MultipartFormDataTests.swift
 //
-// Copyright (c) 2014–2015 Alamofire Software Foundation (http://alamofire.org/)
+//  MultipartFormDataTests.swift
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+//  Copyright (c) 2014-2016 Alamofire Software Foundation (http://alamofire.org/)
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 import Alamofire
 import Foundation
@@ -33,7 +35,7 @@ private struct TestCertificates {
     static let IntermediateCA2 = TestCertificates.certificateWithFileName("alamofire-signing-ca2")
 
     // Leaf Certificates - Signed by CA1
-    static let LeafWildcard = TestCertificates.certificateWithFileName("*.alamofire.org")
+    static let LeafWildcard = TestCertificates.certificateWithFileName("wildcard.alamofire.org")
     static let LeafMultipleDNSNames = TestCertificates.certificateWithFileName("multiple-dns-names")
     static let LeafSignedByCA1 = TestCertificates.certificateWithFileName("signed-by-ca1")
     static let LeafDNSNameAndURI = TestCertificates.certificateWithFileName("test.alamofire.org")
@@ -49,7 +51,7 @@ private struct TestCertificates {
         class Bundle {}
         let filePath = NSBundle(forClass: Bundle.self).pathForResource(fileName, ofType: "cer")!
         let data = NSData(contentsOfFile: filePath)!
-        let certificate = SecCertificateCreateWithData(nil, data).takeRetainedValue()
+        let certificate = SecCertificateCreateWithData(nil, data)!
 
         return certificate
     }
@@ -79,12 +81,11 @@ private struct TestPublicKeys {
     static let LeafValidURI = TestPublicKeys.publicKeyForCertificate(TestCertificates.LeafValidURI)
 
     static func publicKeyForCertificate(certificate: SecCertificate) -> SecKey {
-        let policy = SecPolicyCreateBasicX509().takeRetainedValue()
-        var unmanagedTrust: Unmanaged<SecTrust>?
-        let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &unmanagedTrust)
+        let policy = SecPolicyCreateBasicX509()
+        var trust: SecTrust?
+        SecTrustCreateWithCertificates(certificate, policy, &trust)
 
-        let trust = unmanagedTrust!.takeRetainedValue()
-        let publicKey = SecTrustCopyPublicKey(trust).takeRetainedValue()
+        let publicKey = SecTrustCopyPublicKey(trust!)!
 
         return publicKey
     }
@@ -185,12 +186,11 @@ private enum TestTrusts {
     }
 
     static func trustWithCertificates(certificates: [SecCertificate]) -> SecTrust {
-        let policy = SecPolicyCreateBasicX509().takeRetainedValue()
-        var unmanagedTrust: Unmanaged<SecTrust>?
-        SecTrustCreateWithCertificates(certificates, policy, &unmanagedTrust)
-        let trust = unmanagedTrust!.takeRetainedValue()
+        let policy = SecPolicyCreateBasicX509()
+        var trust: SecTrust?
+        SecTrustCreateWithCertificates(certificates, policy, &trust)
 
-        return trust
+        return trust!
     }
 }
 
@@ -199,7 +199,7 @@ private enum TestTrusts {
 class ServerTrustPolicyTestCase: BaseTestCase {
     func setRootCertificateAsLoneAnchorCertificateForTrust(trust: SecTrust) {
         SecTrustSetAnchorCertificates(trust, [TestCertificates.RootCA])
-        SecTrustSetAnchorCertificatesOnly(trust, 1)
+        SecTrustSetAnchorCertificatesOnly(trust, true)
     }
 
     func trustIsValid(trust: SecTrust) -> Bool {
@@ -233,7 +233,7 @@ class ServerTrustPolicyExplorationBasicX509PolicyValidationTestCase: ServerTrust
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateBasicX509().takeRetainedValue()]
+        let policies = [SecPolicyCreateBasicX509()]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -246,7 +246,7 @@ class ServerTrustPolicyExplorationBasicX509PolicyValidationTestCase: ServerTrust
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateBasicX509().takeRetainedValue()]
+        let policies = [SecPolicyCreateBasicX509()]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -259,7 +259,7 @@ class ServerTrustPolicyExplorationBasicX509PolicyValidationTestCase: ServerTrust
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateBasicX509().takeRetainedValue()]
+        let policies = [SecPolicyCreateBasicX509()]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -272,7 +272,7 @@ class ServerTrustPolicyExplorationBasicX509PolicyValidationTestCase: ServerTrust
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateBasicX509().takeRetainedValue()]
+        let policies = [SecPolicyCreateBasicX509()]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -294,7 +294,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -307,7 +307,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -320,7 +320,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -333,7 +333,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -346,7 +346,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -359,7 +359,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -373,9 +373,9 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
 
         // When
         let policies = [
-            SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue(),
-            SecPolicyCreateSSL(1, "blog.alamofire.org").takeRetainedValue(),
-            SecPolicyCreateSSL(1, "www.alamofire.org").takeRetainedValue()
+            SecPolicyCreateSSL(true, "test.alamofire.org"),
+            SecPolicyCreateSSL(true, "blog.alamofire.org"),
+            SecPolicyCreateSSL(true, "www.alamofire.org")
         ]
         SecTrustSetPolicies(trust, policies)
 
@@ -389,7 +389,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, nil).takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, nil)]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -402,7 +402,7 @@ class ServerTrustPolicyExplorationSSLPolicyValidationTestCase: ServerTrustPolicy
         setRootCertificateAsLoneAnchorCertificateForTrust(trust)
 
         // When
-        let policies = [SecPolicyCreateSSL(1, "test.alamofire.org").takeRetainedValue()]
+        let policies = [SecPolicyCreateSSL(true, "test.alamofire.org")]
         SecTrustSetPolicies(trust, policies)
 
         // Then
@@ -433,7 +433,10 @@ class ServerTrustPolicyPerformDefaultEvaluationTestCase: ServerTrustPolicyTestCa
     func testThatNonAnchoredRootCertificateChainFailsEvaluationWithoutHostValidation() {
         // Given
         let host = "test.alamofire.org"
-        let serverTrust = TestTrusts.LeafValidDNSName.trust
+        let serverTrust = TestTrusts.trustWithCertificates([
+            TestCertificates.LeafValidDNSName,
+            TestCertificates.IntermediateCA2
+        ])
         let serverTrustPolicy = ServerTrustPolicy.PerformDefaultEvaluation(validateHost: false)
 
         // When
@@ -504,7 +507,10 @@ class ServerTrustPolicyPerformDefaultEvaluationTestCase: ServerTrustPolicyTestCa
     func testThatNonAnchoredRootCertificateChainFailsEvaluationWithHostValidation() {
         // Given
         let host = "test.alamofire.org"
-        let serverTrust = TestTrusts.LeafValidDNSName.trust
+        let serverTrust = TestTrusts.trustWithCertificates([
+            TestCertificates.LeafValidDNSName,
+            TestCertificates.IntermediateCA2
+        ])
         let serverTrustPolicy = ServerTrustPolicy.PerformDefaultEvaluation(validateHost: true)
 
         // When
@@ -1380,5 +1386,35 @@ class ServerTrustPolicyCustomEvaluationTestCase: ServerTrustPolicyTestCase {
 
         // Then
         XCTAssertFalse(serverTrustIsValid, "server trust should not pass evaluation")
+    }
+}
+
+// MARK: -
+
+class ServerTrustPolicyCertificatesInBundleTestCase: ServerTrustPolicyTestCase {
+    func testOnlyValidCertificatesAreDetected() {
+        // Given
+        // Files present in bundle in the form of type+encoding+extension [key|cert][DER|PEM].[cer|crt|der|key|pem]
+        // certDER.cer: DER-encoded well-formed certificate
+        // certDER.crt: DER-encoded well-formed certificate
+        // certDER.der: DER-encoded well-formed certificate
+        // certPEM.*: PEM-encoded well-formed certificates, expected to fail: Apple API only handles DER encoding
+        // devURandomGibberish.crt: Random data, should fail
+        // keyDER.der: DER-encoded key, not a certificate, should fail
+
+        // When
+        let certificates = ServerTrustPolicy.certificatesInBundle(
+            NSBundle(forClass: ServerTrustPolicyCertificatesInBundleTestCase.self)
+        )
+
+        // Then
+        // Expectation: 18 well-formed certificates in the test bundle plus 4 invalid certificates.
+        #if os(OSX)
+            // For some reason, OSX is allowing all certificates to be considered valid. Need to file a
+            // rdar demonstrating this behavior.
+            XCTAssertEqual(certificates.count, 22, "Expected 22 well-formed certificates")
+        #else
+            XCTAssertEqual(certificates.count, 18, "Expected 18 well-formed certificates")
+        #endif
     }
 }

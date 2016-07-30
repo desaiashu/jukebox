@@ -32,7 +32,7 @@ class InboxSong : Object {
     
     func heart() {
         if !self.love {
-            self.realm!.write() {
+            try! self.realm!.write() {
                 self.love = true
             }
             Server.server.love(self)
@@ -41,7 +41,7 @@ class InboxSong : Object {
     
     func hear() {
         if !self.listen {
-            self.realm!.write() {
+            try! self.realm!.write() {
                 self.listen = true
             }
             Server.server.listen(self)

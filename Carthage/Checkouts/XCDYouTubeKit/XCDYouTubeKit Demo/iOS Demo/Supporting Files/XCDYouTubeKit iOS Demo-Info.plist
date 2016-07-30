@@ -7,23 +7,23 @@
 	<key>CFBundleDisplayName</key>
 	<string>YouTube ▶</string>
 	<key>CFBundleExecutable</key>
-	<string>${EXECUTABLE_NAME}</string>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
 	<dict/>
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>ch.pitaya.xcdyoutubekit.demo.ios</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>${CURRENT_PROJECT_VERSION}</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -55,7 +55,7 @@
 	<array>
 		<dict>
 			<key>Standard</key>
-			<string>EdeVaT-zZt4</string>
+			<string>6v2L2UGZJAM</string>
 		</dict>
 		<dict>
 			<key>VEVO (Mumford &amp; Sons)</key>
@@ -79,11 +79,7 @@
 		</dict>
 		<dict>
 			<key>Live Video</key>
-			<string>i2-MnWWoL6M</string>
-		</dict>
-		<dict>
-			<key>DVR Video</key>
-			<string>H7iQ4sAf0OE</string>
+			<string>NUDvGbEFfKk</string>
 		</dict>
 		<dict>
 			<key>Restricted Video</key>

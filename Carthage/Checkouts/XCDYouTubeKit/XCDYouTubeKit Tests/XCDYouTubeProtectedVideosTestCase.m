@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
 #import "XCDYouTubeKitTestCase.h"
@@ -135,11 +135,31 @@
 		XCTAssertTrue(video.duration > 0);
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:video.streamURLs[@(XCDYouTubeVideoQualityHD720)]];
 		request.HTTPMethod = @"HEAD";
-		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+		NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError)
 		{
 			XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
 			[expectation fulfill];
 		}];
+		[dataTask resume];
+	}];
+	[self waitForExpectationsWithTimeout:5 handler:nil];
+}
+
+- (void) testDASHAudioWithRateBypassIsPlayable
+{
+	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
+	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"tg00YEETFzg" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
+	{
+		NSURL *dashAudioURL = video.streamURLs[@140];
+		XCTAssertTrue([dashAudioURL.query containsString:@"ratebypass=yes"]);
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:dashAudioURL];
+		request.HTTPMethod = @"HEAD";
+		NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError)
+		{
+			XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+			[expectation fulfill];
+		}];
+		[dataTask resume];
 	}];
 	[self waitForExpectationsWithTimeout:5 handler:nil];
 }
@@ -248,13 +268,13 @@
 {
 	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
 	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"Pgum6OT_VH8" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
-	 {
-		 XCTAssertNil(video);
-		 XCTAssertEqualObjects(error.domain, XCDYouTubeVideoErrorDomain);
-		 XCTAssertEqual(error.code, XCDYouTubeErrorRestrictedPlayback);
-		 XCTAssertEqualObjects(error.localizedDescription, @"This video contains content from WMG. It is restricted from playback on certain sites. Watch on YouTube");
-		 [expectation fulfill];
-	 }];
+	{
+		XCTAssertNil(video);
+		XCTAssertEqualObjects(error.domain, XCDYouTubeVideoErrorDomain);
+		XCTAssertEqual(error.code, XCDYouTubeErrorRestrictedPlayback);
+		XCTAssertEqualObjects(error.localizedDescription, @"This video contains content from WMG. It is restricted from playback on certain sites. Watch on YouTube");
+		[expectation fulfill];
+	}];
 	[self waitForExpectationsWithTimeout:1 handler:nil];
 }
 

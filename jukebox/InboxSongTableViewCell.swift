@@ -69,7 +69,7 @@ class InboxSongTableViewCell: UITableViewCell {
         self.playButton.enabled = false
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
             if let playButton = self.playButton {
-                self.playButton.enabled = true
+                playButton.enabled = true
             }
         }
     }

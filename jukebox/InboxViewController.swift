@@ -101,7 +101,7 @@ extension InboxViewController: UITextFieldDelegate {
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if newString != "" {
             
             Server.server.searchSong(newString, callback: { tempResults in
@@ -210,7 +210,7 @@ extension InboxViewController: UITableViewDataSource {
                     if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute
                         SongPlayer.songPlayer.toggleMute(cell.song!.yt_id, title: cell.song!.title, artist: cell.song!.artist, mute: mute)
-                        realm.write() {
+                        try! realm.write() {
                             for sameSong in realm.objects(InboxSong).filter("yt_id = %@", cell.song!.yt_id)
                             {
                                 sameSong.mute = mute

@@ -1,24 +1,26 @@
-// TLSEvaluationTests.swift
 //
-// Copyright (c) 2014–2015 Alamofire Software Foundation (http://alamofire.org/)
+//  TLSEvaluationTests.swift
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+//  Copyright (c) 2014-2016 Alamofire Software Foundation (http://alamofire.org/)
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 import Alamofire
 import Foundation
@@ -33,7 +35,7 @@ private struct TestCertificates {
         class Bundle {}
         let filePath = NSBundle(forClass: Bundle.self).pathForResource(fileName, ofType: "cer")!
         let data = NSData(contentsOfFile: filePath)!
-        let certificate = SecCertificateCreateWithData(nil, data).takeRetainedValue()
+        let certificate = SecCertificateCreateWithData(nil, data)!
 
         return certificate
     }
@@ -47,12 +49,11 @@ private struct TestPublicKeys {
     static let Leaf = TestPublicKeys.publicKeyForCertificate(TestCertificates.Leaf)
 
     static func publicKeyForCertificate(certificate: SecCertificate) -> SecKey {
-        let policy = SecPolicyCreateBasicX509().takeRetainedValue()
-        var unmanagedTrust: Unmanaged<SecTrust>?
-        let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &unmanagedTrust)
+        let policy = SecPolicyCreateBasicX509()
+        var trust: SecTrust?
+        SecTrustCreateWithCertificates(certificate, policy, &trust)
 
-        let trust = unmanagedTrust!.takeRetainedValue()
-        let publicKey = SecTrustCopyPublicKey(trust).takeRetainedValue()
+        let publicKey = SecTrustCopyPublicKey(trust!)!
 
         return publicKey
     }
@@ -76,7 +77,7 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
 
     func testThatExpiredCertificateRequestFailsWithNoServerTrustPolicy() {
         // Given
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         let manager = Manager(configuration: configuration)
         var error: NSError?
 
@@ -84,14 +85,19 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorServerCertificateUntrusted, "error should be NSURLErrorServerCertificateUntrusted")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorServerCertificateUntrusted, "code should be untrusted server certficate")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 
     // MARK: Server Trust Policy - Perform Default Tests
@@ -104,21 +110,26 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorCancelled, "error should be NSURLErrorCancelled")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorCancelled, "code should be cancelled")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 
     // MARK: Server Trust Policy - Certificate Pinning Tests
@@ -135,21 +146,26 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorCancelled, "error should be NSURLErrorCancelled")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorCancelled, "code should be cancelled")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 
     func testThatExpiredCertificateRequestFailsWhenPinningAllCertificatesWithCertificateChainValidation() {
@@ -164,21 +180,26 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorCancelled, "error should be NSURLErrorCancelled")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorCancelled, "code should be cancelled")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 
     func testThatExpiredCertificateRequestSucceedsWhenPinningLeafCertificateWithoutCertificateChainValidation() {
@@ -193,17 +214,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -221,17 +242,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -249,18 +270,18 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
-        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+
         // Then
         XCTAssertNil(error, "error should be nil")
     }
@@ -279,21 +300,26 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorCancelled, "error should be NSURLErrorCancelled")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorCancelled, "code should be cancelled")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 
     func testThatExpiredCertificateRequestSucceedsWhenPinningLeafPublicKeyWithoutCertificateChainValidation() {
@@ -308,17 +334,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -336,17 +362,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -364,17 +390,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -390,17 +416,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -422,17 +448,17 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -452,20 +478,25 @@ class TLSEvaluationExpiredLeafCertificateTestCase: BaseTestCase {
             serverTrustPolicyManager: ServerTrustPolicyManager(policies: policies)
         )
 
-        let expectation = expectationWithDescription("\(URL)")
+        weak var expectation = expectationWithDescription("\(URL)")
         var error: NSError?
 
         // When
         manager.request(.GET, URL)
             .response { _, _, _, responseError in
                 error = responseError
-                expectation.fulfill()
+                expectation?.fulfill()
             }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(error, "error should not be nil")
-        XCTAssertEqual(error?.code ?? -1, NSURLErrorCancelled, "error should be NSURLErrorCancelled")
+
+        if let code = error?.code {
+            XCTAssertEqual(code, NSURLErrorCancelled, "code should be cancelled")
+        } else {
+            XCTFail("error should be an NSError")
+        }
     }
 }

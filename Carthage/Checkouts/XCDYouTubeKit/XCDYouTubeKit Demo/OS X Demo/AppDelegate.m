@@ -1,16 +1,19 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
 #import "AppDelegate.h"
 
+@import AVFoundation;
+
 #import <CocoaLumberjack/CocoaLumberjack.h>
+#import <XCDYouTubeKit/XCDYouTubeKit.h>
 
 @implementation AppDelegate
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	[[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"VideoIdentifier": @"EdeVaT-zZt4" }];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"VideoIdentifier": @"6v2L2UGZJAM" }];
 	
 	[DDLog addLogger:[DDASLLogger sharedInstance]];
 }

@@ -1,6 +1,8 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
+
+@import AppKit;
 
 int main(int argc, const char * argv[])
 {

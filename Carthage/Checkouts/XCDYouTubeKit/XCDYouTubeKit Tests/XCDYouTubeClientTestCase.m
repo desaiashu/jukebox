@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
 #import "XCDYouTubeKitTestCase.h"
@@ -65,7 +65,7 @@
 - (void) testLiveVideo
 {
 	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
-	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"i2-MnWWoL6M" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
+	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"-UW1ZwZpVzI" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
 	{
 		XCTAssertNil(error);
 		XCTAssertNil(video.expirationDate);
@@ -74,27 +74,20 @@
 		XCTAssertNotNil(video.mediumThumbnailURL);
 		XCTAssertNotNil(video.largeThumbnailURL);
 		XCTAssertEqual(video.streamURLs.count, 1U);
-		XCTAssertTrue(video.duration > 0);
 		XCTAssertNotNil(video.streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming]);
 		[expectation fulfill];
 	}];
-	[self waitForExpectationsWithTimeout:1 handler:nil];
+	[self waitForExpectationsWithTimeout:5 handler:nil];
 }
 
-- (void) testDVRVideo
+- (void) testExpiredLiveVideo
 {
 	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
-	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"H7iQ4sAf0OE" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
-	{
-		XCTAssertNil(error);
-		XCTAssertNil(video.expirationDate);
-		XCTAssertNotNil(video.title);
-		XCTAssertNotNil(video.smallThumbnailURL);
-		XCTAssertNotNil(video.mediumThumbnailURL);
-		XCTAssertNotNil(video.largeThumbnailURL);
-		XCTAssertEqual(video.streamURLs.count, 1U);
-		XCTAssertTrue(video.duration > 0);
-		XCTAssertNotNil(video.streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming]);
+	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"i2-MnWWoL6M" completionHandler:^(XCDYouTubeVideo *video, NSError *error) {
+		XCTAssertNil(video);
+		XCTAssertEqualObjects(error.domain, XCDYouTubeVideoErrorDomain);
+		XCTAssertEqual(error.code, XCDYouTubeErrorRestrictedPlayback);
+		XCTAssertEqualObjects(error.localizedDescription, @"This live event has ended.");
 		[expectation fulfill];
 	}];
 	[self waitForExpectationsWithTimeout:5 handler:nil];
@@ -102,6 +95,8 @@
 
 - (void) testRestrictedVideo
 {
+	char *logLevel = getenv("XCDYouTubeKitLogLevel");
+	setenv("XCDYouTubeKitLogLevel", "1", 1);
 	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
 	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"1kIsylLeHHU" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
 	{
@@ -112,6 +107,9 @@
 		[expectation fulfill];
 	}];
 	[self waitForExpectationsWithTimeout:5 handler:nil];
+	
+	if (logLevel)
+		setenv("XCDYouTubeKitLogLevel", logLevel, 1);
 }
 
 - (void) testRemovedVideo
@@ -131,12 +129,13 @@
 - (void) testGeoblockedVideo
 {
 	__weak XCTestExpectation *expectation = [self expectationWithDescription:@""];
-	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"vwkFTztnl7Y" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
+	[[XCDYouTubeClient defaultClient] getVideoWithIdentifier:@"Exf63KPXF6w" completionHandler:^(XCDYouTubeVideo *video, NSError *error)
 	{
 		XCTAssertNil(video);
 		XCTAssertEqualObjects(error.domain, XCDYouTubeVideoErrorDomain);
 		XCTAssertEqual(error.code, XCDYouTubeErrorRestrictedPlayback);
 		XCTAssertEqualObjects(error.localizedDescription, @"The uploader has not made this video available in your country.");
+		XCTAssertEqualObjects(error.userInfo[XCDYouTubeAllowedCountriesUserInfoKey], [NSSet setWithArray:(@[ @"American Samoa", @"Canada", @"Guam", @"Northern Mariana Islands", @"Puerto Rico", @"U.S. Outlying Islands", @"United States", @"U.S. Virgin Islands" ])]);
 		[expectation fulfill];
 	}];
 	[self waitForExpectationsWithTimeout:5 handler:nil];
@@ -227,7 +226,7 @@
 		XCTAssertEqual(underlyingError.code, NSURLErrorNotConnectedToInternet);
 		[expectation fulfill];
 	}];
-	[self waitForExpectationsWithTimeout:1 handler:nil];
+	[self waitForExpectationsWithTimeout:5 handler:nil];
 }
 
 - (void) testUsingClientOnNonMainThread

@@ -70,7 +70,7 @@ class SelectFriendsViewController: UIViewController {
     }
     
     @IBAction func sendPressed(sender: UIButton) {
-        self.song!.recipients = ",".join(self.selectedFriends)
+        self.song!.recipients = self.selectedFriends.joinWithSeparator(",")
         Server.server.cacheAndSendSong(self.song!)
         self.navigationController!.popViewControllerAnimated(true)
     }
@@ -88,7 +88,7 @@ extension SelectFriendsViewController: UITextFieldDelegate {
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if newString != "" {
             let predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ OR lastName BEGINSWITH[c] %@", newString, newString)
             self.searchResults = realm.objects(Friend).filter(predicate).sorted("firstName")
@@ -105,7 +105,7 @@ extension SelectFriendsViewController: UITextFieldDelegate {
         if sender.on {
             self.selectedFriends.append(cell.friend!.phoneNumber)
         } else {
-            self.selectedFriends.removeAtIndex(find(self.selectedFriends, cell.friend!.phoneNumber)!)
+            self.selectedFriends.removeAtIndex(self.selectedFriends.indexOf(cell.friend!.phoneNumber)!)
         }
     }
 }
@@ -131,7 +131,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
                 cell.friend = self.allFriends[indexPath.row]
             }
         }
-        cell.selectSwitch.on = contains(self.selectedFriends, cell.friend!.phoneNumber)
+        cell.selectSwitch.on = self.selectedFriends.contains(cell.friend!.phoneNumber)
         
         return cell
     }

@@ -1,10 +1,11 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
 #import "PlayerEventLogger.h"
 
 #import <CocoaLumberjack/CocoaLumberjack.h>
+@import MediaPlayer;
 
 @implementation PlayerEventLogger
 

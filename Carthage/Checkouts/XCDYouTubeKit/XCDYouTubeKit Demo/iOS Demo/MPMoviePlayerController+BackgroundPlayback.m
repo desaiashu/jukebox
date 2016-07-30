@@ -1,10 +1,11 @@
 //
-//  Copyright (c) 2013-2015 Cédric Luthi. All rights reserved.
+//  Copyright (c) 2013-2016 Cédric Luthi. All rights reserved.
 //
 
 #import "MPMoviePlayerController+BackgroundPlayback.h"
 
-#import <objc/runtime.h>
+@import AVFoundation;
+@import ObjectiveC;
 
 #ifndef NSFoundationVersionNumber_iOS_7_0
 #define NSFoundationVersionNumber_iOS_7_0 1047.2

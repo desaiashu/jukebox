@@ -1,24 +1,26 @@
-// CacheTests.swift
 //
-// Copyright (c) 2014–2015 Alamofire Software Foundation (http://alamofire.org/)
+//  CacheTests.swift
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+//  Copyright (c) 2014-2016 Alamofire Software Foundation (http://alamofire.org/)
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 import Alamofire
 import Foundation
@@ -26,13 +28,13 @@ import XCTest
 
 /**
     This test case tests all implemented cache policies against various `Cache-Control` header values. These tests
-    are meant to cover the main cases of `Cache-Control` header usage, but are no means exhaustive.
+    are meant to cover the main cases of `Cache-Control` header usage, but are by no means exhaustive.
 
     These tests work as follows:
 
     - Set up an `NSURLCache`
     - Set up an `Alamofire.Manager`
-    - Execute requests for all `Cache-Control` headers values to prime the `NSURLCache` with cached responses
+    - Execute requests for all `Cache-Control` header values to prime the `NSURLCache` with cached responses
     - Start up a new test
     - Execute another round of the same requests with a given `NSURLRequestCachePolicy`
     - Verify whether the response came from the cache or from the network
@@ -73,7 +75,7 @@ class CacheTestCase: BaseTestCase {
     var URLCache: NSURLCache!
     var manager: Manager!
 
-    let URLString = "http://httpbin.org/response-headers"
+    let URLString = "https://httpbin.org/response-headers"
     let requestTimeout: NSTimeInterval = 30
 
     var requests: [String: NSURLRequest] = [:]
@@ -96,7 +98,7 @@ class CacheTestCase: BaseTestCase {
                 let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
                 configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
                 configuration.requestCachePolicy = .UseProtocolCachePolicy
-                configuration.URLCache = self.URLCache
+                configuration.URLCache = URLCache
 
                 return configuration
             }()
@@ -111,6 +113,9 @@ class CacheTestCase: BaseTestCase {
 
     override func tearDown() {
         super.tearDown()
+
+        requests.removeAll()
+        timestamps.removeAll()
 
         URLCache.removeAllCachedResponses()
     }
@@ -127,14 +132,14 @@ class CacheTestCase: BaseTestCase {
     */
     func primeCachedResponses() {
         let dispatchGroup = dispatch_group_create()
-        let highPriorityDispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+        let serialQueue = dispatch_queue_create("com.alamofire.cache-tests", DISPATCH_QUEUE_SERIAL)
 
         for cacheControl in CacheControl.allValues {
             dispatch_group_enter(dispatchGroup)
 
             let request = startRequest(
                 cacheControl: cacheControl,
-                queue: highPriorityDispatchQueue,
+                queue: serialQueue,
                 completion: { _, response in
                     let timestamp = response!.allHeaderFields["Date"] as! String
                     self.timestamps[cacheControl] = timestamp
@@ -147,21 +152,21 @@ class CacheTestCase: BaseTestCase {
         }
 
         // Wait for all requests to complete
-        dispatch_group_wait(dispatchGroup, dispatch_time(DISPATCH_TIME_NOW, Int64(10.0 * Float(NSEC_PER_SEC))))
+        dispatch_group_wait(dispatchGroup, dispatch_time(DISPATCH_TIME_NOW, Int64(30.0 * Float(NSEC_PER_SEC))))
 
-        // Pause for 1 additional second to ensure all timestamps will be different
+        // Pause for 2 additional seconds to ensure all timestamps will be different
         dispatch_group_enter(dispatchGroup)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1.0 * Float(NSEC_PER_SEC))), highPriorityDispatchQueue) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Float(NSEC_PER_SEC))), serialQueue) {
             dispatch_group_leave(dispatchGroup)
         }
 
-        // Wait for our 1 second pause to complete
+        // Wait for our 2 second pause to complete
         dispatch_group_wait(dispatchGroup, dispatch_time(DISPATCH_TIME_NOW, Int64(10.0 * Float(NSEC_PER_SEC))))
     }
 
     // MARK: - Request Helper Methods
 
-    func URLRequest(#cacheControl: String, cachePolicy: NSURLRequestCachePolicy) -> NSURLRequest {
+    func URLRequest(cacheControl cacheControl: String, cachePolicy: NSURLRequestCachePolicy) -> NSURLRequest {
         let parameters = ["Cache-Control": cacheControl]
         let URL = NSURL(string: URLString)!
         let URLRequest = NSMutableURLRequest(URL: URL, cachePolicy: cachePolicy, timeoutInterval: requestTimeout)
@@ -171,19 +176,18 @@ class CacheTestCase: BaseTestCase {
     }
 
     func startRequest(
-        #cacheControl: String,
+        cacheControl cacheControl: String,
         cachePolicy: NSURLRequestCachePolicy = .UseProtocolCachePolicy,
         queue: dispatch_queue_t = dispatch_get_main_queue(),
-        completion: (NSURLRequest, NSHTTPURLResponse?) -> Void)
+        completion: (NSURLRequest?, NSHTTPURLResponse?) -> Void)
         -> NSURLRequest
     {
         let urlRequest = URLRequest(cacheControl: cacheControl, cachePolicy: cachePolicy)
-
         let request = manager.request(urlRequest)
+
         request.response(
             queue: queue,
-            responseSerializer: Request.dataResponseSerializer(),
-            completionHandler: { _, response, _, _ in
+            completionHandler: { _, response, data, _ in
                 completion(request.request, response)
             }
         )
@@ -194,7 +198,7 @@ class CacheTestCase: BaseTestCase {
     // MARK: - Test Execution and Verification
 
     func executeTest(
-        #cachePolicy: NSURLRequestCachePolicy,
+        cachePolicy cachePolicy: NSURLRequestCachePolicy,
         cacheControl: String,
         shouldReturnCachedResponse: Bool)
     {
@@ -203,19 +207,22 @@ class CacheTestCase: BaseTestCase {
         var response: NSHTTPURLResponse?
 
         // When
-        let request = startRequest(cacheControl: cacheControl, cachePolicy: cachePolicy) { _, responseResponse in
+        startRequest(cacheControl: cacheControl, cachePolicy: cachePolicy) { _, responseResponse in
             response = responseResponse
             expectation.fulfill()
         }
 
-        waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
 
         // Then
         verifyResponse(response, forCacheControl: cacheControl, isCachedResponse: shouldReturnCachedResponse)
     }
 
     func verifyResponse(response: NSHTTPURLResponse?, forCacheControl cacheControl: String, isCachedResponse: Bool) {
-        let cachedResponseTimestamp = timestamps[cacheControl]!
+        guard let cachedResponseTimestamp = timestamps[cacheControl] else {
+            XCTFail("cached response timestamp should not be nil")
+            return
+        }
 
         if let
             response = response,
@@ -234,17 +241,15 @@ class CacheTestCase: BaseTestCase {
     // MARK: - Cache Helper Methods
 
     private func isCachedResponseForNoStoreHeaderExpected() -> Bool {
-        var storedInCache = false
-
         #if os(iOS)
-            let operatingSystemVersion = NSOperatingSystemVersion(majorVersion: 8, minorVersion: 3, patchVersion: 0)
-
-            if !NSProcessInfo().isOperatingSystemAtLeastVersion(operatingSystemVersion) {
-                storedInCache = true
+            if #available(iOS 8.3, *) {
+                return false
+            } else {
+                return true
             }
+        #else
+            return false
         #endif
-
-        return storedInCache
     }
 
     // MARK: - Tests
@@ -335,12 +340,12 @@ class CacheTestCase: BaseTestCase {
             var response: NSHTTPURLResponse?
 
             // When
-            let request = startRequest(cacheControl: CacheControl.NoStore, cachePolicy: cachePolicy) { _, responseResponse in
+            startRequest(cacheControl: CacheControl.NoStore, cachePolicy: cachePolicy) { _, responseResponse in
                 response = responseResponse
                 expectation.fulfill()
             }
 
-            waitForExpectationsWithTimeout(defaultTimeout, handler: nil)
+            waitForExpectationsWithTimeout(timeout, handler: nil)
 
             // Then
             XCTAssertNil(response, "response should be nil")

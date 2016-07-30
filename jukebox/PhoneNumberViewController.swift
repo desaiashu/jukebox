@@ -23,7 +23,7 @@ class PhoneNumberViewController: UIViewController {
         User.user.code = ""
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         if identifier == "RegisteredSegue" {
             return false
         }
@@ -32,12 +32,12 @@ class PhoneNumberViewController: UIViewController {
     
     @IBAction func goPressed(sender: UIButton){
         self.phoneNumberTextField.resignFirstResponder()
-        var phoneNumber = phoneNumberTextField.text
+        var phoneNumber = phoneNumberTextField.text!
         if phoneNumber != "" {
-            if let phoneInt = phoneNumber.toInt() {
+            if let phoneInt = Int(phoneNumber) {
                 phoneNumber = String(phoneInt) //Remove leading 0's, need to enable this for longer numbers
             }
-            if count(phoneNumber) == 10 && Permissions.permissions.localDialingCode == "1" { //Automatically including 1 for US numbers
+            if phoneNumber.characters.count == 10 && Permissions.permissions.localDialingCode == "1" { //Automatically including 1 for US numbers
                 phoneNumber = "1".stringByAppendingString(phoneNumber)
             }
             User.user.phoneNumber = "+".stringByAppendingString(phoneNumber)
