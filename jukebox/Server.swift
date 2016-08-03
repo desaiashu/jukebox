@@ -308,15 +308,11 @@ class Server {
         if (songString.rangeOfString(" - ")?.startIndex) != nil {
             var newString = songString
             
-            print (newString)
             newString = self.stripParens(newString)
             newString = self.stripParens(newString)
             newString = self.stripBrackets(newString)
             newString = self.stripBrackets(newString)
             // Hack to catch multiple sets of parens or brackets
-            
-            print(newString)
-            print("")
             
             let stringsToRemove = ["Official Music Video","Official Music Video","Official Video","Official Audio","Video Official","Lyric Video","Audio Only","Lyrics","Official Cover Video","VEVO Presents","Full Lyric Video","Explicit","On Screen"]
             for string in stringsToRemove {

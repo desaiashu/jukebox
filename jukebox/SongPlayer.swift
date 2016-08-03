@@ -40,6 +40,8 @@ class SongPlayer : NSObject{
     var currentSongIndex = 0
     var timePlayed = 0
     
+    var buffering = false
+    
     func setup(playerButton: UIButton, artistLabel: UILabel, titleLabel: UILabel, skipButton: UIButton) {
         
         self.playerButton = playerButton
@@ -61,7 +63,7 @@ class SongPlayer : NSObject{
         }
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
-        periodicTimeObserver = player.addPeriodicTimeObserverForInterval(CMTimeMake(1, 1), queue: dispatch_get_main_queue()) { cmTime in
+        periodicTimeObserver = self.player.addPeriodicTimeObserverForInterval(CMTimeMake(1, 1), queue: dispatch_get_main_queue()) { cmTime in
             self.timeObserverFired(cmTime)
         }
         
@@ -69,12 +71,29 @@ class SongPlayer : NSObject{
     }
     
     func timeObserverFired(cmTime: CMTime) {
-        self.timePlayed += 1
+        
+        if player.currentTime().timescale == 0 {
+            self.timePlayed = 0
+        } else {
+            self.timePlayed = Int(Double(player.currentTime().value)/Double(player.currentTime().timescale))
+        }
+        
+        if self.timePlayed == 1 { // Once song starts playing
+            self.triggerListen() // This needs to go here to ensure it's not called if a song doesn't actually play
+            
+            buffering = false
+            self.playerButton.enabled = true
+            //TODO stop animation
+        }
+
         if self.timePlayed == self.playlist[self.currentSongIndex].duration {
             self.nextSong()
         } else {
             self.updateMediaPlayer()
         }
+
+        // TODO: Buffering in middle of song 
+        // If in .1 seconds timeplayed hasn't changed, and the rate is 1.0, buffering = true?
     }
     
     func createPlaylist(startingSong:PlaylistSong?) {
@@ -219,16 +238,24 @@ class SongPlayer : NSObject{
     func play() {
         if self.loadeditems == 0 {
             self.playerButton.enabled = false
-        } else {
-            self.triggerListen()
         }
         self.player.play()
         self.playerButton.setTitle("Pause", forState: UIControlState.Normal)
+        
+        if self.timePlayed == 0 {
+            self.buffering = true
+            self.playerButton.enabled = false
+            //TODO start animation
+        }
     }
     
     func pause() {
         self.player.pause()
         self.playerButton.setTitle("Play", forState: UIControlState.Normal)
+        
+        self.buffering = false
+        self.playerButton.enabled = false
+        //TODO stop animation
     }
     
     func skip() {

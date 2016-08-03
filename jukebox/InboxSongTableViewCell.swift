@@ -67,10 +67,19 @@ class InboxSongTableViewCell: UITableViewCell {
         self.backgroundColor = UIColor.whiteColor()
         
         self.playButton.enabled = false
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+        self.checkBuffering()
+    }
+    
+    func checkBuffering() {
+        if !SongPlayer.songPlayer.buffering {
             if let playButton = self.playButton {
                 playButton.enabled = true
             }
+        } else {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+                self.checkBuffering()
+            }
         }
+        
     }
 }
