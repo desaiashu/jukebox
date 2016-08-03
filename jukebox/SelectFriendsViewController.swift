@@ -90,7 +90,13 @@ extension SelectFriendsViewController: UITextFieldDelegate {
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if newString != "" {
-            let predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ OR lastName BEGINSWITH[c] %@", newString, newString)
+            let query = newString.componentsSeparatedByString(" ")
+            let first = query[0]
+            var predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ OR lastName BEGINSWITH[c] %@", first, first)
+            if query.count > 11{
+                let last = query[1]
+                predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ AND lastName BEGINSWITH[c] %@", first, last)
+            }
             self.searchResults = realm.objects(Friend).filter(predicate).sorted("firstName")
         } else {
             self.searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")

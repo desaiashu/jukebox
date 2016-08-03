@@ -308,21 +308,75 @@ class Server {
         if (songString.rangeOfString(" - ")?.startIndex) != nil {
             var newString = songString
             
-            let stringsToRemove = ["Official Music Video","Official Music Video","Official Video","Official Audio","Video Official","Lyric Video","Audio Only","Lyrics","Official Cover Video","VEVO Presents","Full Lyric Video","Explicit","On Screen","[]","[ ]","()","( )"]
+            print (newString)
+            newString = self.stripParens(newString)
+            newString = self.stripParens(newString)
+            newString = self.stripBrackets(newString)
+            newString = self.stripBrackets(newString)
+            // Hack to catch multiple sets of parens or brackets
+            
+            print(newString)
+            print("")
+            
+            let stringsToRemove = ["Official Music Video","Official Music Video","Official Video","Official Audio","Video Official","Lyric Video","Audio Only","Lyrics","Official Cover Video","VEVO Presents","Full Lyric Video","Explicit","On Screen"]
             for string in stringsToRemove {
                 newString = newString.stringByReplacingOccurrencesOfString(string, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch)
             }
             
-            let startIndexOfDash = newString.rangeOfString(" - ")?.startIndex
-            let endIndexOfDash = newString.rangeOfString(" - ")?.endIndex
-            let artist = newString.substringToIndex(startIndexOfDash!).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
-            let title = newString.substringFromIndex(endIndexOfDash!).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
-            
-            return ["artist":artist, "title":title];
-            
-        } else {
-            return nil
+            if let rangeOfDash = newString.rangeOfString(" - ") {
+                let artist = newString.substringToIndex(rangeOfDash.startIndex).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+                var title = newString.substringFromIndex(rangeOfDash.endIndex).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+                
+                if let startIndexOfSecondDash = title.rangeOfString(" - ")?.startIndex {
+                    title = title.substringToIndex(startIndexOfSecondDash).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+                }
+                
+                return ["artist":artist, "title":title];
+            }
         }
         
+        return nil
+    }
+    
+    func stripParens(string: String) -> String {
+        if let rangeOfBracket = string.rangeOfString("(") {
+            
+            let startIndexOfBracket = rangeOfBracket.startIndex
+            if let endIndexOfBracket = string.rangeOfString(")")?.endIndex {
+                let pre = string.substringToIndex(startIndexOfBracket).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+                let contents = string.substringWithRange(startIndexOfBracket..<endIndexOfBracket)
+                let post = string.substringFromIndex(endIndexOfBracket)
+                
+                if contents.rangeOfString("Remix") != nil || string.rangeOfString("remix") != nil || string.rangeOfString("REMIX") != nil || contents.rangeOfString("Cover") != nil || string.rangeOfString("cover") != nil || string.rangeOfString("COVER") != nil {
+                    return string //If centerpart contains remix or cover, don't remove parens
+                } else {
+                    return pre.stringByAppendingString(post)
+                }
+                
+            } //What if parens aren't closed?
+        }
+        
+        return string
+    }
+    
+    func stripBrackets(string: String) -> String {
+        if let rangeOfBracket = string.rangeOfString("[") {
+            
+            let startIndexOfBracket = rangeOfBracket.startIndex
+            if let endIndexOfBracket = string.rangeOfString("]")?.endIndex {
+                let pre = string.substringToIndex(startIndexOfBracket).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+                let contents = string.substringWithRange(startIndexOfBracket..<endIndexOfBracket)
+                let post = string.substringFromIndex(endIndexOfBracket)
+                
+                if contents.rangeOfString("Remix") != nil || string.rangeOfString("remix") != nil || string.rangeOfString("REMIX") != nil || contents.rangeOfString("Cover") != nil || string.rangeOfString("cover") != nil || string.rangeOfString("COVER") != nil {
+                    return string //If centerpart contains remix or cover, don't remove brackets
+                } else {
+                    return pre.stringByAppendingString(post)
+                }
+                
+            } //What if brackets aren't closed?
+        }
+        
+        return string
     }
 }

@@ -250,6 +250,7 @@ class SongPlayer : NSObject{
             self.timePlayed = 0
             self.setNowPlaying()
             if self.loadeditems < self.currentSongIndex { //If url hasn't loaded for next song
+                print("not yet loaded")
                 self.playerButton.enabled = false
                 self.getStreamUrl(self.playlist[currentSongIndex].yt_id)
             } else {
@@ -286,10 +287,14 @@ class SongPlayer : NSObject{
         //If mute, remove songs from playlist IF song is after current index
         //      If song removed is next index, set identifier for second player (unless no songs left)
         if let index = self.playlist.indexOf(PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil, duration: 0)) {
-            if index > self.currentSongIndex && index != loadeditems { //If it's currently loading, it will break stuff
-                let playlistSong = self.playlist.removeAtIndex(index)
-                self.player.removeItem(playlistSong.item!)
-                loadeditems -= 1
+            if index != loadeditems { //If it's currently loading, it will break stuff
+                if index == self.currentSongIndex {
+                    self.skip()
+                } else if index > self.currentSongIndex {
+                    let playlistSong = self.playlist.removeAtIndex(index)
+                    self.player.removeItem(playlistSong.item!)
+                    loadeditems -= 1
+                }
             }
         }
     }

@@ -113,8 +113,12 @@ class Permissions {
                     if k == userPhoneNumber {
                         dispatch_async(dispatch_get_main_queue()) {
                             try! realm.write() {
-                                User.user.firstName = v["firstName"]!
-                                User.user.lastName = v["lastName"]!
+                                if v["firstName"] != "Me" && v["firstName"] != "me" && v["firstName"] != "" {
+                                    User.user.firstName = v["firstName"]!
+                                }
+                                if v["lastName"] != "" {
+                                    User.user.lastName = v["lastName"]!
+                                }
                             }
                         }
                     } else {
@@ -227,6 +231,7 @@ class Permissions {
             default:
                 textField.placeholder = "First Last"
             }
+            textField.autocapitalizationType = UITextAutocapitalizationType.Words
         }
         alertController.addAction(
             UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
