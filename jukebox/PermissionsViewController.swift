@@ -17,32 +17,32 @@ class PermissionsViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.accessContactsButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
-        self.enablePushButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+        self.accessContactsButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.enablePushButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
     }
     
-    @IBAction func accessContacts(sender: UIButton) {
+    @IBAction func accessContacts(_ sender: UIButton) {
         Permissions.permissions.authorizeAddressBook { success in
             if success {
-                self.accessContactsButton.enabled = false
-                if self.enablePushButton.enabled == false {
+                self.accessContactsButton.isEnabled = false
+                if self.enablePushButton.isEnabled == false {
                     self.next()
                 }
             }
         }
     }
     
-    @IBAction func enablePush(sender: UIButton) {
+    @IBAction func enablePush(_ sender: UIButton) {
         Permissions.permissions.enablePush({
-            self.enablePushButton.enabled = false
-            if self.accessContactsButton.enabled == false {
+            self.enablePushButton.isEnabled = false
+            if self.accessContactsButton.isEnabled == false {
                 self.next()
             }
         })
     }
     
     func next() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.presentCore()
     }
 }

@@ -25,10 +25,10 @@ class InboxSongTableViewCell: UITableViewCell {
                 self.artistLabel.text = song.artist
                 self.senderLabel.text = song.sender
                 
-                self.playButton.enabled = true
+                self.playButton.isEnabled = true
                 //Might want to do this once in intializer
-                self.playButton.setTitle("...", forState: UIControlState.Disabled)
-                self.playButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+                self.playButton.setTitle("...", for: UIControlState.disabled)
+                self.playButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
                 
                 var friendNumber: String?
                 if song.sender == User.user.phoneNumber {
@@ -38,7 +38,7 @@ class InboxSongTableViewCell: UITableViewCell {
                     } else {
                         self.directionLabel.text = "to"
                     }
-                    self.backgroundColor = UIColor.whiteColor()
+                    self.backgroundColor = UIColor.white
                 } else {
                     friendNumber = song.sender
                     if song.love {
@@ -47,13 +47,13 @@ class InboxSongTableViewCell: UITableViewCell {
                         self.directionLabel.text = "from"
                     }
                     if song.listen {
-                        self.backgroundColor = UIColor.whiteColor()
+                        self.backgroundColor = UIColor.white
                     } else {
                         self.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.1)
                     }
                 }
                 //Might want to cache this in song download
-                if let friendName = realm.objects(Friend).filter("phoneNumber == %@", friendNumber!).first?.firstName {
+                if let friendName = realm.objects(Friend.self).filter("phoneNumber == %@", friendNumber!).first?.firstName {
                     self.senderLabel.text = friendName
                 } else {
                     self.senderLabel.text = friendNumber
@@ -62,21 +62,21 @@ class InboxSongTableViewCell: UITableViewCell {
         }
     }
     
-    @IBAction func playPressed(sender: UIButton) {
+    @IBAction func playPressed(_ sender: UIButton) {
         self.song?.play()
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
         
-        self.playButton.enabled = false
+        self.playButton.isEnabled = false
         self.checkBuffering()
     }
     
     func checkBuffering() {
         if !SongPlayer.songPlayer.buffering {
             if let playButton = self.playButton {
-                playButton.enabled = true
+                playButton.isEnabled = true
             }
         } else {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 self.checkBuffering()
             }
         }

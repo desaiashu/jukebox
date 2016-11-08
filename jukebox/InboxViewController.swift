@@ -28,7 +28,7 @@ class InboxViewController: UIViewController {
     
     var inSearch = false {
         didSet {
-            self.cancelButton.hidden = !inSearch
+            self.cancelButton.isHidden = !inSearch
             self.tableView.reloadData()
         }
     }
@@ -43,12 +43,12 @@ class InboxViewController: UIViewController {
         super.viewDidLoad()
         SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton)
         
-        songs = realm.objects(InboxSong).sorted("date", ascending: false)
+        songs = realm.objects(InboxSong.self).sorted(byProperty: "date", ascending: false)
         //Could bump "new" songs to top - unsure how to deal with tapping play
         //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.clearSearch()
     }
@@ -67,41 +67,41 @@ class InboxViewController: UIViewController {
         self.inSearch = false
     }
     
-    @IBAction func cancelPressed(sender: UIButton) {
+    @IBAction func cancelPressed(_ sender: UIButton) {
         self.clearSearch()
     }
     
-    @IBAction func playerButtonPressed(sender: UIButton) {
+    @IBAction func playerButtonPressed(_ sender: UIButton) {
         SongPlayer.songPlayer.playerButtonPressed()
     }
     
-    @IBAction func skipButtonPressed(sender: UIButton) {
+    @IBAction func skipButtonPressed(_ sender: UIButton) {
         SongPlayer.songPlayer.skip()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SendSongSegue" {
             self.searchTextField.resignFirstResponder()
-            if let selectFriendsViewController = segue.destinationViewController as? SelectFriendsViewController {
-                selectFriendsViewController.song = searchResults[sender!.tag]
+            if let selectFriendsViewController = segue.destination as? SelectFriendsViewController {
+                selectFriendsViewController.song = searchResults[(sender! as AnyObject).tag]
             }
         }
     }
 }
 
 extension InboxViewController: UITextFieldDelegate {
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         self.inSearch = true
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let newString = (textField.text! as NSString).replacingCharacters(in: range, with: string)
         if newString != "" {
             
             Server.server.searchSong(newString, callback: { tempResults in
@@ -119,26 +119,26 @@ extension InboxViewController: UITextFieldDelegate {
 
 extension InboxViewController: UITableViewDataSource {
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if inSearch {
-            let cell = tableView.dequeueReusableCellWithIdentifier("SelectSongCell", forIndexPath: indexPath) as! SelectSongTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SelectSongCell", for: indexPath) as! SelectSongTableViewCell
             cell.song = searchResults[indexPath.row]
             cell.sendButton.tag = indexPath.row
             return cell
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("InboxSongCell", forIndexPath: indexPath) as! InboxSongTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "InboxSongCell", for: indexPath) as! InboxSongTableViewCell
             cell.song = songs[indexPath.row]
             return cell
         }
         
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    private func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.01
     }
     
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    private func tableView(_ tableView: UITableView!, heightForRowAtIndexPath indexPath: IndexPath!) -> CGFloat {
         if inSearch {
             return SelectSongTableViewCell.rowHeight
         } else {
@@ -146,7 +146,7 @@ extension InboxViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if inSearch {
             return self.searchResults.count
         } else {
@@ -154,7 +154,7 @@ extension InboxViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if inSearch {
             return false
         } else {
@@ -162,39 +162,39 @@ extension InboxViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    private func tableView(_ tableView: UITableView, editActionsForRowAtIndexPath indexPath: IndexPath) -> [AnyObject]? {
         if inSearch {
             return nil
-        } else if let cell = tableView.cellForRowAtIndexPath(indexPath) as? InboxSongTableViewCell {
+        } else if let cell = tableView.cellForRow(at: indexPath) as? InboxSongTableViewCell {
             
             let song = cell.song!
             var rowActions = [UITableViewRowAction]()
             
-            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Send", handler:
+            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Send", handler:
                 { action, indexpath in
                     if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)
-                        .instantiateViewControllerWithIdentifier("SelectFriendsViewController") as? SelectFriendsViewController {
+                        .instantiateViewController(withIdentifier: "SelectFriendsViewController") as? SelectFriendsViewController {
                             let songToSend = SendSong()
                             songToSend.title = song.title
                             songToSend.artist = song.artist
                             songToSend.yt_id = song.yt_id
                             selectFriendsViewController.song = songToSend
-                            self.navigationController?.showViewController(selectFriendsViewController, sender: self)
+                            self.navigationController?.show(selectFriendsViewController, sender: self)
                     }
-                    self.tableView.editing = false
+                    self.tableView.isEditing = false
             });
             
             sendRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.4)
             rowActions.append(sendRowAction)
             
             if !song.love && song.sender != User.user.phoneNumber {
-                let loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Love", handler:
+                let loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Love", handler:
                     { action, indexPath in
                         song.heart()
-                        self.tableView.editing = false
+                        self.tableView.isEditing = false
                         cell.directionLabel.text = "you love"
                 });
                 loveRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.55)
@@ -205,19 +205,19 @@ extension InboxViewController: UITableViewDataSource {
             if cell.song!.mute {
                 muteTitle = "Unmute"
             }
-            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: muteTitle, handler:
+            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: muteTitle, handler:
                 { action, indexpath in
                     if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute
                         SongPlayer.songPlayer.toggleMute(cell.song!.yt_id, title: cell.song!.title, artist: cell.song!.artist, mute: mute)
                         try! realm.write() {
-                            for sameSong in realm.objects(InboxSong).filter("yt_id = %@", cell.song!.yt_id)
+                            for sameSong in realm.objects(InboxSong.self).filter("yt_id = %@", cell.song!.yt_id)
                             {
                                 sameSong.mute = mute
                             }
                         }
                     }
-                    self.tableView.editing = false
+                    self.tableView.isEditing = false
             });
             muteRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.2)
             rowActions.append(muteRowAction)

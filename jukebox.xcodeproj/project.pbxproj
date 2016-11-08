@@ -36,6 +36,7 @@
 		54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B41B6D7DE800E603EE /* Images.xcassets */; };
 		54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B61B6D7DE800E603EE /* LaunchScreen.xib */; };
 		54E6D8C41B6D7DE800E603EE /* jukeboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */; };
+		54EE281A1DD12C61009FCCC2 /* Montserrat in Resources */ = {isa = PBXBuildFile; fileRef = 54EE28191DD12C61009FCCC2 /* Montserrat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		54E6D8BD1B6D7DE800E603EE /* jukeboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jukeboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E6D8C21B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jukeboxTests.swift; sourceTree = "<group>"; };
+		54EE28191DD12C61009FCCC2 /* Montserrat */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Montserrat; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +234,7 @@
 		54E6D8AB1B6D7DE800E603EE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				54EE28191DD12C61009FCCC2 /* Montserrat */,
 				54A8CD731B6F1F79009E979A /* DialingCodes.plist */,
 				54E6D8AC1B6D7DE800E603EE /* Info.plist */,
 			);
@@ -309,9 +312,11 @@
 					54E6D8A71B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 92JVKG2EZK;
+						LastSwiftMigration = 0810;
 					};
 					54E6D8BC1B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
+						LastSwiftMigration = 0810;
 						TestTargetID = 54E6D8A71B6D7DE800E603EE;
 					};
 				};
@@ -340,6 +345,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54EE281A1DD12C61009FCCC2 /* Montserrat in Resources */,
 				54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */,
 				54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */,
 				54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */,
@@ -544,6 +550,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 92JVKG2EZK;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -551,13 +558,14 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = jukebox/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -568,6 +576,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 92JVKG2EZK;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -575,12 +584,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = jukebox/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -600,6 +610,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Debug;
@@ -616,6 +627,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Release;

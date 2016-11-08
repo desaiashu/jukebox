@@ -20,54 +20,54 @@ class ConfirmationCodeViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.goButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
-        self.resendButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+        self.goButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.resendButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == "AuthenticatedSegue" {
             return false
         }
         return true
     }
     
-    @IBAction func goPressed(sender: UIButton) {
+    @IBAction func goPressed(_ sender: UIButton) {
         self.confirmationCodeTextField.resignFirstResponder()
         self.statusLabel.text = "Loading..."
-        self.statusLabel.hidden = false
-        self.goButton.enabled = false
-        self.resendButton.enabled = false
+        self.statusLabel.isHidden = false
+        self.goButton.isEnabled = false
+        self.resendButton.isEnabled = false
         User.user.code = self.confirmationCodeTextField.text!
         Server.server.authenticateUser(self.authenticateCallback)
     }
     
-    @IBAction func resendPressed(sender: UIButton) {
-        self.resendButton.enabled = false
+    @IBAction func resendPressed(_ sender: UIButton) {
+        self.resendButton.isEnabled = false
         self.resendButton.titleLabel?.text = "Sending"
         Server.server.registerUser({success in
             self.resendButton.titleLabel?.text = "Resend Code"
-            self.resendButton.enabled = true
+            self.resendButton.isEnabled = true
         })
     }
     
-    func authenticateCallback(success: Bool) {
+    func authenticateCallback(_ success: Bool) {
         if success {
             try! realm.write(){
                 realm.add(User.user)
             }
-            self.performSegueWithIdentifier("AuthenticatedSegue", sender: self)
+            self.performSegue(withIdentifier: "AuthenticatedSegue", sender: self)
         } else {
             //This method should also take in an error code (ie if you're not connected to the server)
             self.statusLabel.text = "Incorrect code or error connecting to server"
-            self.goButton.enabled = true
-            self.resendButton.enabled = true
+            self.goButton.isEnabled = true
+            self.resendButton.isEnabled = true
             User.user.code = ""
         }
     }
 }
 
 extension ConfirmationCodeViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }

@@ -18,28 +18,28 @@ class SelectFriendsViewController: UIViewController {
     
     var song: SendSong?
     
-    var bestFriends = realm.objects(Friend).filter("numShared > 0").sorted("numShared", ascending: false)
+    var bestFriends = realm.objects(Friend.self).filter("numShared > 0").sorted(byProperty: "numShared", ascending: false)
     var recentFriends: Results<Friend>?
-    var allFriends = realm.objects(Friend).sorted("firstName")
+    var allFriends = realm.objects(Friend.self).sorted(byProperty: "firstName")
     
     var selectedFriends: [String] = [] {
         didSet {
             if self.selectedFriends.count == 0 {
-                sendButton.enabled = false
+                sendButton.isEnabled = false
             } else {
-                sendButton.enabled = true
+                sendButton.isEnabled = true
             }
         }
     }
     
     var inSearch = false {
         didSet {
-            self.cancelButton.hidden = !inSearch
+            self.cancelButton.isHidden = !inSearch
             self.tableView.reloadData()
         }
     }
     
-    var searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'") {
+    var searchResults = realm.objects(Friend.self).filter("firstName BEGINSWITH '.!?'") {
         didSet {
             self.tableView.reloadData()
         }
@@ -48,7 +48,7 @@ class SelectFriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        self.sendButton.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
+        self.sendButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
         
         let numBestFriends = min(self.bestFriends.count, 3)
         var bestFriendNumbers = [String]()
@@ -57,72 +57,72 @@ class SelectFriendsViewController: UIViewController {
                 bestFriendNumbers.append(self.bestFriends[i].phoneNumber)
             }
         }
-        self.recentFriends = realm.objects(Friend).filter("lastShared > 0 AND NOT phoneNumber in %@", bestFriendNumbers).sorted("lastShared", ascending: false)
+        self.recentFriends = realm.objects(Friend.self).filter("lastShared > 0 AND NOT phoneNumber in %@", bestFriendNumbers).sorted(byProperty: "lastShared", ascending: false)
     }
     
-    @IBAction func cancelPressed(sender: UIButton) {
+    @IBAction func cancelPressed(_ sender: UIButton) {
         self.searchTextField.text = ""
         self.searchTextField.resignFirstResponder()
         
-        self.searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
+        self.searchResults = realm.objects(Friend.self).filter("firstName BEGINSWITH '.!?'")
         
         self.inSearch = false
     }
     
-    @IBAction func sendPressed(sender: UIButton) {
-        self.song!.recipients = self.selectedFriends.joinWithSeparator(",")
+    @IBAction func sendPressed(_ sender: UIButton) {
+        self.song!.recipients = self.selectedFriends.joined(separator: ",")
         Server.server.cacheAndSendSong(self.song!)
-        self.navigationController!.popViewControllerAnimated(true)
+        self.navigationController!.popViewController(animated: true)
     }
 }
 
 extension SelectFriendsViewController: UITextFieldDelegate {
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         self.inSearch = true
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let newString = (textField.text! as NSString).replacingCharacters(in: range, with: string)
         if newString != "" {
-            let query = newString.componentsSeparatedByString(" ")
+            let query = newString.components(separatedBy: " ")
             let first = query[0]
             var predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ OR lastName BEGINSWITH[c] %@", first, first)
-            if query.count > 11{
+            if query.count > 1 {
                 let last = query[1]
                 predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ AND lastName BEGINSWITH[c] %@", first, last)
             }
-            self.searchResults = realm.objects(Friend).filter(predicate).sorted("firstName")
+            self.searchResults = realm.objects(Friend.self).filter(predicate).sorted(byProperty: "firstName")
         } else {
-            self.searchResults = realm.objects(Friend).filter("firstName BEGINSWITH '.!?'")
+            self.searchResults = realm.objects(Friend.self).filter("firstName BEGINSWITH '.!?'")
         }
         
         return true
     }
     
-    func flip(sender: UISwitch) {
+    func flip(_ sender: UISwitch) {
         let cell = sender.superview!.superview as! SelectFriendsTableViewCell
-        if sender.on {
+        if sender.isOn {
             self.selectedFriends.append(cell.friend!.phoneNumber)
         } else {
-            self.selectedFriends.removeAtIndex(self.selectedFriends.indexOf(cell.friend!.phoneNumber)!)
+            self.selectedFriends.remove(at: self.selectedFriends.index(of: cell.friend!.phoneNumber)!)
         }
     }
 }
 
 extension SelectFriendsViewController: UITableViewDataSource {
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //TODO create sections for recent / selected?
         //Add "numSent/recieved" to each friend when sending + downloading data, when data downloaded add "lastSent/recieved" timestamp, query for top 5 most sent + 5 most recently sent (save to server?)
-        let cell = tableView.dequeueReusableCellWithIdentifier("SelectFriendsCell", forIndexPath: indexPath) as! SelectFriendsTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SelectFriendsCell", for: indexPath) as! SelectFriendsTableViewCell
         if cell.friend == nil {
-            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), forControlEvents: UIControlEvents.ValueChanged)
+            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), for: UIControlEvents.valueChanged)
         }
         if inSearch {
             cell.friend = self.searchResults[indexPath.row]
@@ -136,12 +136,12 @@ extension SelectFriendsViewController: UITableViewDataSource {
                 cell.friend = self.allFriends[indexPath.row]
             }
         }
-        cell.selectSwitch.on = self.selectedFriends.contains(cell.friend!.phoneNumber)
+        cell.selectSwitch.isOn = self.selectedFriends.contains(cell.friend!.phoneNumber)
         
         return cell
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if inSearch {
             return 1
         } else {
@@ -149,7 +149,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    private func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if inSearch {
             return 0.0
         } else {
@@ -157,11 +157,11 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    private func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if inSearch {
             return nil
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("SelectFriendsHeader") as! SelectFriendsTableViewHeader
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SelectFriendsHeader") as! SelectFriendsTableViewHeader
             switch (section) {
             case 0:
                 cell.headerLabel.text = "Best Friends"
@@ -174,11 +174,11 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    private func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.01
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if inSearch {
             return self.searchResults.count
         } else {

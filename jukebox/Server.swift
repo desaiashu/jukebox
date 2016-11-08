@@ -20,12 +20,12 @@ class Server {
     static let server = Server()
     
     func checkVersion() {
-        Alamofire.request(.GET, k.server_url+"version")
+        Alamofire.request(k.server_url+"version")
             .responseJSON { response in
                 if let result = response.result.value as? [String:AnyObject] {
                     let latestVersion = result["version"]! as! String
-                    let currentVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
-                    if currentVersion.compare(latestVersion, options:NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedAscending {
+                    let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+                    if currentVersion.compare(latestVersion, options:NSString.CompareOptions.numeric) == ComparisonResult.orderedAscending {
                         let forced = result["forced"]! as! Bool
                         let url = result["url"]! as! String
                         self.promptUserToUpdate(forced, url: url)
@@ -34,7 +34,7 @@ class Server {
         }
     }
     
-    func promptUserToUpdate(forced: Bool, url: String) {
+    func promptUserToUpdate(_ forced: Bool, url: String) {
         var title: String?
         var message: String?
         if forced {
@@ -44,25 +44,25 @@ class Server {
             title = "Update Available"
             message = "A new update is available, tap update to download"
         }
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         if !forced {
-            alertController.addAction(UIAlertAction(title: "Later", style: UIAlertActionStyle.Cancel, handler:nil))
+            alertController.addAction(UIAlertAction(title: "Later", style: UIAlertActionStyle.cancel, handler:nil))
         }
         alertController.addAction(
-            UIAlertAction(title: "Update", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
-                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+            UIAlertAction(title: "Update", style: UIAlertActionStyle.default, handler: { UIAlertAction in
+                UIApplication.shared.openURL(URL(string: url)!)
             })
         )
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
     }
     
-    func registerUser(callback: (Bool)->Void) {
-        Alamofire.request(.POST, k.server_url+"join", parameters: ["phone_number":User.user.phoneNumber], encoding: .JSON)
+    func registerUser(_ callback: @escaping (Bool)->Void) {
+        Alamofire.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
-                        Answers.logCustomEventWithName("Register", customAttributes:nil)
+                        Answers.logCustomEvent(withName: "Register", customAttributes:nil)
                     }
                     callback(success)
                 } else {
@@ -71,15 +71,15 @@ class Server {
         }
     }
     
-    func authenticateUser(callback: (Bool)->Void) {
+    func authenticateUser(_ callback: @escaping (Bool)->Void) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"confirm", parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: .JSON)
+        Alamofire.request(k.server_url+"confirm", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
                         self.downloadInbox({}) //Preload inbox
-                        Answers.logCustomEventWithName("Authenticate", customAttributes:nil)
+                        Answers.logCustomEvent(withName: "Authenticate", customAttributes:nil)
                     }
                     callback(success)
                 } else {
@@ -90,12 +90,12 @@ class Server {
     
     func sendPushToken() {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"pushtoken", parameters: ["phone_number":user.phoneNumber, "code":user.code, "push_token":user.pushToken], encoding: .JSON)
+        Alamofire.request(k.server_url+"pushtoken", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "push_token":user.pushToken], encoding: JSONEncoding.default)
     }
     
-    func downloadInbox(callback: ()->Void) {
+    func downloadInbox(_ callback: @escaping ()->Void) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"inbox", parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: .JSON)
+        Alamofire.request(k.server_url+"inbox", method: .post, parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:AnyObject] {
                     if let inbox = result["inbox"] as? [[String:AnyObject]] {
@@ -112,7 +112,7 @@ class Server {
                                     }
                                     
                                     let shareDate = song["date"]! as! Int
-                                    if let friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                                    if let friend = realm.objects(Friend.self).filter("phoneNumber == %@", friendNumber).first {
                                         if shareDate > friend.lastShared {
                                             friend.lastShared = shareDate
                                         }
@@ -142,9 +142,9 @@ class Server {
     }
     
     //Might want to resend these if it fails the first time
-    func listen(song: InboxSong) {
+    func listen(_ song: InboxSong) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"listen", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: .JSON)
+        Alamofire.request(k.server_url+"listen", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:Bool] {
                     if !result["success"]! {
@@ -158,12 +158,12 @@ class Server {
                     }
                 }
             }
-        Answers.logCustomEventWithName("Listen", customAttributes: nil)
+        Answers.logCustomEvent(withName: "Listen", customAttributes: nil)
     }
     
-    func love(song: InboxSong) {
+    func love(_ song: InboxSong) {
         let user = User.user
-        Alamofire.request(.POST, k.server_url+"love", parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: .JSON)
+        Alamofire.request(k.server_url+"love", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:Bool] {
                     if !result["success"]! {
@@ -177,35 +177,35 @@ class Server {
                     }
                 }
             }
-        Answers.logCustomEventWithName("Love", customAttributes: nil)
+        Answers.logCustomEvent(withName: "Love", customAttributes: nil)
     }
     
-    func cachePushData(pushData: [String:AnyObject]) {
+    func cachePushData(_ pushData: [String:AnyObject]) {
         if let sharedSong = pushData["share"] as? [String:AnyObject] {
             try! realm.write() {
                 realm.create(InboxSong.self, value: sharedSong, update: true)
             }
         } else if let listenId = pushData["listen"] as? String {
-            if let song = realm.objects(InboxSong).filter("id = %@", listenId).first {
+            if let song = realm.objects(InboxSong.self).filter("id = %@", listenId).first {
                 try! realm.write() {
                     song.listen = true
                 }
             }
         } else if let loveId = pushData["love"] as? String {
-            if let song = realm.objects(InboxSong).filter("id = %@", loveId).first {
+            if let song = realm.objects(InboxSong.self).filter("id = %@", loveId).first {
                 try! realm.write() {
                     song.love = true
                 }
             }
         }
-        let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
+        let navigationController = UIApplication.shared.keyWindow?.rootViewController as! UINavigationController
         if let inboxViewController = navigationController.topViewController as? InboxViewController {
             inboxViewController.tableView.reloadData()
         }
     }
     
-    func cacheAndSendSong(song: SendSong) {
-        let now = Int(NSDate().timeIntervalSince1970)
+    func cacheAndSendSong(_ song: SendSong) {
+        let now = Int(Date().timeIntervalSince1970)
         song.date = now
         try! realm.write() {
             realm.add(song)
@@ -225,24 +225,24 @@ class Server {
                 
                 realm.add(inboxSong)
                 
-                let friend = realm.objects(Friend).filter("phoneNumber == %@", recipient).first
+                let friend = realm.objects(Friend.self).filter("phoneNumber == %@", recipient).first
                 friend?.lastShared = song.date
                 friend?.numShared += 1
             }
         }
         self.sendSongs()
         SongPlayer.songPlayer.updatePlaylist()
-        Answers.logCustomEventWithName("Share", customAttributes: nil)
+        Answers.logCustomEvent(withName: "Share", customAttributes: nil)
     }
     
     func sendSongs() {
         
         let user = User.user
-        let unsentSongs = realm.objects(SendSong)
+        let unsentSongs = realm.objects(SendSong.self)
         for song in unsentSongs {
             
-            let params: [String:AnyObject] = ["phone_number": user.phoneNumber, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients, "sender_name":user.firstName]
-            Alamofire.request(.POST, k.server_url+"share", parameters: params, encoding: .JSON)
+            let params: [String:Any] = ["phone_number": user.phoneNumber, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients, "sender_name":user.firstName]
+            Alamofire.request(k.server_url+"share", method: .post, parameters: params, encoding: JSONEncoding.default)
                 .responseJSON { response in
                     if let result = response.result.value as? [String:[[String:AnyObject]]] {
                         if let songs = result["songs"] {
@@ -253,10 +253,10 @@ class Server {
                                     
                                     //Delete old copy w/ old id
                                     let old_id = String(song.date)+(downloadedSong["recipient"]! as! String)
-                                    if let inboxSong = realm.objects(InboxSong).filter("id == %@", old_id).first {
+                                    if let inboxSong = realm.objects(InboxSong.self).filter("id == %@", old_id).first {
                                         realm.delete(inboxSong)
                                         //Reload table view
-                                        let navigationController = UIApplication.sharedApplication().keyWindow?.rootViewController as! UINavigationController
+                                        let navigationController = UIApplication.shared.keyWindow?.rootViewController as! UINavigationController
                                         if let inboxViewController = navigationController.topViewController as? InboxViewController {
                                             inboxViewController.tableView.reloadData()
                                         }
@@ -271,9 +271,9 @@ class Server {
         }
     }
     
-    func searchSong(query: String, callback: [SendSong]->Void) {
-        if let escapedQuery = query.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet()) {
-            Alamofire.request(.GET, k.youtube_url+escapedQuery)
+    func searchSong(_ query: String, callback: @escaping ([SendSong])->Void) {
+        if let escapedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
+            Alamofire.request(k.youtube_url+escapedQuery)
                 .responseJSON { response in
                     if let result = response.result.value as? [String:[[String:[String:String]]]] {
                         if let items = result["items"] {
@@ -286,7 +286,7 @@ class Server {
         }
     }
     
-    func parseResults(items: [[String:[String:String]]]) -> [SendSong] {
+    func parseResults(_ items: [[String:[String:String]]]) -> [SendSong] {
         
         //TODO: Make this smarter, eliminate duplicates + crap results, cross relevance + view count?
         var tempResults: [SendSong] = []
@@ -304,8 +304,8 @@ class Server {
         return tempResults
     }
     
-    func getTitleAndArtist(songString: String) ->[String:String]? {
-        if (songString.rangeOfString(" - ")?.startIndex) != nil {
+    func getTitleAndArtist(_ songString: String) ->[String:String]? {
+        if (songString.range(of: " - ")?.lowerBound) != nil {
             var newString = songString
             
             newString = self.stripParens(newString)
@@ -316,15 +316,15 @@ class Server {
             
             let stringsToRemove = ["Official Music Video","Official Music Video","Official Video","Official Audio","Video Official","Lyric Video","Audio Only","Lyrics","Official Cover Video","VEVO Presents","Full Lyric Video","Explicit","On Screen"]
             for string in stringsToRemove {
-                newString = newString.stringByReplacingOccurrencesOfString(string, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch)
+                newString = newString.replacingOccurrences(of: string, with: "", options: NSString.CompareOptions.caseInsensitive)
             }
             
-            if let rangeOfDash = newString.rangeOfString(" - ") {
-                let artist = newString.substringToIndex(rangeOfDash.startIndex).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
-                var title = newString.substringFromIndex(rangeOfDash.endIndex).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+            if let rangeOfDash = newString.range(of: " - ") {
+                let artist = newString.substring(to: rangeOfDash.lowerBound).trimmingCharacters(in: CharacterSet(charactersIn: " \""))
+                var title = newString.substring(from: rangeOfDash.upperBound).trimmingCharacters(in: CharacterSet(charactersIn: " \""))
                 
-                if let startIndexOfSecondDash = title.rangeOfString(" - ")?.startIndex {
-                    title = title.substringToIndex(startIndexOfSecondDash).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " \""))
+                if let startIndexOfSecondDash = title.range(of: " - ")?.lowerBound {
+                    title = title.substring(to: startIndexOfSecondDash).trimmingCharacters(in: CharacterSet(charactersIn: " \""))
                 }
                 
                 return ["artist":artist, "title":title];
@@ -334,19 +334,19 @@ class Server {
         return nil
     }
     
-    func stripParens(string: String) -> String {
-        if let rangeOfBracket = string.rangeOfString("(") {
+    func stripParens(_ string: String) -> String {
+        if let rangeOfBracket = string.range(of: "(") {
             
-            let startIndexOfBracket = rangeOfBracket.startIndex
-            if let endIndexOfBracket = string.rangeOfString(")")?.endIndex {
-                let pre = string.substringToIndex(startIndexOfBracket).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-                let contents = string.substringWithRange(startIndexOfBracket..<endIndexOfBracket)
-                let post = string.substringFromIndex(endIndexOfBracket)
+            let startIndexOfBracket = rangeOfBracket.lowerBound
+            if let endIndexOfBracket = string.range(of: ")")?.upperBound {
+                let pre = string.substring(to: startIndexOfBracket).trimmingCharacters(in: CharacterSet(charactersIn: " "))
+                let contents = string.substring(with: startIndexOfBracket..<endIndexOfBracket)
+                let post = string.substring(from: endIndexOfBracket)
                 
-                if contents.rangeOfString("Remix") != nil || string.rangeOfString("remix") != nil || string.rangeOfString("REMIX") != nil || contents.rangeOfString("Cover") != nil || string.rangeOfString("cover") != nil || string.rangeOfString("COVER") != nil {
+                if contents.range(of: "Remix") != nil || string.range(of: "remix") != nil || string.range(of: "REMIX") != nil || contents.range(of: "Cover") != nil || string.range(of: "cover") != nil || string.range(of: "COVER") != nil {
                     return string //If centerpart contains remix or cover, don't remove parens
                 } else {
-                    return pre.stringByAppendingString(post)
+                    return pre + post
                 }
                 
             } //What if parens aren't closed?
@@ -355,19 +355,19 @@ class Server {
         return string
     }
     
-    func stripBrackets(string: String) -> String {
-        if let rangeOfBracket = string.rangeOfString("[") {
+    func stripBrackets(_ string: String) -> String {
+        if let rangeOfBracket = string.range(of: "[") {
             
-            let startIndexOfBracket = rangeOfBracket.startIndex
-            if let endIndexOfBracket = string.rangeOfString("]")?.endIndex {
-                let pre = string.substringToIndex(startIndexOfBracket).stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-                let contents = string.substringWithRange(startIndexOfBracket..<endIndexOfBracket)
-                let post = string.substringFromIndex(endIndexOfBracket)
+            let startIndexOfBracket = rangeOfBracket.lowerBound
+            if let endIndexOfBracket = string.range(of: "]")?.upperBound {
+                let pre = string.substring(to: startIndexOfBracket).trimmingCharacters(in: CharacterSet(charactersIn: " "))
+                let contents = string.substring(with: startIndexOfBracket..<endIndexOfBracket)
+                let post = string.substring(from: endIndexOfBracket)
                 
-                if contents.rangeOfString("Remix") != nil || string.rangeOfString("remix") != nil || string.rangeOfString("REMIX") != nil || contents.rangeOfString("Cover") != nil || string.rangeOfString("cover") != nil || string.rangeOfString("COVER") != nil {
+                if contents.range(of: "Remix") != nil || string.range(of: "remix") != nil || string.range(of: "REMIX") != nil || contents.range(of: "Cover") != nil || string.range(of: "cover") != nil || string.range(of: "COVER") != nil {
                     return string //If centerpart contains remix or cover, don't remove brackets
                 } else {
-                    return pre.stringByAppendingString(post)
+                    return pre + post
                 }
                 
             } //What if brackets aren't closed?

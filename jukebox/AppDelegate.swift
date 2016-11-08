@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics()])
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(
@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         try! realm = Realm()
         
-        if let user = realm.objects(User).first {
+        if let user = realm.objects(User.self).first {
             User.user = user
             if !user.addressBookLoaded {
                 self.presentPermissions()
@@ -41,10 +41,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         Server.server.checkVersion()
         
-        if let user = realm.objects(User).first {
+        if let user = realm.objects(User.self).first {
             Server.server.sendSongs() //In case sending previously failed, might move this to willResignActive?
             if user.addressBookLoaded {
                 Permissions.permissions.loadAddressBook()
@@ -58,46 +58,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func presentAuthentication() {
-        let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("WelcomeViewController") 
+        let welcomeViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WelcomeViewController") 
         let navigationController = UINavigationController(rootViewController: welcomeViewController)
-        navigationController.navigationBarHidden = true
+        navigationController.isNavigationBarHidden = true
         window?.rootViewController = navigationController
     }
     
     func presentCore() {
-        let coreNavigationController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("CoreNavigationController") as! UINavigationController
+        let coreNavigationController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CoreNavigationController") as! UINavigationController
         window?.rootViewController = coreNavigationController
     }
     
     func presentPermissions() {
-        let permissionsViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PermissionsViewController") 
+        let permissionsViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PermissionsViewController") 
         let navigationController = UINavigationController(rootViewController: permissionsViewController)
-        navigationController.navigationBarHidden = true
+        navigationController.isNavigationBarHidden = true
         window?.rootViewController = navigationController
         Server.server.downloadInbox({})
     }
     
-    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+    override func remoteControlReceived(with event: UIEvent?) {
         SongPlayer.songPlayer.remoteControlReceivedWithEvent(event)
     }
 
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Permissions.permissions.pushEnabled(deviceToken)
     }
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Permissions.permissions.pushDisabled()
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    private func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: AnyObject], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         self.handlePush(userInfo)
         if let badge = userInfo["aps"]?["badge"] as? Int {
             application.applicationIconBadgeNumber = badge
         }
-        completionHandler(UIBackgroundFetchResult.NewData)
+        completionHandler(UIBackgroundFetchResult.newData)
     }
     
-    func handlePush(userInfo: [NSObject: AnyObject]) {
+    func handlePush(_ userInfo: [AnyHashable: Any]) {
         if var pushData = userInfo as? [String:AnyObject] {
             pushData["aps"] = nil
             Server.server.cachePushData(pushData)

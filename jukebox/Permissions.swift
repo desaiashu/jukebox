@@ -22,25 +22,25 @@ class Permissions {
         self.setLocalDialingCode()
     }
     
-    func promptUserToChangeAddressBookSettings(forced: Bool) {
-        let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertControllerStyle.Alert)
+    func promptUserToChangeAddressBookSettings(_ forced: Bool) {
+        let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertControllerStyle.alert)
         if !forced {
-            alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Cancel, handler:nil))
+            alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.cancel, handler:nil))
         }
         alertController.addAction(
-            UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
-                UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+            UIAlertAction(title: "Go", style: UIAlertActionStyle.default, handler: { UIAlertAction in
+                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
             })
         )
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
     }
     
-    func authorizeAddressBook (callback: (Bool)->Void){
+    func authorizeAddressBook (_ callback: @escaping (Bool)->Void){
         switch ABAddressBookGetAuthorizationStatus(){
-        case .Authorized, .NotDetermined:
+        case .authorized, .notDetermined:
             self.addressBookCallback = callback
             self.loadAddressBook()
-        case .Denied, .Restricted:
+        case .denied, .restricted:
             self.promptUserToChangeAddressBookSettings(true)
             callback(false)
         }
@@ -50,9 +50,9 @@ class Permissions {
         var error: Unmanaged<CFError>?
         let addressBook: ABAddressBook = ABAddressBookCreateWithOptions(nil, &error).takeRetainedValue()
         ABAddressBookRequestAccessWithCompletion(addressBook,
-            {(granted: Bool, error: CFError!) in
+            {(granted: Bool, error: CFError?) in
                 if granted{
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         var firstLoad = false
                         if let callback = self.addressBookCallback {
                             firstLoad = true
@@ -62,7 +62,7 @@ class Permissions {
                         self.saveAddressBook(addressBook, firstLoad: firstLoad)
                     }
                 } else {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.promptUserToChangeAddressBookSettings(false)
                         if let callback = self.addressBookCallback {
                             callback(false)
@@ -73,20 +73,24 @@ class Permissions {
         })
     }
     
-    func saveAddressBook (addressBook: ABAddressBookRef, firstLoad: Bool){
+    func saveAddressBook (_ addressBook: ABAddressBook, firstLoad: Bool){
         
         let userPhoneNumber = User.user.phoneNumber
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async(execute: {
             
             let backgroundRealm = try! Realm()
             
             let allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue() as NSArray
             var contacts = [String:[String:String]]()
             
-            for person: ABRecordRef in allPeople {
+            for person: ABRecord in allPeople as [AnyObject]{
                 
-                let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue() as ABMultiValueRef
+//                guard let person = personA as? ABRecord else {
+//                    return
+//                }
+                
+                let phoneNumbers: ABMultiValue = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue() as ABMultiValue
                 
                 if ABMultiValueGetCount(phoneNumbers) > 0 {
                     
@@ -111,7 +115,7 @@ class Permissions {
             try! backgroundRealm.write() {
                 for (k, v) in contacts {
                     if k == userPhoneNumber {
-                        dispatch_async(dispatch_get_main_queue()) {
+                        DispatchQueue.main.async {
                             try! realm.write() {
                                 if v["firstName"] != "Me" && v["firstName"] != "me" && v["firstName"] != "" {
                                     User.user.firstName = v["firstName"]!
@@ -122,7 +126,7 @@ class Permissions {
                             }
                         }
                     } else {
-                        if let friend = backgroundRealm.objects(Friend).filter("phoneNumber='"+k+"'").first {
+                        if let friend = backgroundRealm.objects(Friend.self).filter("phoneNumber='"+k+"'").first {
                             friend.firstName = v["firstName"]!
                             friend.lastName = v["lastName"]!
                         } else {
@@ -135,7 +139,7 @@ class Permissions {
                     }
                 }
             }
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.checkName()
                 try! realm.write() {
                     User.user.addressBookLoaded = true
@@ -149,14 +153,14 @@ class Permissions {
     
     func determineBestAndRecentFriends() { //Called from within realm write block
         if User.user.lastUpdated != 0 {
-            let inboxSongs = realm.objects(InboxSong)
+            let inboxSongs = realm.objects(InboxSong.self)
             for song in inboxSongs {
                 var friendNumber = song["sender"]! as! String
                 if friendNumber == User.user.phoneNumber {
                     friendNumber = song["recipient"]! as! String
                 }
                 let shareDate = song["date"]! as! Int
-                if let friend = realm.objects(Friend).filter("phoneNumber == %@", friendNumber).first {
+                if let friend = realm.objects(Friend.self).filter("phoneNumber == %@", friendNumber).first {
                     if shareDate > friend.lastShared {
                         friend.lastShared = shareDate
                     }
@@ -174,24 +178,24 @@ class Permissions {
         }
     }
     
-    func formatPhoneNumber(number: String) -> String {
+    func formatPhoneNumber(_ number: String) -> String {
         
-        let arr = number.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "+1234567890").invertedSet)
-        var phoneNumber = arr.joinWithSeparator("")
+        let arr = number.components(separatedBy: CharacterSet(charactersIn: "+1234567890").inverted)
+        var phoneNumber = arr.joined(separator: "")
 
-        if phoneNumber.rangeOfString("+") == nil {
+        if phoneNumber.range(of: "+") == nil {
             if let phoneInt = Int(phoneNumber) {
                 phoneNumber = String(phoneInt) //Remove leading 0's
             }
             
-            if let startIndex = phoneNumber.rangeOfString(self.localDialingCode)?.startIndex {
+            if let startIndex = phoneNumber.range(of: self.localDialingCode)?.lowerBound {
                 if startIndex == phoneNumber.startIndex {
-                    phoneNumber = "+".stringByAppendingString(phoneNumber)
+                    phoneNumber = "+" + phoneNumber
                 } else {
-                    phoneNumber = "+".stringByAppendingString(self.localDialingCode).stringByAppendingString(phoneNumber)
+                    phoneNumber = ("+" + self.localDialingCode) + phoneNumber
                 }
             } else {
-                phoneNumber = "+".stringByAppendingString(self.localDialingCode).stringByAppendingString(phoneNumber)
+                phoneNumber = ("+" + self.localDialingCode) + phoneNumber
             }
         }
         return phoneNumber
@@ -199,12 +203,12 @@ class Permissions {
     
     func setLocalDialingCode() {
         var myDict: NSDictionary?
-        if let path = NSBundle.mainBundle().pathForResource("DialingCodes", ofType: "plist") {
+        if let path = Bundle.main.path(forResource: "DialingCodes", ofType: "plist") {
             myDict = NSDictionary(contentsOfFile: path)
         }
         if let dict = myDict {
-            if let countryCode = NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String {
-                let callingCode = dict[countryCode.lowercaseString]! as! String
+            if let countryCode = (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String {
+                let callingCode = dict[countryCode.lowercased()]! as! String
                 self.localDialingCode = callingCode
             }
         }
@@ -220,9 +224,9 @@ class Permissions {
         }
     }
     
-    func requestName(nameType: String) {
-        let alertController = UIAlertController(title: "Enter "+nameType, message: nil, preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addTextFieldWithConfigurationHandler { textField in
+    func requestName(_ nameType: String) {
+        let alertController = UIAlertController(title: "Enter "+nameType, message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addTextField { textField in
             switch (nameType) {
             case "First Name":
                 textField.placeholder = "First Name"
@@ -231,10 +235,10 @@ class Permissions {
             default:
                 textField.placeholder = "First Last"
             }
-            textField.autocapitalizationType = UITextAutocapitalizationType.Words
+            textField.autocapitalizationType = UITextAutocapitalizationType.words
         }
         alertController.addAction(
-            UIAlertAction(title: "Save", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
+            UIAlertAction(title: "Save", style: UIAlertActionStyle.default, handler: { UIAlertAction in
                 if let textField = alertController.textFields?[0] {
                     if textField.text != "" {
                         try! realm.write() {
@@ -248,7 +252,7 @@ class Permissions {
                                     //Need better handling of this! maybe just re-request?
                                     User.user.firstName = User.user.phoneNumber
                                 } else {
-                                    let name = textField.text!.componentsSeparatedByString(" ")
+                                    let name = textField.text!.components(separatedBy: " ")
                                     User.user.firstName = name[0]
                                     if name.count > 1 {
                                         User.user.lastName = name[1]
@@ -260,22 +264,22 @@ class Permissions {
                 }
             })
         )
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
     }
     
-    func enablePush (callback: ()->Void){
+    func enablePush (_ callback: @escaping ()->Void){
         self.pushCallback = callback
-        let type: UIUserNotificationType = [UIUserNotificationType.Badge, UIUserNotificationType.Alert, UIUserNotificationType.Sound];
-        let setting = UIUserNotificationSettings(forTypes: type, categories: nil);
-        UIApplication.sharedApplication().registerUserNotificationSettings(setting);
-        UIApplication.sharedApplication().registerForRemoteNotifications();
+        let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound];
+        let setting = UIUserNotificationSettings(types: type, categories: nil);
+        UIApplication.shared.registerUserNotificationSettings(setting);
+        UIApplication.shared.registerForRemoteNotifications();
     }
     
-    func pushEnabled(deviceToken: NSData){
+    func pushEnabled(_ deviceToken: Data){
         try! realm.write() {
             User.user.pushToken = deviceToken.description
-                .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
-                .stringByReplacingOccurrencesOfString(" ", withString: "" )
+                .trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
+                .replacingOccurrences(of: " ", with: "" )
         }
         Server.server.sendPushToken()
         if let pushCallback = self.pushCallback {
@@ -293,13 +297,13 @@ class Permissions {
     }
     
     func promptUserToChangePushNotificationSettings() {
-        let alertController = UIAlertController(title: "Push Notifications", message: "We recommend turning push notifications on in order to use the app. Tap go to enable push notifications in settings.", preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Cancel, handler:nil))
+        let alertController = UIAlertController(title: "Push Notifications", message: "We recommend turning push notifications on in order to use the app. Tap go to enable push notifications in settings.", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.cancel, handler:nil))
         alertController.addAction(
-            UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: { UIAlertAction in
-                UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+            UIAlertAction(title: "Go", style: UIAlertActionStyle.default, handler: { UIAlertAction in
+                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
             })
         )
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
     }
 }
