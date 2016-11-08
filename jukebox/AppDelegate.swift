@@ -89,7 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Permissions.permissions.pushDisabled()
     }
     
-    private func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: AnyObject], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: AnyObject], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         self.handlePush(userInfo)
         if let badge = userInfo["aps"]?["badge"] as? Int {
             application.applicationIconBadgeNumber = badge

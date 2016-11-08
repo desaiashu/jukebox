@@ -16,7 +16,7 @@ class InboxSongTableViewCell: UITableViewCell {
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var senderLabel: UILabel!
     @IBOutlet weak var directionLabel: UILabel!
-    @IBOutlet weak var playButton: UIButton!
+    //@IBOutlet weak var playButton: UIButton!
     
     var song: InboxSong? {
         didSet {
@@ -25,10 +25,10 @@ class InboxSongTableViewCell: UITableViewCell {
                 self.artistLabel.text = song.artist
                 self.senderLabel.text = song.sender
                 
-                self.playButton.isEnabled = true
+                //self.playButton.isEnabled = true
                 //Might want to do this once in intializer
-                self.playButton.setTitle("...", for: UIControlState.disabled)
-                self.playButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+//                self.playButton.setTitle("...", for: UIControlState.disabled)
+//                self.playButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
                 
                 var friendNumber: String?
                 if song.sender == User.user.phoneNumber {
@@ -66,15 +66,15 @@ class InboxSongTableViewCell: UITableViewCell {
         self.song?.play()
         self.backgroundColor = UIColor.white
         
-        self.playButton.isEnabled = false
+        //self.playButton.isEnabled = false
         self.checkBuffering()
     }
     
     func checkBuffering() {
         if !SongPlayer.songPlayer.buffering {
-            if let playButton = self.playButton {
-                playButton.isEnabled = true
-            }
+//            if let playButton = self.playButton {
+//                playButton.isEnabled = true
+//            }
         } else {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 self.checkBuffering()

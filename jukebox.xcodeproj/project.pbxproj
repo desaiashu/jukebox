@@ -36,7 +36,9 @@
 		54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B41B6D7DE800E603EE /* Images.xcassets */; };
 		54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B61B6D7DE800E603EE /* LaunchScreen.xib */; };
 		54E6D8C41B6D7DE800E603EE /* jukeboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */; };
-		54EE281A1DD12C61009FCCC2 /* Montserrat in Resources */ = {isa = PBXBuildFile; fileRef = 54EE28191DD12C61009FCCC2 /* Montserrat */; };
+		54EE281C1DD180CB009FCCC2 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54EE281B1DD180CB009FCCC2 /* Montserrat-Bold.ttf */; };
+		54EE281F1DD180D7009FCCC2 /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54EE281D1DD180D7009FCCC2 /* Montserrat-Light.ttf */; };
+		54EE28201DD180D7009FCCC2 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54EE281E1DD180D7009FCCC2 /* Montserrat-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,7 +87,9 @@
 		54E6D8BD1B6D7DE800E603EE /* jukeboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jukeboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E6D8C21B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		54E6D8C31B6D7DE800E603EE /* jukeboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jukeboxTests.swift; sourceTree = "<group>"; };
-		54EE28191DD12C61009FCCC2 /* Montserrat */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Montserrat; sourceTree = "<group>"; };
+		54EE281B1DD180CB009FCCC2 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Bold.ttf"; path = "Montserrat/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		54EE281D1DD180D7009FCCC2 /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Light.ttf"; path = "Montserrat/Montserrat-Light.ttf"; sourceTree = "<group>"; };
+		54EE281E1DD180D7009FCCC2 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Regular.ttf"; path = "Montserrat/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,7 +238,7 @@
 		54E6D8AB1B6D7DE800E603EE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				54EE28191DD12C61009FCCC2 /* Montserrat */,
+				54EE28211DD180FF009FCCC2 /* Montserrat */,
 				54A8CD731B6F1F79009E979A /* DialingCodes.plist */,
 				54E6D8AC1B6D7DE800E603EE /* Info.plist */,
 			);
@@ -256,6 +260,16 @@
 				54E6D8C21B6D7DE800E603EE /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		54EE28211DD180FF009FCCC2 /* Montserrat */ = {
+			isa = PBXGroup;
+			children = (
+				54EE281E1DD180D7009FCCC2 /* Montserrat-Regular.ttf */,
+				54EE281B1DD180CB009FCCC2 /* Montserrat-Bold.ttf */,
+				54EE281D1DD180D7009FCCC2 /* Montserrat-Light.ttf */,
+			);
+			name = Montserrat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -345,8 +359,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54EE281A1DD12C61009FCCC2 /* Montserrat in Resources */,
+				54EE28201DD180D7009FCCC2 /* Montserrat-Regular.ttf in Resources */,
+				54EE281F1DD180D7009FCCC2 /* Montserrat-Light.ttf in Resources */,
 				54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */,
+				54EE281C1DD180CB009FCCC2 /* Montserrat-Bold.ttf in Resources */,
 				54E6D8B81B6D7DE800E603EE /* LaunchScreen.xib in Resources */,
 				54E6D8B51B6D7DE800E603EE /* Images.xcassets in Resources */,
 				54A8CD741B6F1F79009E979A /* DialingCodes.plist in Resources */,

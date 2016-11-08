@@ -73,9 +73,9 @@ class SongPlayer : NSObject{
         self.titleLabel = titleLabel
         self.skipButton = skipButton
         
-        self.playerButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
-        self.playerButton.setTitle("...", for: UIControlState.disabled)
-        self.skipButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+//        self.playerButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+//        self.playerButton.setTitle("...", for: UIControlState.disabled)
+//        self.skipButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
         
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
@@ -128,7 +128,7 @@ class SongPlayer : NSObject{
             self.playlist = [song]
         } else {
             self.playlist = []
-            self.playerButton.setTitle("Play", for: UIControlState())
+            self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControlState())
         }
         
         let newInboxSongs = realm.objects(InboxSong.self).filter("listen == false AND mute == false AND recipient == %@", User.user.phoneNumber).sorted(byProperty: "date", ascending: false)
@@ -190,7 +190,7 @@ class SongPlayer : NSObject{
                 }
             } else if let video = video {
                 //Audio only is video.streamURLs[140]
-                if let url = video.streamURLs[140]{
+                if let url = video.streamURLs[NSNumber(value: 140)] {
                     UserDefaults.standard.set(url.absoluteString, forKey: video.identifier)
                     UserDefaults.standard.set(Int(video.duration), forKey: video.identifier+".duration")
                     if self.playlist[self.loadeditems].yt_id == video.identifier {
@@ -248,7 +248,7 @@ class SongPlayer : NSObject{
     }
     
     func playerButtonPressed() {
-        if self.playerButton.titleLabel?.text == "Play" {
+        if self.playerButton.currentImage == #imageLiteral(resourceName: "play_purple") {
             self.play()
         } else {
             self.pause()
@@ -260,7 +260,7 @@ class SongPlayer : NSObject{
             self.playerButton.isEnabled = false
         }
         self.player.play()
-        self.playerButton.setTitle("Pause", for: UIControlState())
+        self.playerButton.setImage(#imageLiteral(resourceName: "pause_purple"), for: UIControlState())
         
         if self.timePlayed == 0 {
             self.buffering = true
@@ -291,7 +291,7 @@ class SongPlayer : NSObject{
     
     func pause() {
         self.player.pause()
-        self.playerButton.setTitle("Play", for: UIControlState())
+        self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControlState())
         
         self.buffering = false
         self.playerButton.isEnabled = true

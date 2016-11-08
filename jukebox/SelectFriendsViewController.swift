@@ -149,7 +149,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    private func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if inSearch {
             return 0.0
         } else {
@@ -157,7 +157,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    private func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if inSearch {
             return nil
         } else {
@@ -174,7 +174,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         }
     }
     
-    private func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.01
     }
     
