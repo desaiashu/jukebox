@@ -1,3 +1,16 @@
+#### Version 2.5.6
+
+* Xcode 9 compatibility (#345, #347, #349)
+
+#### Version 2.5.5
+
+* Adaptation to YouTube API change. (#314)
+
+#### Version 2.5.4
+
+* Adaptation to YouTube API change. (#295, #296, #297)
+* Upgrade deployment target to iOS 8.0 (macOS is still 10.9 and tvOS is still 9.0)
+
 #### Version 2.5.3
 
 * Adaptation to YouTube API change. (#257)
