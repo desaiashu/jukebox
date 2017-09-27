@@ -55,6 +55,8 @@ class SongPlayer : NSObject{
     weak var artistLabel: UILabel!
     weak var titleLabel: UILabel!
     weak var skipButton: UIButton!
+    weak var progressBar: UIProgressView!
+    weak var loadingIndicator: UIActivityIndicatorView!
     
     var periodicTimeObserver: AnyObject?
     var player = AVQueuePlayer() //Actual audio player
@@ -66,12 +68,14 @@ class SongPlayer : NSObject{
     
     var buffering = false
     
-    func setup(_ playerButton: UIButton, artistLabel: UILabel, titleLabel: UILabel, skipButton: UIButton) {
+    func setup(_ playerButton: UIButton, artistLabel: UILabel, titleLabel: UILabel, skipButton: UIButton, progressBar: UIProgressView, loadingIndicator: UIActivityIndicatorView) {
         
         self.playerButton = playerButton
         self.artistLabel = artistLabel
         self.titleLabel = titleLabel
         self.skipButton = skipButton
+        self.progressBar = progressBar
+        self.loadingIndicator = loadingIndicator
         
 //        self.playerButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
 //        self.playerButton.setTitle("...", for: UIControlState.disabled)
@@ -266,6 +270,7 @@ class SongPlayer : NSObject{
             self.buffering = true
             self.playerButton.isEnabled = false
             //TODO start animation
+            self.loadingIndicator.startAnimating()
         }
     }
     
@@ -275,6 +280,7 @@ class SongPlayer : NSObject{
         buffering = false
         self.playerButton.isEnabled = true
         //TODO stop animation
+        self.loadingIndicator.stopAnimating()
         
 //        if AVAudioSession.sharedInstance().category == AVAudioSessionCategoryAmbient { //This might happen a second too late and have overlap
 //            do {
@@ -296,6 +302,7 @@ class SongPlayer : NSObject{
         self.buffering = false
         self.playerButton.isEnabled = true
         //TODO stop animation
+        self.loadingIndicator.stopAnimating()
         
 //        if AVAudioSession.sharedInstance().category == AVAudioSessionCategoryPlayback {
 //            //Reset back to ambient so if someone leaves app and plays song on spotify they can return and keep listening
@@ -396,7 +403,7 @@ class SongPlayer : NSObject{
     
     func updateMediaPlayer() {
         let playlistSong = self.playlist[currentSongIndex]
-        let image:UIImage = UIImage(named: "music512")!
+        let image:UIImage = UIImage(named: "jukebox")!
         let albumArt = MPMediaItemArtwork(image: image)
         let songInfo: [String: Any] = [
             MPMediaItemPropertyTitle: playlistSong.title,
@@ -406,6 +413,8 @@ class SongPlayer : NSObject{
             MPNowPlayingInfoPropertyElapsedPlaybackTime: self.timePlayed
         ]
         MPNowPlayingInfoCenter.default().nowPlayingInfo = songInfo
+        
+        self.progressBar.setProgress(Float(self.timePlayed)/Float(playlistSong.duration), animated: true)
     }
     
     func triggerListen() {

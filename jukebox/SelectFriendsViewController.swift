@@ -105,9 +105,10 @@ extension SelectFriendsViewController: UITextFieldDelegate {
         return true
     }
     
-    func flip(_ sender: UISwitch) {
+    func flip(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
         let cell = sender.superview!.superview as! SelectFriendsTableViewCell
-        if sender.isOn {
+        if sender.isSelected {
             self.selectedFriends.append(cell.friend!.phoneNumber)
         } else {
             self.selectedFriends.remove(at: self.selectedFriends.index(of: cell.friend!.phoneNumber)!)
@@ -122,7 +123,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         //Add "numSent/recieved" to each friend when sending + downloading data, when data downloaded add "lastSent/recieved" timestamp, query for top 5 most sent + 5 most recently sent (save to server?)
         let cell = tableView.dequeueReusableCell(withIdentifier: "SelectFriendsCell", for: indexPath) as! SelectFriendsTableViewCell
         if cell.friend == nil {
-            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), for: UIControlEvents.valueChanged)
+            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), for: UIControlEvents.touchUpInside)
         }
         if inSearch {
             cell.friend = self.searchResults[indexPath.row]
@@ -136,7 +137,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
                 cell.friend = self.allFriends[indexPath.row]
             }
         }
-        cell.selectSwitch.isOn = self.selectedFriends.contains(cell.friend!.phoneNumber)
+        cell.selectSwitch.isSelected = self.selectedFriends.contains(cell.friend!.phoneNumber)
         
         return cell
     }

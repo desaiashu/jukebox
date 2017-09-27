@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15A282a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -11,18 +14,18 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="headphones" translatesAutoresizingMaskIntoConstraints="NO" id="WR3-e4-voZ">
-                    <rect key="frame" x="112" y="102" width="256" height="256"/>
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="jukebox" translatesAutoresizingMaskIntoConstraints="NO" id="0At-OY-vHh">
+                    <rect key="frame" x="-16" y="-16" width="512" height="512"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="256" id="D5F-qg-uoO"/>
-                        <constraint firstAttribute="height" constant="256" id="uEm-Kx-GU2"/>
+                        <constraint firstAttribute="width" constant="512" id="Wah-04-LRz"/>
+                        <constraint firstAttribute="height" constant="512" id="toy-sF-Csv"/>
                     </constraints>
                 </imageView>
             </subviews>
-            <color key="backgroundColor" red="0.72549021244049072" green="0.42352941632270813" blue="0.69803923368453979" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="WR3-e4-voZ" secondAttribute="centerY" constant="10" id="CXx-cs-nxY"/>
-                <constraint firstAttribute="centerX" secondItem="WR3-e4-voZ" secondAttribute="centerX" id="vl2-t7-JTO"/>
+                <constraint firstItem="0At-OY-vHh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="2bJ-96-ciQ"/>
+                <constraint firstItem="0At-OY-vHh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="WO0-xb-pP8"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -30,6 +33,6 @@
         </view>
     </objects>
     <resources>
-        <image name="headphones" width="256" height="256"/>
+        <image name="jukebox" width="512" height="512"/>
     </resources>
 </document>

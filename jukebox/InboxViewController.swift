@@ -23,6 +23,8 @@ class InboxViewController: UIViewController {
     @IBOutlet weak var skipButton: UIButton!
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var progressBar: UIProgressView!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
     var songs: Results<InboxSong>!
     
@@ -41,7 +43,7 @@ class InboxViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton)
+        SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton, progressBar: self.progressBar, loadingIndicator: self.loadingIndicator)
         
         songs = realm.objects(InboxSong.self).sorted(byProperty: "date", ascending: false)
         //Could bump "new" songs to top - unsure how to deal with tapping play
@@ -117,7 +119,7 @@ extension InboxViewController: UITextFieldDelegate {
     }
 }
 
-extension InboxViewController: UITableViewDataSource {
+extension InboxViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -138,7 +140,7 @@ extension InboxViewController: UITableViewDataSource {
         return 0.01
     }
     
-    func tableView(_ tableView: UITableView!, heightForRowAtIndexPath indexPath: IndexPath!) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if inSearch {
             return SelectSongTableViewCell.rowHeight
         } else {
@@ -151,6 +153,14 @@ extension InboxViewController: UITableViewDataSource {
             return self.searchResults.count
         } else {
             return self.songs.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //Todo, selection should not have grey background
+        tableView.deselectRow(at: indexPath, animated: false)
+        if let tableViewCell = tableView.cellForRow(at: indexPath) as? InboxSongTableViewCell {
+            tableViewCell.play()
         }
     }
     
@@ -173,7 +183,14 @@ extension InboxViewController: UITableViewDataSource {
             let song = cell.song!
             var rowActions = [UITableViewRowAction]()
             
-            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Send", handler:
+//            let cancelRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "    ", handler:
+//                { action, indexpath in
+//                    self.tableView.isEditing = false
+//            });
+//            cancelRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "delete_light_row"))
+            //rowActions.append(cancelRowAction)
+            
+            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "       ", handler:
                 { action, indexpath in
                     if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)
                         .instantiateViewController(withIdentifier: "SelectFriendsViewController") as? SelectFriendsViewController {
@@ -186,26 +203,32 @@ extension InboxViewController: UITableViewDataSource {
                     }
                     self.tableView.isEditing = false
             });
-            
-            sendRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.4)
+            sendRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "share_purple_row"))
             rowActions.append(sendRowAction)
             
-            if !song.love && song.sender != User.user.phoneNumber {
-                let loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Love", handler:
-                    { action, indexPath in
-                        song.heart()
-                        self.tableView.isEditing = false
-                        cell.directionLabel.text = "you love"
-                });
-                loveRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.55)
-                rowActions.append(loveRowAction)
-            }
+//            var loveRowAction: UITableViewRowAction;
+//            if !song.love && song.sender != User.user.phoneNumber {
+//                loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "     ", handler:
+//                    { action, indexPath in
+//                        song.heart()
+//                        cell.directionLabel.text = "you love"
+//                        action.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "like_purple_row"))
+//                });
+//                loveRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "unliked_purple_row"))
+//            } else if !song.love {
+//                loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "     ", handler: {_,_ in });
+//                loveRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "unliked_purple_row"))
+//            } else {
+//                loveRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "     ", handler: {_,_ in });
+//                loveRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "like_purple_row"))
+//            }
+//            rowActions.append(loveRowAction)
             
-            var muteTitle = "Mute"
-            if cell.song!.mute {
-                muteTitle = "Unmute"
-            }
-            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: muteTitle, handler:
+//            var muteTitle = "Mute"
+//            if cell.song!.mute {
+//                muteTitle = "Unmute"
+//            }
+            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "       ", handler:
                 { action, indexpath in
                     if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute
@@ -216,10 +239,14 @@ extension InboxViewController: UITableViewDataSource {
                                 sameSong.mute = mute
                             }
                         }
+                        self.tableView.isEditing = false
                     }
-                    self.tableView.isEditing = false
             });
-            muteRowAction.backgroundColor = UIColor(red: 185.0/255.0, green: 108.0/255.0, blue: 178.0/255.0, alpha: 0.2)
+            if cell.song!.mute {
+                muteRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "muted_dark_row"))
+            } else {
+                muteRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "unmuted_purple_row"))
+            }
             rowActions.append(muteRowAction)
             
             return rowActions;
@@ -227,4 +254,12 @@ extension InboxViewController: UITableViewDataSource {
         return nil
     }
     
+//    func colorForImage(_ image: UIImage) -> UIColor {
+//        let imgSize: CGSize = self.tableView.frame.size
+//        UIGraphicsBeginImageContext(imgSize)
+//        image.draw(in: CGRect(x: 20, y: 0, width: 20, height: 20))
+//        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+//        UIGraphicsEndImageContext()
+//        return UIColor(patternImage: newImage)
+//    }
 }
