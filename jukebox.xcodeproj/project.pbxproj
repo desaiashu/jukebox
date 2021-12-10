@@ -3,14 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5413DE911B6DA1430040EF3A /* XCDYouTubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */; };
-		5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8E1B6DA1430040EF3A /* Alamofire.framework */; };
-		5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE8F1B6DA1430040EF3A /* Realm.framework */; };
-		5413DE951B6DA1430040EF3A /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5413DE901B6DA1430040EF3A /* RealmSwift.framework */; };
 		5413DEA21B6DA3B90040EF3A /* PhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5413DEA11B6DA3B80040EF3A /* PhoneNumberViewController.swift */; };
 		544DB5771B6DB9910090ABFB /* ConfirmationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5761B6DB9910090ABFB /* ConfirmationCodeViewController.swift */; };
 		544DB5791B6DB9A30090ABFB /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544DB5781B6DB9A30090ABFB /* PermissionsViewController.swift */; };
@@ -25,11 +21,13 @@
 		5483D4EF1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m in Sources */ = {isa = PBXBuildFile; fileRef = 5483D4EE1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m */; };
 		548807511B7310C100D68573 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807501B7310C100D68573 /* Server.swift */; };
 		548807531B74740200D68573 /* SelectFriendTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807521B74740200D68573 /* SelectFriendTableViewHeader.swift */; };
+		549022382763101F004DE956 /* XCDYouTubeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 549022372763101F004DE956 /* XCDYouTubeKit */; };
+		5490223B27631080004DE956 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223A27631080004DE956 /* Realm */; };
+		5490223D27631080004DE956 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223C27631080004DE956 /* RealmSwift */; };
+		5490224027631092004DE956 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223F27631092004DE956 /* Alamofire */; };
 		54A8CD6F1B6EB6E3009E979A /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */; };
 		54A8CD721B6F0E58009E979A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD711B6F0E58009E979A /* Permissions.swift */; };
 		54A8CD741B6F1F79009E979A /* DialingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54A8CD731B6F1F79009E979A /* DialingCodes.plist */; };
-		54C1B2D61D4C2D7A00FD38B5 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */; };
-		54C1B2D71D4C2D7A00FD38B5 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */; };
 		54E6D8AE1B6D7DE800E603EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */; };
 		54E6D8B01B6D7DE800E603EE /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AF1B6D7DE800E603EE /* InboxViewController.swift */; };
 		54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B11B6D7DE800E603EE /* Main.storyboard */; };
@@ -52,10 +50,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCDYouTubeKit.framework; path = Carthage/Build/iOS/XCDYouTubeKit.framework; sourceTree = "<group>"; };
-		5413DE8E1B6DA1430040EF3A /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		5413DE8F1B6DA1430040EF3A /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
-		5413DE901B6DA1430040EF3A /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
 		5413DEA11B6DA3B80040EF3A /* PhoneNumberViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewController.swift; sourceTree = "<group>"; };
 		544DB5761B6DB9910090ABFB /* ConfirmationCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmationCodeViewController.swift; sourceTree = "<group>"; };
 		544DB5781B6DB9A30090ABFB /* PermissionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
@@ -75,8 +69,6 @@
 		54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer.swift; sourceTree = "<group>"; };
 		54A8CD711B6F0E58009E979A /* Permissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		54A8CD731B6F1F79009E979A /* DialingCodes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DialingCodes.plist; sourceTree = "<group>"; };
-		54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		54E6D8A81B6D7DE800E603EE /* jukebox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jukebox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E6D8AC1B6D7DE800E603EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,12 +89,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5413DE911B6DA1430040EF3A /* XCDYouTubeKit.framework in Frameworks */,
-				54C1B2D61D4C2D7A00FD38B5 /* Fabric.framework in Frameworks */,
-				5413DE931B6DA1430040EF3A /* Alamofire.framework in Frameworks */,
-				5413DE941B6DA1430040EF3A /* Realm.framework in Frameworks */,
-				54C1B2D71D4C2D7A00FD38B5 /* Crashlytics.framework in Frameworks */,
-				5413DE951B6DA1430040EF3A /* RealmSwift.framework in Frameworks */,
+				5490223D27631080004DE956 /* RealmSwift in Frameworks */,
+				549022382763101F004DE956 /* XCDYouTubeKit in Frameworks */,
+				5490224027631092004DE956 /* Alamofire in Frameworks */,
+				5490223B27631080004DE956 /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,12 +109,6 @@
 		5413DE961B6DA1550040EF3A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				54C1B2D41D4C2D7A00FD38B5 /* Fabric.framework */,
-				54C1B2D51D4C2D7A00FD38B5 /* Crashlytics.framework */,
-				5413DE8C1B6DA1430040EF3A /* XCDYouTubeKit.framework */,
-				5413DE8E1B6DA1430040EF3A /* Alamofire.framework */,
-				5413DE8F1B6DA1430040EF3A /* Realm.framework */,
-				5413DE901B6DA1430040EF3A /* RealmSwift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -290,6 +274,12 @@
 			dependencies = (
 			);
 			name = jukebox;
+			packageProductDependencies = (
+				549022372763101F004DE956 /* XCDYouTubeKit */,
+				5490223A27631080004DE956 /* Realm */,
+				5490223C27631080004DE956 /* RealmSwift */,
+				5490223F27631092004DE956 /* Alamofire */,
+			);
 			productName = jukebox;
 			productReference = 54E6D8A81B6D7DE800E603EE /* jukebox.app */;
 			productType = "com.apple.product-type.application";
@@ -320,17 +310,17 @@
 			attributes = {
 				LastSwiftMigration = 0720;
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Ashutosh Desai";
 				TargetAttributes = {
 					54E6D8A71B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 92JVKG2EZK;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 					};
 					54E6D8BC1B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						TestTargetID = 54E6D8A71B6D7DE800E603EE;
 					};
 				};
@@ -340,10 +330,16 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
 			mainGroup = 54E6D89F1B6D7DE800E603EE;
+			packageReferences = (
+				549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */,
+				5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				5490223E27631092004DE956 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = 54E6D8A91B6D7DE800E603EE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -483,13 +479,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -512,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -529,13 +533,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -551,9 +563,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -574,14 +588,18 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = jukebox/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -600,13 +618,17 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = jukebox/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ashudesai.jukebox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -623,10 +645,15 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = jukeboxTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Debug;
@@ -640,10 +667,15 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = jukeboxTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Release;
@@ -679,6 +711,56 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/0xced/XCDYouTubeKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		5490223E27631092004DE956 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		549022372763101F004DE956 /* XCDYouTubeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */;
+			productName = XCDYouTubeKit;
+		};
+		5490223A27631080004DE956 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		5490223C27631080004DE956 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+		5490223F27631092004DE956 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5490223E27631092004DE956 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 54E6D8A01B6D7DE800E603EE /* Project object */;
 }

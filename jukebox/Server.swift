@@ -8,11 +8,10 @@
 
 import Foundation
 import Alamofire
-import Crashlytics
 import UIKit
 
 struct k {
-    static let server_url = "https://www.jkbx.es/"
+    static let server_url = "https://jkbx.es/"
     static let youtube_url = "https://www.googleapis.com/youtube/v3/search?key=AIzaSyBK4c6lUvrKyH3rt3dbsSS-jUVPDjRGyT0&part=snippet&type=video&videoCategoryId=10&order=relevance&maxResults=50&fields=items(id(videoId)%2Csnippet(title))&q="
 }
 
@@ -57,7 +56,7 @@ class Server {
     }
     
     func registerUser(_ callback: @escaping (Bool)->Void) {
-        Alamofire.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
+        let r = Alamofire.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
             .responseJSON { response in
                 if let result = response.result.value as? [String:Bool] {
                     let success = result["success"]!
@@ -69,6 +68,7 @@ class Server {
                     callback(false)
                 }
         }
+        let j = 0;
     }
     
     func authenticateUser(_ callback: @escaping (Bool)->Void) {

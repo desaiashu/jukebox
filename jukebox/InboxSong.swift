@@ -10,17 +10,17 @@ import Foundation
 import RealmSwift
 
 class InboxSong : Object {
-    dynamic var id: String = ""
-    dynamic var sender: String = ""
-    dynamic var recipient: String = ""
-    dynamic var title: String = ""
-    dynamic var artist: String = ""
-    dynamic var yt_id: String = ""
-    dynamic var date: Int = 0
-    dynamic var updated: Int = 0
-    dynamic var listen: Bool = false
-    dynamic var love: Bool = false
-    dynamic var mute: Bool = false
+    @objc dynamic var id: String = ""
+    @objc dynamic var sender: String = ""
+    @objc dynamic var recipient: String = ""
+    @objc dynamic var title: String = ""
+    @objc dynamic var artist: String = ""
+    @objc dynamic var yt_id: String = ""
+    @objc dynamic var date: Int = 0
+    @objc dynamic var updated: Int = 0
+    @objc dynamic var listen: Bool = false
+    @objc dynamic var love: Bool = false
+    @objc dynamic var mute: Bool = false
     
     override class func primaryKey() -> String? {
         return "id"

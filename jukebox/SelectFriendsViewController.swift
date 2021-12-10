@@ -105,7 +105,7 @@ extension SelectFriendsViewController: UITextFieldDelegate {
         return true
     }
     
-    func flip(_ sender: UIButton) {
+    @objc func flip(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         let cell = sender.superview!.superview as! SelectFriendsTableViewCell
         if sender.isSelected {

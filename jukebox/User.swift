@@ -12,11 +12,11 @@ import RealmSwift
 class User : Object {
     static var user = User()
     
-    dynamic var phoneNumber: String = ""
-    dynamic var code: String = ""
-    dynamic var lastUpdated: Int = 0
-    dynamic var firstName: String = ""
-    dynamic var lastName: String = ""
-    dynamic var pushToken: String = ""
-    dynamic var addressBookLoaded: Bool = false
+    @objc dynamic var phoneNumber: String = ""
+    @objc dynamic var code: String = ""
+    @objc dynamic var lastUpdated: Int = 0
+    @objc dynamic var firstName: String = ""
+    @objc dynamic var lastName: String = ""
+    @objc dynamic var pushToken: String = ""
+    @objc dynamic var addressBookLoaded: Bool = false
 }

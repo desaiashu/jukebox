@@ -10,11 +10,11 @@ import Foundation
 import RealmSwift
 
 class SendSong : Object {
-    dynamic var yt_id: String = ""
-    dynamic var title: String = ""
-    dynamic var artist: String = ""
-    dynamic var recipients: String = ""
-    dynamic var date: Int = 0
+    @objc dynamic var yt_id: String = ""
+    @objc dynamic var title: String = ""
+    @objc dynamic var artist: String = ""
+    @objc dynamic var recipients: String = ""
+    @objc dynamic var date: Int = 0
     
     func play() {
         SongPlayer.songPlayer.play(self.yt_id, title: self.title, artist: self.artist)

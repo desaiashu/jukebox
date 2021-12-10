@@ -1,1 +1,0 @@
-../../../GoogleAPIClient/Source/Services/YouTube/Generated/GTLYouTubeGuideCategorySnippet.h
