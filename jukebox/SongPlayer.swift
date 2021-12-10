@@ -82,7 +82,7 @@ class SongPlayer : NSObject{
 //        self.skipButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
         
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setCategoryconvertFromAVAudioSessionCategory(AVAudioSession.Category.playback)
         } catch _ {
         }
         do {
@@ -91,7 +91,7 @@ class SongPlayer : NSObject{
         }
         UIApplication.shared.beginReceivingRemoteControlEvents()
         
-        periodicTimeObserver = self.player.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { cmTime in
+        periodicTimeObserver = self.player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: DispatchQueue.main) { cmTime in
             self.timeObserverFired(cmTime)
         } as AnyObject?
         
@@ -132,7 +132,7 @@ class SongPlayer : NSObject{
             self.playlist = [song]
         } else {
             self.playlist = []
-            self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControlState())
+            self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControl.State())
         }
         
         let newInboxSongs = realm.objects(InboxSong.self).filter("listen == false AND mute == false AND recipient == %@", User.user.phoneNumber).sorted(byKeyPath: "date", ascending: false)
@@ -264,7 +264,7 @@ class SongPlayer : NSObject{
             self.playerButton.isEnabled = false
         }
         self.player.play()
-        self.playerButton.setImage(#imageLiteral(resourceName: "pause_purple"), for: UIControlState())
+        self.playerButton.setImage(#imageLiteral(resourceName: "pause_purple"), for: UIControl.State())
         
         if self.timePlayed == 0 {
             self.buffering = true
@@ -297,7 +297,7 @@ class SongPlayer : NSObject{
     
     func pause() {
         self.player.pause()
-        self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControlState())
+        self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControl.State())
         
         self.buffering = false
         self.playerButton.isEnabled = true
@@ -350,12 +350,12 @@ class SongPlayer : NSObject{
     
     func remoteControlReceivedWithEvent(_ event: UIEvent?) {
         if let event = event {
-            if event.type == UIEventType.remoteControl {
-                if event.subtype == UIEventSubtype.remoteControlPlay {
+            if event.type == UIEvent.EventType.remoteControl {
+                if event.subtype == UIEvent.EventSubtype.remoteControlPlay {
                     self.play()
-                } else if event.subtype == UIEventSubtype.remoteControlPause {
+                } else if event.subtype == UIEvent.EventSubtype.remoteControlPause {
                     self.pause()
-                } else if event.subtype == UIEventSubtype.remoteControlNextTrack {
+                } else if event.subtype == UIEvent.EventSubtype.remoteControlNextTrack {
                     self.skip()
                 } //TODO, handle going previous track
             }
@@ -373,7 +373,7 @@ class SongPlayer : NSObject{
     func mute(_ yt_id: String, title: String, artist: String) {
         //If mute, remove songs from playlist IF song is after current index
         //      If song removed is next index, set identifier for second player (unless no songs left)
-        if let index = self.playlist.index(of: PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil, duration: 0)) {
+        if let index = self.playlist.firstIndex(of: PlaylistSong(yt_id: yt_id, title: title, artist: artist, item: nil, duration: 0)) {
             if index != loadeditems { //If it's currently loading, it will break stuff
                 if index == self.currentSongIndex {
                     //self.skip() //This isn't working properly so leaving it in the playlist for now (#muteskip)
@@ -445,3 +445,8 @@ class SongPlayer : NSObject{
 //        }
 //    }
 //}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
+}

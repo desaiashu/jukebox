@@ -36,22 +36,22 @@ class InboxSongTableViewCell: UITableViewCell {
                     friendNumber = song.recipient
                     if song.love {
                         self.directionLabel.text = "loved by"
-                        self.heartButton.setImage(#imageLiteral(resourceName: "like_green"), for: UIControlState.normal)
+                        self.heartButton.setImage(#imageLiteral(resourceName: "like_green"), for: UIControl.State.normal)
                     } else {
                         self.directionLabel.text = "to"
-                        self.heartButton.setImage(#imageLiteral(resourceName: "like_green_outline"), for: UIControlState.normal)
+                        self.heartButton.setImage(#imageLiteral(resourceName: "like_green_outline"), for: UIControl.State.normal)
                     }
                     self.backgroundColor = UIColor.white
                     self.separator.image = #imageLiteral(resourceName: "line_light_green")
-                    self.separator.contentMode = UIViewContentMode.left
+                    self.separator.contentMode = UIView.ContentMode.left
                 } else {
                     friendNumber = song.sender
                     if song.love {
                         self.directionLabel.text = "you love"
-                        self.heartButton.setImage(#imageLiteral(resourceName: "like_purple"), for: UIControlState.normal)
+                        self.heartButton.setImage(#imageLiteral(resourceName: "like_purple"), for: UIControl.State.normal)
                     } else {
                         self.directionLabel.text = "from"
-                        self.heartButton.setImage(#imageLiteral(resourceName: "like_purple_outline"), for: UIControlState.normal)
+                        self.heartButton.setImage(#imageLiteral(resourceName: "like_purple_outline"), for: UIControl.State.normal)
                     }
                     if song.listen {
                         self.backgroundColor = UIColor.white
@@ -59,7 +59,7 @@ class InboxSongTableViewCell: UITableViewCell {
                         self.backgroundColor = UIColor(red: 82.0/255.0, green: 147.0/255.0, blue: 141.0/255.0, alpha: 0.1)
                     }
                     self.separator.image = #imageLiteral(resourceName: "line_light_purple")
-                    self.separator.contentMode = UIViewContentMode.right
+                    self.separator.contentMode = UIView.ContentMode.right
                 }
                 //Might want to cache this in song download
                 if let friendName = realm.objects(Friend.self).filter("phoneNumber == %@", friendNumber!).first?.firstName {
@@ -75,7 +75,7 @@ class InboxSongTableViewCell: UITableViewCell {
         if let song = self.song {
             if song.sender != User.user.phoneNumber && !song.love {
                 self.directionLabel.text = "you love"
-                self.heartButton.setImage(#imageLiteral(resourceName: "like_purple"), for: UIControlState.normal)
+                self.heartButton.setImage(#imageLiteral(resourceName: "like_purple"), for: UIControl.State.normal)
                 self.heartButton.isEnabled = false
                 song.heart()
             }

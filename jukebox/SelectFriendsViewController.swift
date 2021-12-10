@@ -48,7 +48,7 @@ class SelectFriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        self.sendButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.sendButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
         
         let numBestFriends = min(self.bestFriends.count, 3)
         var bestFriendNumbers = [String]()
@@ -111,7 +111,7 @@ extension SelectFriendsViewController: UITextFieldDelegate {
         if sender.isSelected {
             self.selectedFriends.append(cell.friend!.phoneNumber)
         } else {
-            self.selectedFriends.remove(at: self.selectedFriends.index(of: cell.friend!.phoneNumber)!)
+            self.selectedFriends.remove(at: self.selectedFriends.firstIndex(of: cell.friend!.phoneNumber)!)
         }
     }
 }
@@ -123,7 +123,7 @@ extension SelectFriendsViewController: UITableViewDataSource {
         //Add "numSent/recieved" to each friend when sending + downloading data, when data downloaded add "lastSent/recieved" timestamp, query for top 5 most sent + 5 most recently sent (save to server?)
         let cell = tableView.dequeueReusableCell(withIdentifier: "SelectFriendsCell", for: indexPath) as! SelectFriendsTableViewCell
         if cell.friend == nil {
-            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), for: UIControlEvents.touchUpInside)
+            cell.selectSwitch.addTarget(self, action: #selector(flip(_:)), for: UIControl.Event.touchUpInside)
         }
         if inSearch {
             cell.friend = self.searchResults[indexPath.row]

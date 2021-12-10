@@ -18,7 +18,7 @@ class PhoneNumberViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.goButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.goButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
         User.user.phoneNumber = ""
         User.user.code = ""
     }

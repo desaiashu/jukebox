@@ -43,12 +43,12 @@ class Server {
             title = "Update Available"
             message = "A new update is available, tap update to download"
         }
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         if !forced {
-            alertController.addAction(UIAlertAction(title: "Later", style: UIAlertActionStyle.cancel, handler:nil))
+            alertController.addAction(UIAlertAction(title: "Later", style: UIAlertAction.Style.cancel, handler:nil))
         }
         alertController.addAction(
-            UIAlertAction(title: "Update", style: UIAlertActionStyle.default, handler: { UIAlertAction in
+            UIAlertAction(title: "Update", style: UIAlertAction.Style.default, handler: { UIAlertAction in
                 UIApplication.shared.openURL(URL(string: url)!)
             })
         )

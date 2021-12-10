@@ -20,8 +20,8 @@ class ConfirmationCodeViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.goButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
-        self.resendButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.goButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
+        self.resendButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {

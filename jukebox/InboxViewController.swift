@@ -172,7 +172,7 @@ extension InboxViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAtIndexPath indexPath: IndexPath) -> [AnyObject]? {
@@ -190,7 +190,7 @@ extension InboxViewController: UITableViewDataSource, UITableViewDelegate {
 //            cancelRowAction.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "delete_light_row"))
             //rowActions.append(cancelRowAction)
             
-            let sendRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "       ", handler:
+            let sendRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.normal, title: "       ", handler:
                 { action, indexpath in
                     if let selectFriendsViewController = UIStoryboard(name: "Main", bundle: nil)
                         .instantiateViewController(withIdentifier: "SelectFriendsViewController") as? SelectFriendsViewController {
@@ -228,7 +228,7 @@ extension InboxViewController: UITableViewDataSource, UITableViewDelegate {
 //            if cell.song!.mute {
 //                muteTitle = "Unmute"
 //            }
-            let muteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "       ", handler:
+            let muteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.normal, title: "       ", handler:
                 { action, indexpath in
                     if SongPlayer.songPlayer.playlist.count > 1 {
                         let mute = !song.mute

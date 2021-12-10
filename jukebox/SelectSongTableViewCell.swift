@@ -25,8 +25,8 @@ class SelectSongTableViewCell: UITableViewCell {
                 
                 self.playButton.isEnabled = true
                 //Might want to do this once in intializer
-                self.playButton.setTitle("...", for: UIControlState.disabled)
-                self.playButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+                self.playButton.setTitle("...", for: UIControl.State.disabled)
+                self.playButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
             }
         }
     }

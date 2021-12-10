@@ -17,8 +17,8 @@ class PermissionsViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.accessContactsButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
-        self.enablePushButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+        self.accessContactsButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
+        self.enablePushButton.setTitleColor(UIColor.lightGray, for: UIControl.State.disabled)
     }
     
     @IBAction func accessContacts(_ sender: UIButton) {

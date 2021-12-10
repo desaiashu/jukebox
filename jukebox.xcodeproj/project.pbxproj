@@ -314,11 +314,11 @@
 					54E6D8A71B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 92JVKG2EZK;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1310;
 					};
 					54E6D8BC1B6D7DE800E603EE = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1310;
 						TestTargetID = 54E6D8A71B6D7DE800E603EE;
 					};
 				};
@@ -567,7 +567,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -592,7 +592,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "jukebox/jukebox-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -617,7 +617,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Debug;
@@ -639,7 +639,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ashudesai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jukebox.app/jukebox";
 			};
 			name = Release;

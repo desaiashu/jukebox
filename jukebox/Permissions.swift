@@ -23,13 +23,13 @@ class Permissions {
     }
     
     func promptUserToChangeAddressBookSettings(_ forced: Bool) {
-        let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Contacts", message: "We need access to your contacts so you can send songs to your friends. Tap go to enable access to contacts in settings.", preferredStyle: UIAlertController.Style.alert)
         if !forced {
-            alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.cancel, handler:nil))
+            alertController.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler:nil))
         }
         alertController.addAction(
-            UIAlertAction(title: "Go", style: UIAlertActionStyle.default, handler: { UIAlertAction in
-                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+            UIAlertAction(title: "Go", style: UIAlertAction.Style.default, handler: { UIAlertAction in
+                UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
             })
         )
         UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
@@ -225,7 +225,7 @@ class Permissions {
     }
     
     func requestName(_ nameType: String) {
-        let alertController = UIAlertController(title: "Enter "+nameType, message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Enter "+nameType, message: nil, preferredStyle: UIAlertController.Style.alert)
         alertController.addTextField { textField in
             switch (nameType) {
             case "First Name":
@@ -238,7 +238,7 @@ class Permissions {
             textField.autocapitalizationType = UITextAutocapitalizationType.words
         }
         alertController.addAction(
-            UIAlertAction(title: "Save", style: UIAlertActionStyle.default, handler: { UIAlertAction in
+            UIAlertAction(title: "Save", style: UIAlertAction.Style.default, handler: { UIAlertAction in
                 if let textField = alertController.textFields?[0] {
                     if textField.text != "" {
                         try! realm.write() {
@@ -297,11 +297,11 @@ class Permissions {
     }
     
     func promptUserToChangePushNotificationSettings() {
-        let alertController = UIAlertController(title: "Push Notifications", message: "We recommend turning push notifications on in order to use the app. Tap go to enable push notifications in settings.", preferredStyle: UIAlertControllerStyle.alert)
-        alertController.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.cancel, handler:nil))
+        let alertController = UIAlertController(title: "Push Notifications", message: "We recommend turning push notifications on in order to use the app. Tap go to enable push notifications in settings.", preferredStyle: UIAlertController.Style.alert)
+        alertController.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler:nil))
         alertController.addAction(
-            UIAlertAction(title: "Go", style: UIAlertActionStyle.default, handler: { UIAlertAction in
-                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+            UIAlertAction(title: "Go", style: UIAlertAction.Style.default, handler: { UIAlertAction in
+                UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
             })
         )
         UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
