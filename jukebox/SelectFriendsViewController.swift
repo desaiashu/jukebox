@@ -18,9 +18,9 @@ class SelectFriendsViewController: UIViewController {
     
     var song: SendSong?
     
-    var bestFriends = realm.objects(Friend.self).filter("numShared > 0").sorted(byProperty: "numShared", ascending: false)
+    var bestFriends = realm.objects(Friend.self).filter("numShared > 0").sorted(byKeyPath: "numShared", ascending: false)
     var recentFriends: Results<Friend>?
-    var allFriends = realm.objects(Friend.self).sorted(byProperty: "firstName")
+    var allFriends = realm.objects(Friend.self).sorted(byKeyPath: "firstName")
     
     var selectedFriends: [String] = [] {
         didSet {
@@ -57,7 +57,7 @@ class SelectFriendsViewController: UIViewController {
                 bestFriendNumbers.append(self.bestFriends[i].phoneNumber)
             }
         }
-        self.recentFriends = realm.objects(Friend.self).filter("lastShared > 0 AND NOT phoneNumber in %@", bestFriendNumbers).sorted(byProperty: "lastShared", ascending: false)
+        self.recentFriends = realm.objects(Friend.self).filter("lastShared > 0 AND NOT phoneNumber in %@", bestFriendNumbers).sorted(byKeyPath: "lastShared", ascending: false)
     }
     
     @IBAction func cancelPressed(_ sender: UIButton) {
@@ -97,7 +97,7 @@ extension SelectFriendsViewController: UITextFieldDelegate {
                 let last = query[1]
                 predicate = NSPredicate(format: "firstName BEGINSWITH[c] %@ AND lastName BEGINSWITH[c] %@", first, last)
             }
-            self.searchResults = realm.objects(Friend.self).filter(predicate).sorted(byProperty: "firstName")
+            self.searchResults = realm.objects(Friend.self).filter(predicate).sorted(byKeyPath: "firstName")
         } else {
             self.searchResults = realm.objects(Friend.self).filter("firstName BEGINSWITH '.!?'")
         }

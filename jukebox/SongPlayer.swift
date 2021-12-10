@@ -135,12 +135,12 @@ class SongPlayer : NSObject{
             self.playerButton.setImage(#imageLiteral(resourceName: "play_purple"), for: UIControlState())
         }
         
-        let newInboxSongs = realm.objects(InboxSong.self).filter("listen == false AND mute == false AND recipient == %@", User.user.phoneNumber).sorted(byProperty: "date", ascending: false)
+        let newInboxSongs = realm.objects(InboxSong.self).filter("listen == false AND mute == false AND recipient == %@", User.user.phoneNumber).sorted(byKeyPath: "date", ascending: false)
         self.playlist = newInboxSongs.reduce(self.playlist) { $0 +
             ( !$0.contains(playlistSongFromInboxSong($1))
                 ? [playlistSongFromInboxSong($1)] : [] ) }
         
-        let oldInboxSongs = realm.objects(InboxSong.self).filter("listen == true AND mute == false").sorted(byProperty: "date", ascending: false)
+        let oldInboxSongs = realm.objects(InboxSong.self).filter("listen == true AND mute == false").sorted(byKeyPath: "date", ascending: false)
         var oldSongs = oldInboxSongs.reduce([]) { $0 +
                 (!self.playlist.contains(playlistSongFromInboxSong($1)) &&
                     !$0.contains(playlistSongFromInboxSong($1))
@@ -233,7 +233,7 @@ class SongPlayer : NSObject{
         if self.playlist.count != 0 { //Off chance inbox hasn't downloaded when you first login
             let unloaded = self.playlist.count - self.loadeditems
             
-            let newInboxSongs = realm.objects(InboxSong.self).filter("mute == false").sorted(byProperty: "date")
+            let newInboxSongs = realm.objects(InboxSong.self).filter("mute == false").sorted(byKeyPath: "date")
             self.playlist = newInboxSongs.reduce(self.playlist) { $0 +
                 (!self.playlist.contains(playlistSongFromInboxSong($1)) &&
                     !$0.contains(playlistSongFromInboxSong($1))
@@ -432,16 +432,16 @@ class SongPlayer : NSObject{
 }
 
 
-extension MutableCollection where Index == Int, IndexDistance == Int {
-    /// Shuffle the elements of `self` in-place.
-    mutating func shuffle() {
-        // empty and single-element collections don't shuffle
-        if count < 2 { return }
-        
-        for i in 0..<count - 1 {
-            let j = Int(arc4random_uniform(UInt32(count - i))) + i
-            guard i != j else { continue }
-            self.swapAt(i, j)
-        }
-    }
-}
+//extension MutableCollection where Index == Int, IndexDistance == Int {
+//    /// Shuffle the elements of `self` in-place.
+//    mutating func shuffle() {
+//        // empty and single-element collections don't shuffle
+//        if count < 2 { return }
+//
+//        for i in 0..<count - 1 {
+//            let j = Int(arc4random_uniform(UInt32(count - i))) + i
+//            guard i != j else { continue }
+//            self.swapAt(i, j)
+//        }
+//    }
+//}

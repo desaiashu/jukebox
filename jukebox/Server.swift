@@ -19,9 +19,9 @@ class Server {
     static let server = Server()
     
     func checkVersion() {
-        Alamofire.request(k.server_url+"version")
+        AF.request(k.server_url+"version")
             .responseJSON { response in
-                if let result = response.result.value as? [String:AnyObject] {
+                if let result = response.value as? [String:AnyObject] {
                     let latestVersion = result["version"]! as! String
                     let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
                     if currentVersion.compare(latestVersion, options:NSString.CompareOptions.numeric) == ComparisonResult.orderedAscending {
@@ -56,12 +56,13 @@ class Server {
     }
     
     func registerUser(_ callback: @escaping (Bool)->Void) {
-        let r = Alamofire.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
+        let r = AF.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
             .responseJSON { response in
-                if let result = response.result.value as? [String:Bool] {
+                if let result = response.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
-                        Answers.logCustomEvent(withName: "Register", customAttributes:nil)
+                    // TODO replace answers w/ new analytics
+//                        Answers.logCustomEvent(withName: "Register", customAttributes:nil)
                     }
                     callback(success)
                 } else {
@@ -73,13 +74,13 @@ class Server {
     
     func authenticateUser(_ callback: @escaping (Bool)->Void) {
         let user = User.user
-        Alamofire.request(k.server_url+"confirm", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: JSONEncoding.default)
+        AF.request(k.server_url+"confirm", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: JSONEncoding.default)
             .responseJSON { response in
-                if let result = response.result.value as? [String:Bool] {
+                if let result = response.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
                         self.downloadInbox({}) //Preload inbox
-                        Answers.logCustomEvent(withName: "Authenticate", customAttributes:nil)
+//                        Answers.logCustomEvent(withName: "Authenticate", customAttributes:nil)
                     }
                     callback(success)
                 } else {
@@ -90,18 +91,18 @@ class Server {
     
     func sendPushToken() {
         let user = User.user
-        Alamofire.request(k.server_url+"pushtoken", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "push_token":user.pushToken], encoding: JSONEncoding.default)
+        AF.request(k.server_url+"pushtoken", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "push_token":user.pushToken], encoding: JSONEncoding.default)
     }
     
     func downloadInbox(_ callback: @escaping ()->Void) {
         let user = User.user
-        Alamofire.request(k.server_url+"inbox", method: .post, parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: JSONEncoding.default)
+        AF.request(k.server_url+"inbox", method: .post, parameters: ["phone_number": user.phoneNumber, "code":user.code, "last_updated":user.lastUpdated], encoding: JSONEncoding.default)
             .responseJSON { response in
-                if let result = response.result.value as? [String:AnyObject] {
+                if let result = response.value as? [String:AnyObject] {
                     if let inbox = result["inbox"] as? [[String:AnyObject]] {
                         try! realm.write() {
                             for song in inbox {
-                                realm.create(InboxSong.self, value: song, update: true)
+                                realm.create(InboxSong.self, value: song, update: .all)
                                     
                                 if user.addressBookLoaded { //Update best and recent friends
                                     var incoming = true
@@ -144,9 +145,9 @@ class Server {
     //Might want to resend these if it fails the first time
     func listen(_ song: InboxSong) {
         let user = User.user
-        Alamofire.request(k.server_url+"listen", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: JSONEncoding.default)
+        AF.request(k.server_url+"listen", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "listener_name":user.firstName], encoding: JSONEncoding.default)
             .responseJSON { response in
-                if let result = response.result.value as? [String:Bool] {
+                if let result = response.value as? [String:Bool] {
                     if !result["success"]! {
                         try! realm.write() {
                             song.listen = false
@@ -158,14 +159,14 @@ class Server {
                     }
                 }
             }
-        Answers.logCustomEvent(withName: "Listen", customAttributes: nil)
+//        Answers.logCustomEvent(withName: "Listen", customAttributes: nil)
     }
     
     func love(_ song: InboxSong) {
         let user = User.user
-        Alamofire.request(k.server_url+"love", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: JSONEncoding.default)
+        AF.request(k.server_url+"love", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code, "id":song.id, "title":song.title, "artist":song.artist, "sender":song.sender, "lover_name":user.firstName], encoding: JSONEncoding.default)
             .responseJSON { response in
-                if let result = response.result.value as? [String:Bool] {
+                if let result = response.value as? [String:Bool] {
                     if !result["success"]! {
                         try! realm.write() {
                             song.love = false
@@ -177,13 +178,13 @@ class Server {
                     }
                 }
             }
-        Answers.logCustomEvent(withName: "Love", customAttributes: nil)
+//        Answers.logCustomEvent(withName: "Love", customAttributes: nil)
     }
     
     func cachePushData(_ pushData: [String:AnyObject]) {
         if let sharedSong = pushData["share"] as? [String:AnyObject] {
             try! realm.write() {
-                realm.create(InboxSong.self, value: sharedSong, update: true)
+                realm.create(InboxSong.self, value: sharedSong, update: .all)
             }
         } else if let listenId = pushData["listen"] as? String {
             if let song = realm.objects(InboxSong.self).filter("id = %@", listenId).first {
@@ -232,7 +233,7 @@ class Server {
         }
         self.sendSongs()
         SongPlayer.songPlayer.updatePlaylist()
-        Answers.logCustomEvent(withName: "Share", customAttributes: nil)
+//        Answers.logCustomEvent(withName: "Share", customAttributes: nil)
     }
     
     func sendSongs() {
@@ -242,14 +243,14 @@ class Server {
         for song in unsentSongs {
             
             let params: [String:Any] = ["phone_number": user.phoneNumber, "code": user.code, "title":song.title, "artist":song.artist, "yt_id":song.yt_id, "date":song.date, "updated":song.date, "recipients":song.recipients, "sender_name":user.firstName]
-            Alamofire.request(k.server_url+"share", method: .post, parameters: params, encoding: JSONEncoding.default)
+            AF.request(k.server_url+"share", method: .post, parameters: params, encoding: JSONEncoding.default)
                 .responseJSON { response in
-                    if let result = response.result.value as? [String:[[String:AnyObject]]] {
+                    if let result = response.value as? [String:[[String:AnyObject]]] {
                         if let songs = result["songs"] {
                             try! realm.write() {
                                 for downloadedSong in songs {
                                     //Save new copy w/ id from server
-                                    realm.create(InboxSong.self, value: downloadedSong, update: true)
+                                    realm.create(InboxSong.self, value: downloadedSong, update: .all)
                                     
                                     //Delete old copy w/ old id
                                     let old_id = String(song.date)+(downloadedSong["recipient"]! as! String)
@@ -273,9 +274,9 @@ class Server {
     
     func searchSong(_ query: String, callback: @escaping ([SendSong])->Void) {
         if let escapedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
-            Alamofire.request(k.youtube_url+escapedQuery)
+            AF.request(k.youtube_url+escapedQuery)
                 .responseJSON { response in
-                    if let result = response.result.value as? [String:[[String:[String:String]]]] {
+                    if let result = response.value as? [String:[[String:[String:String]]]] {
                         if let items = result["items"] {
                             
                             let tempResults = self.parseResults(items)

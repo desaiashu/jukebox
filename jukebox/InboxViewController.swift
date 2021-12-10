@@ -45,7 +45,7 @@ class InboxViewController: UIViewController {
         super.viewDidLoad()
         SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton, progressBar: self.progressBar, loadingIndicator: self.loadingIndicator)
         
-        songs = realm.objects(InboxSong.self).sorted(byProperty: "date", ascending: false)
+        songs = realm.objects(InboxSong.self).sorted(byKeyPath: "date", ascending: false)
         //Could bump "new" songs to top - unsure how to deal with tapping play
         //var songs = realm.objects(InboxSong).sorted([SortDescriptor(property: "listen"), SortDescriptor(property: "date", ascending: false)])
     }
