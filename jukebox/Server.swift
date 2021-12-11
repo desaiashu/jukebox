@@ -58,6 +58,7 @@ class Server {
     func registerUser(_ callback: @escaping (Bool)->Void) {
         let r = AF.request(k.server_url+"join", method: .post, parameters: ["phone_number":User.user.phoneNumber], encoding: JSONEncoding.default)
             .responseJSON { response in
+                print(response)
                 if let result = response.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
@@ -74,8 +75,10 @@ class Server {
     
     func authenticateUser(_ callback: @escaping (Bool)->Void) {
         let user = User.user
+        print(user)
         AF.request(k.server_url+"confirm", method: .post, parameters: ["phone_number":user.phoneNumber, "code":user.code], encoding: JSONEncoding.default)
             .responseJSON { response in
+                print(response)
                 if let result = response.value as? [String:Bool] {
                     let success = result["success"]!
                     if success {
@@ -211,7 +214,7 @@ class Server {
         try! realm.write() {
             realm.add(song)
             
-            let recipients = song.recipients.characters.split {$0 == ","}.map { String($0) }
+            let recipients = song.recipients.split {$0 == ","}.map { String($0) }
             for recipient in recipients {
                 let inboxSong = InboxSong()
                 

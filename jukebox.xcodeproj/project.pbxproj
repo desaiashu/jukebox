@@ -21,13 +21,13 @@
 		5483D4EF1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m in Sources */ = {isa = PBXBuildFile; fileRef = 5483D4EE1B78807D00D08E1F /* MPMoviePlayerController+BackgroundPlayback.m */; };
 		548807511B7310C100D68573 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807501B7310C100D68573 /* Server.swift */; };
 		548807531B74740200D68573 /* SelectFriendTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548807521B74740200D68573 /* SelectFriendTableViewHeader.swift */; };
-		549022382763101F004DE956 /* XCDYouTubeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 549022372763101F004DE956 /* XCDYouTubeKit */; };
 		5490223B27631080004DE956 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223A27631080004DE956 /* Realm */; };
 		5490223D27631080004DE956 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223C27631080004DE956 /* RealmSwift */; };
 		5490224027631092004DE956 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 5490223F27631092004DE956 /* Alamofire */; };
 		54A8CD6F1B6EB6E3009E979A /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD6E1B6EB6E3009E979A /* SongPlayer.swift */; };
 		54A8CD721B6F0E58009E979A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A8CD711B6F0E58009E979A /* Permissions.swift */; };
 		54A8CD741B6F1F79009E979A /* DialingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54A8CD731B6F1F79009E979A /* DialingCodes.plist */; };
+		54E23898276430C100FA9E54 /* XCDYouTubeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 54E23897276430C100FA9E54 /* XCDYouTubeKit */; };
 		54E6D8AE1B6D7DE800E603EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AD1B6D7DE800E603EE /* AppDelegate.swift */; };
 		54E6D8B01B6D7DE800E603EE /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6D8AF1B6D7DE800E603EE /* InboxViewController.swift */; };
 		54E6D8B31B6D7DE800E603EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54E6D8B11B6D7DE800E603EE /* Main.storyboard */; };
@@ -90,7 +90,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5490223D27631080004DE956 /* RealmSwift in Frameworks */,
-				549022382763101F004DE956 /* XCDYouTubeKit in Frameworks */,
+				54E23898276430C100FA9E54 /* XCDYouTubeKit in Frameworks */,
 				5490224027631092004DE956 /* Alamofire in Frameworks */,
 				5490223B27631080004DE956 /* Realm in Frameworks */,
 			);
@@ -273,10 +273,10 @@
 			);
 			name = jukebox;
 			packageProductDependencies = (
-				549022372763101F004DE956 /* XCDYouTubeKit */,
 				5490223A27631080004DE956 /* Realm */,
 				5490223C27631080004DE956 /* RealmSwift */,
 				5490223F27631092004DE956 /* Alamofire */,
+				54E23897276430C100FA9E54 /* XCDYouTubeKit */,
 			);
 			productName = jukebox;
 			productReference = 54E6D8A81B6D7DE800E603EE /* jukebox.app */;
@@ -333,9 +333,9 @@
 			);
 			mainGroup = 54E6D89F1B6D7DE800E603EE;
 			packageReferences = (
-				549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */,
 				5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				5490223E27631092004DE956 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				54E23896276430C100FA9E54 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */,
 			);
 			productRefGroup = 54E6D8A91B6D7DE800E603EE /* Products */;
 			projectDirPath = "";
@@ -677,14 +677,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/0xced/XCDYouTubeKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-cocoa.git";
@@ -701,14 +693,17 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		54E23896276430C100FA9E54 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/armendh/XCDYouTubeKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		549022372763101F004DE956 /* XCDYouTubeKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 549022362763101F004DE956 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */;
-			productName = XCDYouTubeKit;
-		};
 		5490223A27631080004DE956 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5490223927631080004DE956 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
@@ -723,6 +718,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5490223E27631092004DE956 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		54E23897276430C100FA9E54 /* XCDYouTubeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 54E23896276430C100FA9E54 /* XCRemoteSwiftPackageReference "XCDYouTubeKit" */;
+			productName = XCDYouTubeKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

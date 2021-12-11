@@ -82,7 +82,7 @@ class SongPlayer : NSObject{
 //        self.skipButton.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
         
         do {
-            try AVAudioSession.sharedInstance().setCategoryconvertFromAVAudioSessionCategory(AVAudioSession.Category.playback)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
         } catch _ {
         }
         do {

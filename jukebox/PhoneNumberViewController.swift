@@ -32,17 +32,20 @@ class PhoneNumberViewController: UIViewController {
     
     @IBAction func goPressed(_ sender: UIButton){
         self.phoneNumberTextField.resignFirstResponder()
+        print("testing")
         var phoneNumber = phoneNumberTextField.text!
+        print(phoneNumber)
         if phoneNumber != "" {
             if let phoneInt = Int(phoneNumber) {
                 phoneNumber = String(phoneInt) //Remove leading 0's, need to enable this for longer numbers
             }
-            if phoneNumber.characters.count == 10 && Permissions.permissions.localDialingCode == "1" { //Automatically including 1 for US numbers
+            if phoneNumber.count == 10 && Permissions.permissions.localDialingCode == "1" { //Automatically including 1 for US numbers
                 phoneNumber = "1" + phoneNumber
             }
             User.user.phoneNumber = "+" + phoneNumber
             self.goButton.isEnabled = false
             self.statusLabel.text = "Loading..."
+            print(User.user)
             Server.server.registerUser(self.registerCallback)
         }
     }

@@ -42,6 +42,9 @@ class InboxViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        
+//        XCDYouTubeClient.setInnertubeApiKey("AIzaSyDm_UpmMyMNs_d3sAdbiqoUJlwl0U4Un_A")
+        
         super.viewDidLoad()
         SongPlayer.songPlayer.setup(self.playerButton, artistLabel: self.artistLabel, titleLabel: self.titleLabel, skipButton: self.skipButton, progressBar: self.progressBar, loadingIndicator: self.loadingIndicator)
         
